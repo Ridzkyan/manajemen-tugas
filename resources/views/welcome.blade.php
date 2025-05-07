@@ -62,7 +62,7 @@
     <div class="welcome-card">
         <img src="{{ asset('images/LogoWelcome.png') }}" alt="TaskFlow Logo" class="logo-img">
         <div class="welcome-title">TaskFlow<br>Management</div>
-        <div class="welcome-subtitle">Kel tugasmu dengan mudah di TaskFlow.</div>
+        <div class="welcome-subtitle">Kelola tugasmu dengan mudah di TaskFlow.</div>
 
         <div class="d-flex justify-content-center gap-3">
             <a href="{{ route('login') }}" class="btn btn-custom">
