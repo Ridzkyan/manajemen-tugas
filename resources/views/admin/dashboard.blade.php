@@ -91,10 +91,24 @@
         width: 100% !important;
         height: 100% !important;
     }
+
+    @media (max-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+        .card-info {
+            flex-direction: column;
+            height: auto;
+            text-align: center;
+        }
+        .card-icon {
+            margin-top: 10px;
+        }
+    }
 </style>
 
 <div class="row mb-4">
-    <div class="col-md-4 mb-3">
+    <div class="col-md-4 col-sm-12 mb-3">
         <a href="/admin/users" class="card-info text-decoration-none">
             <div class="card-left">
                 <div class="stat-number">100</div>
@@ -103,7 +117,7 @@
             <i class="fas fa-users card-icon"></i>
         </a>
     </div>
-    <div class="col-md-4 mb-3">
+    <div class="col-md-4 col-sm-12 mb-3">
         <a href="/admin/matkul" class="card-info text-decoration-none">
             <div class="card-left">
                 <div class="stat-number">50</div>
@@ -112,7 +126,7 @@
             <i class="fas fa-book card-icon"></i>
         </a>
     </div>
-    <div class="col-md-4 mb-3">
+    <div class="col-md-4 col-sm-12 mb-3">
         <a href="/admin/konten" class="card-info text-decoration-none">
             <div class="card-left">
                 <div class="stat-number">150</div>
