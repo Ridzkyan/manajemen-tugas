@@ -9,14 +9,16 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
     <style>
-        body {
+        html, body {
+            height: 100%;
+            overflow: hidden;
             background-color: #fef9f4;
             font-family: 'Arial', sans-serif;
-            overflow-x: hidden;
         }
 
         #wrapper {
             display: flex;
+            height: 100%;
         }
 
         .sidebar {
@@ -80,6 +82,7 @@
             flex: 1;
             transition: margin-left 0.3s ease;
             width: 100%;
+            overflow-y: auto;
         }
 
         .topbar {
