@@ -21,6 +21,7 @@ use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
 Route::get('/', fn () => view('welcome'))->name('welcome');
 
 Auth::routes(['register' => true]);
+Auth::routes(['verify' => true]);
 
 // Login multi-role
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -78,7 +79,7 @@ Route::middleware(['auth:dosen'])->prefix('dosen')->name('dosen.')->group(functi
 });
 
 // ---------- MAHASISWA ----------
-Route::middleware(['auth:mahasiswa'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+Route::middleware(['auth:mahasiswa, verified'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Mahasiswa\HomeController::class, 'index'])->name('dashboard');
 
     Route::get('/join', [JoinKelasController::class, 'index'])->name('join.index');

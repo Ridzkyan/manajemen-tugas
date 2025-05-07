@@ -16,6 +16,7 @@ class CreateTugasTable extends Migration
             $table->text('deskripsi')->nullable();
             $table->string('file_soal')->nullable();
             $table->date('deadline')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
         });
     }
