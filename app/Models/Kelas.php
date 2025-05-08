@@ -17,6 +17,11 @@ class Kelas extends Model
         'whatsapp_link',
     ];
 
+    public function materi()
+    {
+        return $this->hasMany(\App\Models\Materi::class);
+    }
+    
     // Kelas dimiliki oleh 1 Dosen
     public function dosen()
     {
@@ -28,5 +33,9 @@ class Kelas extends Model
     {
         return $this->belongsToMany(User::class, 'kelas_mahasiswa', 'kelas_id', 'mahasiswa_id');
     }
-    
+
+    public function tugas()
+    {
+        return $this->hasMany(Tugas::class);
+    }
 }

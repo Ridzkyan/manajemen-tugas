@@ -220,8 +220,8 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-folder-open"></i> Kelas/Mata Kuliah
+                <a class="nav-link" href="{{ route('admin.kelas.index') }}">
+                    <i class="fas fa-folder-open"></i>Kelas
                 </a>
             </li>
             <li class="nav-item mb-2">
@@ -230,8 +230,8 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-chart-bar"></i> Monitoring/Laporan
+                <a class="nav-link" href="{{ route('admin.monitoring') }}">
+                    <i class="fas fa-chart-bar"></i> Monitoring
                 </a>
             </li>
             <li class="nav-item mb-2">
