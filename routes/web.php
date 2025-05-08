@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Mahasiswa\JoinKelasController;
 use App\Http\Controllers\Mahasiswa\MateriController as MahasiswaMateriController;
 use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
+use App\Http\Controllers\Admin\MonitoringController;
 
 // ==============================
 // PUBLIC ROUTES
@@ -54,8 +55,9 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::put('/profil', [UserController::class, 'updateProfile'])->name('profil.update');
     Route::get('/ganti-password', [UserController::class, 'editPassword'])->name('password.edit');
     Route::put('/ganti-password', [UserController::class, 'updatePassword'])->name('password.update');
-
-    Route::get('/monitoring', [DashboardController::class, 'monitoring'])->name('monitoring');
+    
+    // monitoring
+    Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
 
 });
 

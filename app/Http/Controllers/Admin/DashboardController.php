@@ -52,25 +52,4 @@ class DashboardController extends Controller
             'kelasTeraktif'
         ));
     }
-
-    public function monitoring()
-    {
-        $kelasTeraktif = Kelas::withCount('materi')
-            ->orderByDesc('materi_count')
-            ->take(5)
-            ->get();
-    
-        $threshold = now()->subMinutes(5); // dianggap online jika login dalam 5 menit terakhir
-    
-        $allUsers = User::select('name', 'email', 'role', 'last_login_at')
-            ->orderBy('role')
-            ->get()
-            ->groupBy('role');
-    
-        return view('admin.monitoring.index', compact(
-            'kelasTeraktif',
-            'allUsers',
-            'threshold'
-        ));
-    }
 }

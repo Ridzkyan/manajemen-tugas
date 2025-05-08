@@ -38,7 +38,11 @@ class LoginController extends Controller
 
         if (Auth::guard($guard)->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-
+        
+            $user = Auth::guard($guard)->user();
+            $user->is_online = true;
+            $user->save();
+        
             switch ($guard) {
                 case 'dosen':
                     return redirect()->intended(route('dosen.dashboard'));
@@ -47,7 +51,6 @@ class LoginController extends Controller
                 default:
                     return redirect('/');
             }
-            
         }
 
         throw ValidationException::withMessages([
@@ -63,10 +66,14 @@ class LoginController extends Controller
     {
         foreach (['dosen', 'mahasiswa'] as $guard) {
             if (Auth::guard($guard)->check()) {
+                $user = Auth::guard($guard)->user();
+                $user->is_online = false;
+                $user->save();
+        
                 Auth::guard($guard)->logout();
             }
         }
-
+        
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

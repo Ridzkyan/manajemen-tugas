@@ -6,25 +6,28 @@
 <div class="container">
     <h4>Monitoring Aktivitas</h4>
 
+    {{-- STATUS ONLINE --}}
     <div class="my-4 p-3 bg-white rounded shadow">
         <h5>Status Online</h5>
-        <div class="my-4 p-3 bg-white rounded shadow">
+
+        <div class="mt-3">
             <h5>Detail Pengguna</h5>
 
             @foreach($allUsers as $role => $users)
                 <h6 class="mt-3 text-capitalize">{{ $role }}</h6>
+
                 <ul class="list-group">
                     @foreach($users as $user)
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <strong>{{ $user->name }}</strong> <br>
+                                <strong>{{ $user->name }}</strong><br>
                                 <small>{{ $user->email }}</small>
                             </div>
-                            @if($user->last_login_at && $user->last_login_at >= $threshold)
-                                <span class="badge bg-success">Online</span>
-                            @else
-                                <span class="badge bg-danger">Offline</span>
-                            @endif
+
+                            {{-- Status Online berdasarkan kolom is_online --}}
+                            <span class="badge bg-{{ $user->is_online ? 'success' : 'danger' }}">
+                                {{ $user->is_online ? 'Online' : 'Offline' }}
+                            </span>
                         </li>
                     @endforeach
                 </ul>
@@ -32,12 +35,14 @@
         </div>
     </div>
 
+    {{-- GRAFIK MATERI --}}
     <div class="my-4 p-3 bg-white rounded shadow">
         <h5>Grafik Materi per Kelas</h5>
         <canvas id="grafikKelas"></canvas>
     </div>
 </div>
 
+{{-- Script Chart.js --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const ctx = document.getElementById('grafikKelas').getContext('2d');

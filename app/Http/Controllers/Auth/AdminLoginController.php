@@ -26,6 +26,10 @@ class AdminLoginController extends Controller
             'password' => $request->password,
             'role' => 'admin'
         ])) {
+            $user = Auth::guard('admin')->user();
+            $user->is_online = true;
+            $user->save();
+        
             return redirect()->route('admin.dashboard');
         }
 
@@ -34,10 +38,14 @@ class AdminLoginController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard('admin')->logout(); // gunakan guard yang sama saat login
+        $user = Auth::guard('admin')->user();
+        $user->is_online = false;
+        $user->save();
+    
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
+    
         return redirect('/admin');
     }
 }
