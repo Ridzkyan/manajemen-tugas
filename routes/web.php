@@ -14,6 +14,8 @@ use App\Http\Controllers\Mahasiswa\MateriController as MahasiswaMateriController
 use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Admin\MonitoringController;
+
 // ==============================
 // PUBLIC ROUTES
 // ==============================
@@ -36,11 +38,11 @@ Route::post('/admin/logout', [App\Http\Controllers\Auth\AdminLoginController::cl
 
 // ==============================
 // PROTECTED ROUTES (butuh login)
-// ==============================
+// ==============================`
 
 // ---------- ADMIN ----------
 Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard'); // ✅ hasilnya: admin.dashboard
     Route::get('/pengaturan', fn () => view('admin.admin_pengaturan.pengaturan'))->name('pengaturan');
 
     // User Management
@@ -55,6 +57,10 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::put('/profil', [UserController::class, 'updateProfile'])->name('profil.update');
     Route::get('/ganti-password', [UserController::class, 'editPassword'])->name('password.edit');
     Route::put('/ganti-password', [UserController::class, 'updatePassword'])->name('password.update');
+    
+    // monitoring
+    Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
+
 });
 
 // ---------- DOSEN ----------

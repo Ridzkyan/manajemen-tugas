@@ -108,31 +108,40 @@
 </style>
 
 <div class="row mb-4">
-    <div class="col-md-4 col-sm-12 mb-3">
+    <div class="col-md-3 col-sm-6 mb-3">
         <a href="/admin/users" class="card-info text-decoration-none">
             <div class="card-left">
-                <div class="stat-number">100</div>
+                <div class="stat-number">{{ $totalUsers }}</div>
                 <div class="stat-label">Users</div>
             </div>
             <i class="fas fa-users card-icon"></i>
         </a>
     </div>
-    <div class="col-md-4 col-sm-12 mb-3">
-        <a href="/admin/matkul" class="card-info text-decoration-none">
+    <div class="col-md-3 col-sm-6 mb-3">
+        <a href="/admin/kelas" class="card-info text-decoration-none">
             <div class="card-left">
-                <div class="stat-number">50</div>
-                <div class="stat-label">Mata Kuliah</div>
+                <div class="stat-number">{{ $totalKelas }}</div>
+                <div class="stat-label">Kelas</div>
             </div>
-            <i class="fas fa-book card-icon"></i>
+            <i class="fas fa-chalkboard card-icon"></i>
         </a>
     </div>
-    <div class="col-md-4 col-sm-12 mb-3">
-        <a href="/admin/konten" class="card-info text-decoration-none">
+    <div class="col-md-3 col-sm-6 mb-3">
+        <a href="/admin/materi" class="card-info text-decoration-none">
             <div class="card-left">
-                <div class="stat-number">150</div>
-                <div class="stat-label">Konten/Materi</div>
+                <div class="stat-number">{{ $totalMateri }}</div>
+                <div class="stat-label">Materi</div>
             </div>
             <i class="fas fa-file-alt card-icon"></i>
+        </a>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <a href="/admin/tugas" class="card-info text-decoration-none">
+            <div class="card-left">
+                <div class="stat-number">{{ $totalTugas }}</div>
+                <div class="stat-label">Tugas</div>
+            </div>
+            <i class="fas fa-tasks card-icon"></i>
         </a>
     </div>
 </div>
@@ -147,14 +156,16 @@
     <div class="dashboard-card">
         <h5>Kelas/Mata kuliah <a href="#" class="btn">Selengkapnya</a></h5>
         <ul>
-            <li><b>Pemrograman Web</b><br>INF123 - Nama dosen</li>
-            <li><b>Pemrograman Web Lanjut</b><br>INF124 - Nama dosen</li>
-            <li><b>Statistika</b><br>INF125 - Nama dosen</li>
-            <li><b>Kalkulus</b><br>INF126 - Nama dosen</li>
+        @foreach($daftarKelas as $kelas)
+            <li>
+                <b>{{ $kelas->nama_kelas }} - {{ $kelas->nama_matakuliah }}</b><br>
+                {{ $kelas->kode_unik }} - {{ $kelas->dosen->name ?? 'Dosen Tidak Ada' }}
+            </li>
+        @endforeach
         </ul>
     </div>
     <div class="dashboard-card">
-        <h5>Aktivitas pengguna teratas <a href="#" class="btn">Selengkapnya</a></h5>
+        <h5>Aktivitas pengguna teratas <a href="{{ route('admin.monitoring') }}" class="btn">Selengkapnya</a></h5>
         <div class="chart-wrapper">
             <canvas id="barChart"></canvas>
         </div>
@@ -162,11 +173,12 @@
     <div class="dashboard-card">
         <h5>Konten Terbaru <a href="#" class="btn">Selengkapnya</a></h5>
         <ul>
-            <li><b>Materi 1</b><br>Nama matakuliah - Kode</li>
-            <li><b>Materi 2</b><br>Nama matakuliah - Kode</li>
-            <li><b>Materi 3</b><br>Nama matakuliah - Kode</li>
-            <li><b>Materi 4</b><br>Nama matakuliah - Kode</li>
-            <li><b>Materi 5</b><br>Nama matakuliah - Kode</li>
+        @foreach($materiTerbaru as $materi)
+            <li>
+                <b>{{ $materi->judul }}</b><br>
+                {{ $materi->kelas->nama_matakuliah ?? 'Mata kuliah tidak tersedia' }} - {{ $materi->kelas->kode_unik ?? 'Kode kosong' }}
+            </li>
+        @endforeach
         </ul>
     </div>
 </div>
@@ -176,12 +188,12 @@
 <script>
     Chart.register(ChartDataLabels);
 
-    new Chart(document.getElementById('pieChart'), {
+    const pieChart = new Chart(document.getElementById('pieChart'), {
         type: 'pie',
         data: {
             labels: ['Dosen', 'Mahasiswa', 'Admin'],
             datasets: [{
-                data: [12, 80, 8],
+                data: [{{ $jumlahDosen }}, {{ $jumlahMahasiswa }}, {{ $jumlahAdmin }}],
                 backgroundColor: ['#007bff', '#dc3545', '#ffc107'],
             }]
         },
@@ -210,10 +222,10 @@
     new Chart(document.getElementById('barChart'), {
         type: 'bar',
         data: {
-            labels: ['Statistika', 'Web Lanjut', 'Kalkulus', 'Jaringan Komputer', 'Matematika Diskrit'],
+            labels: {!! json_encode($kelasTeraktif->pluck('label')) !!},
             datasets: [{
-                label: 'Jumlah Aktivitas',
-                data: [38, 5, 15, 28, 12],
+                label: 'Jumlah Materi',
+                data: {!! json_encode($kelasTeraktif->pluck('materi_count')) !!},
                 backgroundColor: '#17a2b8'
             }]
         },
@@ -236,5 +248,6 @@
             }
         }
     });
+
 </script>
 @endsection

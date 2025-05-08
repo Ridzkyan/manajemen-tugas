@@ -206,7 +206,7 @@
                 <a class="nav-link" href="#"><i class="fas fa-file-alt"></i> Konten</a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="#"><i class="fas fa-chart-bar"></i> Monitoring/Laporan</a>
+                <a class="nav-link" href="{{ route('admin.monitoring') }}"><i class="fas fa-chart-bar"></i> Monitoring/Laporan</a>
             </li>
             <li class="nav-item mb-2">
                 <a class="nav-link" href="/admin/pengaturan">
