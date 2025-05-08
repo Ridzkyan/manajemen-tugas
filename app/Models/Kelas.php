@@ -17,6 +17,11 @@ class Kelas extends Model
         'whatsapp_link',
     ];
 
+    public function materi()
+    {
+        return $this->hasMany(\App\Models\Materi::class);
+    }
+    
     // Kelas dimiliki oleh 1 Dosen
     public function dosen()
     {

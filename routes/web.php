@@ -35,11 +35,11 @@ Route::post('/admin/logout', [App\Http\Controllers\Auth\AdminLoginController::cl
 
 // ==============================
 // PROTECTED ROUTES (butuh login)
-// ==============================
+// ==============================`
 
 // ---------- ADMIN ----------
 Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard'); // ✅ hasilnya: admin.dashboard
     Route::get('/pengaturan', fn () => view('admin.admin_pengaturan.pengaturan'))->name('pengaturan');
 
     // User Management
@@ -54,6 +54,9 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::put('/profil', [UserController::class, 'updateProfile'])->name('profil.update');
     Route::get('/ganti-password', [UserController::class, 'editPassword'])->name('password.edit');
     Route::put('/ganti-password', [UserController::class, 'updatePassword'])->name('password.update');
+
+    Route::get('/monitoring', [DashboardController::class, 'monitoring'])->name('monitoring');
+
 });
 
 // ---------- DOSEN ----------
@@ -79,7 +82,7 @@ Route::middleware(['auth:dosen'])->prefix('dosen')->name('dosen.')->group(functi
 });
 
 // ---------- MAHASISWA ----------
-Route::middleware(['auth:mahasiswa, verified'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+Route::middleware(['auth:mahasiswa'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Mahasiswa\HomeController::class, 'index'])->name('dashboard');
 
     Route::get('/join', [JoinKelasController::class, 'index'])->name('join.index');
