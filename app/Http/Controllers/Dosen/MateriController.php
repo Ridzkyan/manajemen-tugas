@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Materi;
 use App\Models\Kelas;
+use App\Models\User;
+use App\Notifications\MateriBaruNotification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +16,7 @@ class MateriController extends Controller
     public function index($kelasId)
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->findOrFail($kelasId);
-        $materis = Materi::where('kelas_id', $kelasId)->paginate(10); // <-- pakai PAGINATE sekarang
+        $materis = Materi::where('kelas_id', $kelasId)->paginate(10);
 
         return view('dosen.kelas.materi.index', compact('kelas', 'materis'));
     }
@@ -28,7 +30,6 @@ class MateriController extends Controller
             'link' => 'nullable|url'
         ]);
 
-        // Validasi manual
         if ($request->tipe === 'pdf' && !$request->hasFile('file')) {
             return back()->with('error', 'File PDF harus diupload.');
         }
@@ -42,7 +43,7 @@ class MateriController extends Controller
             $filePath = $request->file('file')->store('materi', 'public');
         }
 
-        Materi::create([
+        $materi = Materi::create([
             'kelas_id' => $kelasId,
             'judul' => $request->judul,
             'tipe' => $request->tipe,
@@ -50,7 +51,19 @@ class MateriController extends Controller
             'link' => $request->link,
         ]);
 
-        return redirect()->back()->with('success', 'Materi berhasil diupload!');
+        $materi->load('kelas');
+
+        // ===== Kirim Notifikasi ke Mahasiswa =====
+        $kelas = Kelas::findOrFail($kelasId);
+        $mahasiswas = $kelas->mahasiswas; // relasi di model Kelas
+
+        foreach ($mahasiswas as $mhs) {
+            if ($mhs->hasVerifiedEmail()) {
+                $mhs->notify(new MateriBaruNotification($materi));
+            }
+        }
+
+        return redirect()->back()->with('success', 'Materi berhasil diupload dan notifikasi dikirim!');
     }
 
     public function destroy($id)

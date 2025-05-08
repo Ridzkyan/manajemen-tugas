@@ -13,30 +13,15 @@ use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
     use RegistersUsers;
 
     /**
-     * Where to redirect users after registration.
-     *
-     * @var string
+     * Ke mana redirect setelah register.
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
-     * Create a new controller instance.
-     *
-     * @return void
+     * Middleware untuk hanya user guest.
      */
     public function __construct()
     {
@@ -44,45 +29,41 @@ class RegisterController extends Controller
     }
 
     /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
+     * Validasi input registrasi.
      */
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
     /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
+     * Simpan data user baru.
      */
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+            'name'     => $data['name'],
+            'email'    => $data['email'],
             'password' => Hash::make($data['password']),
+            'role'     => 'mahasiswa', // default role untuk registrasi mahasiswa
         ]);
     }
 
     /**
-     * Handle actions after registration.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\User $user
-     * @return \Illuminate\Http\RedirectResponse
+     * Setelah registrasi berhasil.
      */
     protected function registered(Request $request, $user)
     {
-        Auth::logout(); // Langsung logout user setelah register
-        return redirect('/login')->with('success', 'Akun berhasil dibuat! Silahkan login.');
+        // Logout dulu agar user tidak otomatis login sebelum verifikasi
+        Auth::logout();
+
+        // Kirim email verifikasi
+        $user->sendEmailVerificationNotification();
+
+        return redirect('/login')->with('success', 'Akun berhasil dibuat! Silakan cek email kamu untuk verifikasi.');
     }
 }
