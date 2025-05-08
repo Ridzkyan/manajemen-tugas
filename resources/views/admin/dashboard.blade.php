@@ -154,7 +154,7 @@
         </div>
     </div>
     <div class="dashboard-card">
-        <h5>Kelas/Mata kuliah <a href="#" class="btn">Selengkapnya</a></h5>
+        <h5>Kelas/Mata kuliah <a href="{{ route('admin.kelas.index') }}" class="btn">Selengkapnya</a></h5>
         <ul>
         @foreach($daftarKelas as $kelas)
             <li>

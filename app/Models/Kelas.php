@@ -33,5 +33,9 @@ class Kelas extends Model
     {
         return $this->belongsToMany(User::class, 'kelas_mahasiswa', 'kelas_id', 'mahasiswa_id');
     }
-    
+
+    public function tugas()
+    {
+        return $this->hasMany(Tugas::class);
+    }
 }
