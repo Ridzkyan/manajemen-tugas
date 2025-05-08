@@ -56,8 +56,10 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/profil', [UserController::class, 'editProfile'])->name('profil.edit');
     Route::put('/profil', [UserController::class, 'updateProfile'])->name('profil.update');
     Route::get('/ganti-password', [UserController::class, 'editPassword'])->name('password.edit');
-    Route::put('/ganti-password', [UserController::class, 'updatePassword'])->name('password.update');
-    
+    Route::put('/ganti-password', [UserController::class, 'updatePassword'])->name('password.update');Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
+
+    Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
+
     // monitoring
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
 
