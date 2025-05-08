@@ -56,13 +56,15 @@ class LoginController extends Controller
             $user = Auth::guard($guard)->user();
             $user->is_online = true;
             $user->save();
-    
-            return redirect()->intended(
-                $guard === 'dosen' ? route('dosen.dashboard') : route('mahasiswa.dashboard')
-            );
+        
+            switch ($guard) {
+                case 'dosen':
+                    return redirect()->intended(route('dosen.dashboard'));
+                case 'mahasiswa':
+                    return redirect()->intended(route('mahasiswa.dashboard'));
+            }
         }
-    
-        // Jika gagal login
+
         throw ValidationException::withMessages([
             'email' => [trans('auth.failed')],
         ]);

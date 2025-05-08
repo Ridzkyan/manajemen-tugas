@@ -29,7 +29,7 @@ class Kelas extends Model
     }
 
     // Kelas punya banyak Mahasiswa
-    public function mahasiswa()
+    public function mahasiswas()
     {
         return $this->belongsToMany(User::class, 'kelas_mahasiswa', 'kelas_id', 'mahasiswa_id');
     }

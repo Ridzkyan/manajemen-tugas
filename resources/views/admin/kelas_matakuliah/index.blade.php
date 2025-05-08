@@ -30,16 +30,16 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($daftarKelas as $index => $kelas)
+                @forelse($daftarKelas as $index => $kelas)
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $kelas->nama_kelas }}</td>
                         <td>{{ $kelas->nama_matakuliah }}</td>
                         <td>{{ $kelas->dosen->name ?? '-' }}</td>
                         <td>{{ $kelas->kode_unik }}</td>
-                        <td>{{ $kelas->mahasiswa->count() }}</td>
-                        <td>{{ $kelas->materi->count() }}</td>
-                        <td>{{ $kelas->tugas->count() }}</td>
+                        <td>{{ $kelas->mahasiswa ? $kelas->mahasiswa->count() : 0 }}</td>
+                        <td>{{ $kelas->materi ? $kelas->materi->count() : 0 }}</td>
+                        <td>{{ $kelas->tugas ? $kelas->tugas->count() : 0 }}</td>
                         <td>
                             @if($kelas->whatsapp_link)
                                 <a href="{{ $kelas->whatsapp_link }}" target="_blank" class="btn btn-sm btn-success">Buka</a>
@@ -48,7 +48,11 @@
                             @endif
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">Belum ada data kelas.</td>
+                    </tr>
+                @endforelse
             </tbody>
             </table>
         </div>

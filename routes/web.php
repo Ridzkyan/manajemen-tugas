@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Mahasiswa\JoinKelasController;
 use App\Http\Controllers\Mahasiswa\MateriController as MahasiswaMateriController;
 use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Admin\MonitoringController;
 
 // ==============================
@@ -86,15 +88,22 @@ Route::middleware(['auth:dosen'])->prefix('dosen')->name('dosen.')->group(functi
 });
 
 // ---------- MAHASISWA ----------
-Route::middleware(['auth:mahasiswa'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+Route::middleware(['auth:mahasiswa', 'mahasiswa.verified'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Mahasiswa\HomeController::class, 'index'])->name('dashboard');
 
-    Route::get('/join', [JoinKelasController::class, 'index'])->name('join.index');
-    Route::post('/join', [JoinKelasController::class, 'store'])->name('join.store');
-    Route::get('/kelas/{id}', [JoinKelasController::class, 'show'])->name('kelas.show');
-    Route::delete('/kelas/{id}', [JoinKelasController::class, 'leave'])->name('kelas.leave');
-    Route::delete('/leave-kelas/{id}', [JoinKelasController::class, 'leave'])->name('leave.kelas');
+    Route::get('/join', [App\Http\Controllers\Mahasiswa\JoinKelasController::class, 'index'])->name('join.index');
+    Route::post('/join', [App\Http\Controllers\Mahasiswa\JoinKelasController::class, 'store'])->name('join.store');
+    Route::get('/kelas/{id}', [App\Http\Controllers\Mahasiswa\JoinKelasController::class, 'show'])->name('kelas.show');
+    Route::delete('/kelas/{id}', [App\Http\Controllers\Mahasiswa\JoinKelasController::class, 'leave'])->name('kelas.leave');
+    Route::delete('/leave-kelas/{id}', [App\Http\Controllers\Mahasiswa\JoinKelasController::class, 'leave'])->name('leave.kelas');
+    Route::get('/kelas/{kelas}/materi', [App\Http\Controllers\Mahasiswa\MateriController::class, 'index'])->name('materi.index');
+    Route::get('/kelas/{kelas}/tugas', [App\Http\Controllers\Mahasiswa\TugasController::class, 'index'])->name('tugas.index');
 
-    Route::get('/kelas/{kelas}/materi', [MahasiswaMateriController::class, 'index'])->name('materi.index');
-    Route::get('/kelas/{kelas}/tugas', [MahasiswaTugasController::class, 'index'])->name('tugas.index');
+    // Rute verifikasi email untuk mahasiswa
+    Route::middleware(['auth:mahasiswa'])->group(function () {
+    Route::get('email/verify', [VerificationController::class, 'show'])->name('verification.notice');
+    Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->middleware('signed')->name('verification.verify');
+    Route::post('email/resend', [VerificationController::class, 'resend'])->middleware('throttle:6,1')->name('verification.resend');
+});
+
 });
