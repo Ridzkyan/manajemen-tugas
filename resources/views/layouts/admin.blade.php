@@ -225,7 +225,7 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{ route('admin.konten.index') }}">
                     <i class="fas fa-file-alt"></i> Konten
                 </a>
             </li>

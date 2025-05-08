@@ -22,6 +22,14 @@
                             <div>
                                 <strong>{{ $user->name }}</strong><br>
                                 <small>{{ $user->email }}</small>
+                                <small>Terakhir login: 
+                                    {{-- Versi waktu manusia: "23 jam yang lalu" --}}
+                                    {{ \Carbon\Carbon::parse($user->last_login_at)->diffForHumans() }}
+
+                                    {{-- Versi lengkap tanggal: "Kamis, 8 Mei 2025" --}}
+                                    {{ \Carbon\Carbon::parse($user->last_login_at)->translatedFormat('l, d F Y') }}
+
+                                </small>
                             </div>
 
                             {{-- Status Online berdasarkan kolom is_online --}}

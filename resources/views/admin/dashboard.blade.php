@@ -171,7 +171,7 @@
         </div>
     </div>
     <div class="dashboard-card">
-        <h5>Konten Terbaru <a href="#" class="btn">Selengkapnya</a></h5>
+        <h5>Konten Terbaru <a href="{{ route('admin.konten.index') }}" class="btn">Selengkapnya</a></h5>
         <ul>
         @foreach($materiTerbaru as $materi)
             <li>

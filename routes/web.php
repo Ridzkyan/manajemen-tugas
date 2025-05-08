@@ -15,6 +15,7 @@ use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Admin\MonitoringController;
+use App\Http\Controllers\Admin\KontenController;
 
 // ==============================
 // PUBLIC ROUTES
@@ -62,7 +63,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
 
     // monitoring
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
-
+    Route::get('/konten', [App\Http\Controllers\Admin\KontenController::class, 'index'])->name('konten.index');
 });
 
 // ---------- DOSEN ----------

@@ -55,9 +55,9 @@ class MateriController extends Controller
 
         // ===== Kirim Notifikasi ke Mahasiswa =====
         $kelas = Kelas::findOrFail($kelasId);
-        $mahasiswas = $kelas->mahasiswas; // relasi di model Kelas
+        $mahasiswa = $kelas->mahasiswa; // relasi di model Kelas
 
-        foreach ($mahasiswas as $mhs) {
+        foreach ($mahasiswa as $mhs) {
             if ($mhs->hasVerifiedEmail()) {
                 $mhs->notify(new MateriBaruNotification($materi));
             }

@@ -7,9 +7,7 @@ use Illuminate\Support\Facades\Schema;
 class AddLastLoginAtToUsersTable extends Migration
 {
     /**
-     * Run the migrations.
-     *
-     * @return void
+     * Jalankan migrasi.
      */
     public function up()
     {
@@ -17,7 +15,10 @@ class AddLastLoginAtToUsersTable extends Migration
             $table->timestamp('last_login_at')->nullable()->after('email');
         });
     }
-    
+
+    /**
+     * Kembalikan migrasi.
+     */
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {

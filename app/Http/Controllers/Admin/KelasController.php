@@ -10,7 +10,7 @@ class KelasController extends Controller
 {
     public function index()
     {
-        $daftarKelas = Kelas::with('dosen')->latest()->get();
+        $daftarKelas = Kelas::with(['dosen', 'mahasiswa', 'materi', 'tugas'])->latest()->get();
 
         return view('admin.kelas_matakuliah.index', compact('daftarKelas'));
     }

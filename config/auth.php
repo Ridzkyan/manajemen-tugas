@@ -28,7 +28,7 @@ return [
 
         'mahasiswa' => [
             'driver' => 'session',
-            'provider' => 'mahasiswas',
+            'provider' => 'mahasiswa',
         ],
     ],
 
@@ -46,7 +46,7 @@ return [
             'model' => App\Models\User::class, 
         ],
 
-        'mahasiswas' => [
+        'mahasiswa' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class, 
         ],

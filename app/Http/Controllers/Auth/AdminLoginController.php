@@ -28,6 +28,7 @@ class AdminLoginController extends Controller
         ])) {
             $user = Auth::guard('admin')->user();
             $user->is_online = true;
+            $user->last_login_at = now();
             $user->save();
         
             return redirect()->route('admin.dashboard');

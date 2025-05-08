@@ -55,6 +55,7 @@ class LoginController extends Controller
     
             $user = Auth::guard($guard)->user();
             $user->is_online = true;
+            $user->last_login_at = now();
             $user->save();
         
             switch ($guard) {
