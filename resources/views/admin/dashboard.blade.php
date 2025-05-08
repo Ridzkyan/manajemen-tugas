@@ -139,7 +139,7 @@
 
 <div class="dashboard-grid">
     <div class="dashboard-card">
-        <h5>Data users <a href="#" class="btn">Selengkapnya</a></h5>
+        <h5>Data users <a href="users" class="btn">Selengkapnya</a></h5>
         <div class="chart-wrapper">
             <canvas id="pieChart"></canvas>
         </div>

@@ -175,13 +175,33 @@
                 display: block;
             }
         }
+
+        @php
+            $isFixedPage = request()->is('admin/pengaturan') || request()->is('admin/profil') || request()->is('admin/password') || request()->is('admin/ganti-password');
+        @endphp
+
+        @if($isFixedPage)
+        html, body {
+            height: 100vh !important;
+            overflow: hidden !important;
+        }
+        .main-content {
+            overflow: hidden !important;
+        }
+        .content-wrapper {
+            height: calc(100vh - 90px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 !important;
+        }
+        @endif
     </style>
 </head>
 <body>
 <div id="wrapper">
-    @php
-        $user = Auth::user();
-    @endphp
+    @php $user = Auth::user(); @endphp
+
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="logo-wrapper">
@@ -195,21 +215,27 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link {{ request()->routeIs('admin.dashboard.users') ? 'active' : '' }}" href="{{ route('admin.dashboard.users') }}">
+                <a class="nav-link {{ request()->routeIs('admin.dashboard.users') || request()->routeIs('admin.create') || request()->routeIs('admin.edit') ? 'active' : '' }}" href="{{ route('admin.dashboard.users') }}">
                     <i class="fas fa-users"></i> Users
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="#"><i class="fas fa-folder-open"></i> Kelas/Mata Kuliah</a>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-folder-open"></i> Kelas/Mata Kuliah
+                </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="#"><i class="fas fa-file-alt"></i> Konten</a>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-file-alt"></i> Konten
+                </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="#"><i class="fas fa-chart-bar"></i> Monitoring/Laporan</a>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-chart-bar"></i> Monitoring/Laporan
+                </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="/admin/pengaturan">
+                <a class="nav-link {{ request()->is('admin/pengaturan*') || request()->is('admin/profil*') || request()->is('admin/password*') || request()->is('admin/ganti-password*') ? 'active' : '' }}" href="{{ route('admin.pengaturan') }}">
                     <i class="fas fa-cog"></i> Pengaturan
                 </a>
             </li>
@@ -235,31 +261,25 @@
                 <div><strong>{{ $user->name }}</strong></div>
                 <small>{{ ucfirst($user->role) }}</small>
             </div>
-            <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content border-0 shadow">
+            <div class="avatar">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#avatarModal">
+                    <img src="{{ asset($user->foto ?? 'images/default.png') }}" class="rounded-circle" width="40" height="40" style="object-fit: cover; cursor: zoom-in;">
+                </a>
+            </div>
+        </div>
+
+        <!-- Modal Avatar -->
+        <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
                     <div class="modal-header">
                         <h5 class="modal-title" id="avatarModalLabel">Foto Profil</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                     </div>
                     <div class="modal-body text-center">
-                        @if($user->foto)
-                            <img src="{{ asset($user->foto) }}" class="img-fluid rounded shadow">
-                        @else
-                            <img src="{{ asset('images/default.png') }}" class="img-fluid rounded shadow">
-                        @endif
-                    </div>
+                        <img src="{{ asset($user->foto ?? 'images/default.png') }}" class="img-fluid rounded shadow">
                     </div>
                 </div>
-            </div>
-            <div class="avatar">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#avatarModal">
-                    @if($user->foto)
-                        <img src="{{ asset($user->foto) }}" class="rounded-circle" width="40" height="40" style="object-fit: cover; cursor: zoom-in;">
-                    @else
-                        <img src="{{ asset('images/default.png') }}" class="rounded-circle" width="40" height="40" style="object-fit: cover; cursor: zoom-in;">
-                    @endif
-                </a>
             </div>
         </div>
 
