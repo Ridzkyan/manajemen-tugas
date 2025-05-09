@@ -44,6 +44,11 @@ class LoginMahasiswaController extends Controller
         ]);
     }
 
+    protected function redirectTo()
+    {
+        return route('mahasiswa.dashboard');
+    }
+
     public function logout(Request $request)
     {
         $user = Auth::guard('mahasiswa')->user();

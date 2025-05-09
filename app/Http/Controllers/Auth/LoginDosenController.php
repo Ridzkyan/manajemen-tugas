@@ -53,6 +53,11 @@ class LoginDosenController extends Controller
         ]);
     }
 
+    protected function redirectTo()
+    {
+        return route('dosen.dashboard');
+    }
+
     public function logout(Request $request)
     {
         $user = Auth::guard('dosen')->user();
