@@ -20,24 +20,32 @@ class DashboardController extends Controller
         $totalKelas = Kelas::count();
         $totalMateri = Materi::count();
         $totalTugas = Tugas::count();
-    
+
         $jumlahAdmin = User::where('role', 'admin')->count();
         $jumlahDosen = User::where('role', 'dosen')->count();
         $jumlahMahasiswa = User::where('role', 'mahasiswa')->count();
-    
-        // Ambil list kelas (bisa batasi 5 saja kalau mau)
+
+        // Hitung persentase untuk pie chart 3D
+        $total = $jumlahAdmin + $jumlahDosen + $jumlahMahasiswa;
+        $persenAdmin = $total > 0 ? round(($jumlahAdmin / $total) * 100, 1) : 0;
+        $persenDosen = $total > 0 ? round(($jumlahDosen / $total) * 100, 1) : 0;
+        $persenMahasiswa = $total > 0 ? round(($jumlahMahasiswa / $total) * 100, 1) : 0;
+
+        // Ambil list kelas
         $daftarKelas = Kelas::with('dosen')->latest()->take(5)->get();
-    
+
+        // Ambil materi terbaru
         $materiTerbaru = Materi::with('kelas')->latest()->take(5)->get();
-        
+
+        // Ambil kelas teraktif berdasarkan jumlah materi
         $kelasTeraktif = Kelas::withCount('materi')
-        ->get()
-        ->map(function ($item) {
-            $item->label = $item->nama_kelas . ' - ' . $item->nama_matakuliah;
-            return $item;
-        })
-        ->sortByDesc('materi_count')
-        ->take(5);
+            ->get()
+            ->map(function ($item) {
+                $item->label = $item->nama_kelas . ' - ' . $item->nama_matakuliah;
+                return $item;
+            })
+            ->sortByDesc('materi_count')
+            ->take(5);
 
         return view('admin.dashboard', compact(
             'totalUsers',
@@ -47,6 +55,9 @@ class DashboardController extends Controller
             'jumlahAdmin',
             'jumlahDosen',
             'jumlahMahasiswa',
+            'persenAdmin',
+            'persenDosen',
+            'persenMahasiswa',
             'daftarKelas',
             'materiTerbaru',
             'kelasTeraktif'

@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Materi;
 use App\Models\Kelas;
-use App\Models\User;
-use App\Notifications\MateriBaruNotification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
@@ -49,21 +47,10 @@ class MateriController extends Controller
             'tipe' => $request->tipe,
             'file' => $filePath,
             'link' => $request->link,
+            'status' => 'menunggu', // Set status default ke menunggu
         ]);
 
-        $materi->load('kelas');
-
-        // ===== Kirim Notifikasi ke Mahasiswa =====
-        $kelas = Kelas::findOrFail($kelasId);
-        $mahasiswa = $kelas->mahasiswa; // relasi di model Kelas
-
-        foreach ($mahasiswa as $mhs) {
-            if ($mhs->hasVerifiedEmail()) {
-                $mhs->notify(new MateriBaruNotification($materi));
-            }
-        }
-
-        return redirect()->back()->with('success', 'Materi berhasil diupload dan notifikasi dikirim!');
+        return redirect()->back()->with('success', 'Materi berhasil diupload dan menunggu persetujuan admin.');
     }
 
     public function destroy($id)

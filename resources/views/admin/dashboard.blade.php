@@ -127,7 +127,7 @@
         </a>
     </div>
     <div class="col-md-3 col-sm-6 mb-3">
-        <a href="/admin/materi" class="card-info text-decoration-none">
+        <a href="/admin/konten" class="card-info text-decoration-none">
             <div class="card-left">
                 <div class="stat-number">{{ $totalMateri }}</div>
                 <div class="stat-label">Materi</div>
@@ -136,7 +136,7 @@
         </a>
     </div>
     <div class="col-md-3 col-sm-6 mb-3">
-        <a href="/admin/tugas" class="card-info text-decoration-none">
+        <a href="/admin/konten" class="card-info text-decoration-none">
             <div class="card-left">
                 <div class="stat-number">{{ $totalTugas }}</div>
                 <div class="stat-label">Tugas</div>

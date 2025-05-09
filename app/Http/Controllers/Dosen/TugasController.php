@@ -8,8 +8,6 @@ use App\Models\Tugas;
 use App\Models\Kelas;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use App\Notifications\TugasBaruNotification;
-use App\Notifications\TugasDinilaiNotification;
 
 class TugasController extends Controller
 {
@@ -43,17 +41,12 @@ class TugasController extends Controller
             'deskripsi' => $request->deskripsi,
             'file_soal' => $filePath,
             'deadline' => $request->deadline,
+            'status' => 'menunggu', // ⬅️ status default
         ]);
 
-        // Kirim notifikasi ke mahasiswa
-        $kelas = Kelas::findOrFail($kelasId);
-        foreach ($kelas->mahasiswa as $mahasiswa) {
-            if ($mahasiswa->hasVerifiedEmail()) {
-                $mahasiswa->notify(new TugasBaruNotification($tugas));
-            }
-        }
+        // NOTIFIKASI TIDAK DIKIRIM SAAT BELUM DISETUJUI
 
-        return redirect()->back()->with('success', 'Tugas berhasil ditambahkan dan notifikasi dikirim!');
+        return redirect()->back()->with('success', 'Tugas berhasil ditambahkan dan menunggu persetujuan admin.');
     }
 
     public function penilaian($kelasId, $tugasId)
@@ -73,16 +66,15 @@ class TugasController extends Controller
         ]);
 
         $tugas = Tugas::findOrFail($tugasId);
-
         $tugas->nilai = $request->nilai;
         $tugas->feedback = $request->feedback;
         $tugas->save();
 
-        // Kirim notifikasi ke mahasiswa
+        // Notifikasi saat dinilai tetap dikirim
         $kelas = Kelas::findOrFail($kelasId);
         foreach ($kelas->mahasiswa as $mahasiswa) {
             if ($mahasiswa->hasVerifiedEmail()) {
-                $mahasiswa->notify(new TugasDinilaiNotification($tugas));
+                $mahasiswa->notify(new \App\Notifications\TugasDinilaiNotification($tugas));
             }
         }
 

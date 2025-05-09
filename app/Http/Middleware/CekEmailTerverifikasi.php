@@ -17,10 +17,8 @@ class CekEmailTerverifikasi
             return $next($request);
         }
     
-        if ($user && $user->role === 'mahasiswa') {
-            if (!$user->hasVerifiedEmail()) {
-                return redirect()->route('verification.notice')->with('error', 'Kamu harus verifikasi email dulu ya 😊');
-            }
+        if ($user && !$user->hasVerifiedEmail() && $request->route()->getName() !== 'verification.notice') {
+            return redirect()->route('verification.notice')->with('error', 'Verifikasi email dulu ya!');
         }
     
         return $next($request);
