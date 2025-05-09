@@ -215,7 +215,7 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link {{ request()->routeIs('admin.dashboard.users') || request()->routeIs('admin.create') || request()->routeIs('admin.edit') ? 'active' : '' }}" href="{{ route('admin.dashboard.users') }}">
+                <a class="nav-link {{ request()->routeIs('admin.users') || request()->routeIs('admin.users.create') || request()->routeIs('admin.edit') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                     <i class="fas fa-users"></i> Users
                 </a>
             </li>

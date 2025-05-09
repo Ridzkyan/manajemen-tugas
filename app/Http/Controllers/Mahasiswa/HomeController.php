@@ -13,7 +13,7 @@ class HomeController extends Controller
     $user = auth()->user();
 
     // Relasi ke kelas dan dosen dimuat langsung
-    $kelasmahasiswa = $user->kelasMahasiswa()->with('dosen')->get();
+    $kelasmahasiswa = $user->Kelas()->with('dosen')->get();
 
     return view('mahasiswa.dashboard', compact('kelasmahasiswa'));
 }

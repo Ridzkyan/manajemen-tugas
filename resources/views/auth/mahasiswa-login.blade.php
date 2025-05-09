@@ -107,10 +107,10 @@
       <!-- Sign In Link -->
       <div class="position-absolute top-0 end-0 p-4 d-flex align-items-center gap-2">
         <span class="fw-semibold text-muted">Belum punya akun</span>
-        <a href="{{ route('register') }}" class="btn btn-signin">Sign In</a>
+        <a href="{{ route('register.mahasiswa') }}" class="btn btn-signin">Sign In</a>
       </div>
       <!-- Form -->
-      <form class="login-form" method="POST" action="{{ route('login') }}">
+      <form class="login-form" method="POST" action="{{ route('mahasiswa.login') }}">
         @csrf
         <h3 class="fw-bold mb-2">Selamat Datang di <span style="color: #008080;">TaskFlow</span>!</h3>
         <p class="text-muted mb-4">Log In akun</p>

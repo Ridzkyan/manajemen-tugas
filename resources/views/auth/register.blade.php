@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.mahasiswa')
 
 @section('content')
 <div class="container-fluid p-0">
@@ -12,7 +12,7 @@
                 <!-- Link ke Halaman Login -->
                 <div class="text-end mb-4">
                     <small>Sudah punya akun?</small>
-                    <a href="{{ route('login') }}" class="btn btn-outline-custom">Log In</a>
+                    <a href="{{ route('login.mahasiswa') }}" class="btn btn-outline-custom">Log In</a>
                 </div>
 
                 <!-- Judul -->
@@ -20,7 +20,7 @@
                 <p class="text-muted mb-4">Daftar sekarang untuk mulai menggunakan TaskFlow</p>
 
                 <!-- Form Register -->
-                <form method="POST" action="{{ route('register') }}">
+                <form method="POST" action="{{ route('register.mahasiswa') }}">
                     @csrf
 
                     {{-- Nama --}}

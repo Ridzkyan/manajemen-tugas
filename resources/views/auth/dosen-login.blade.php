@@ -107,7 +107,7 @@
       <div class="mt-2">TASKFLOW - MANAGEMENT</div>
     </div>
     <div class="right-pane">
-      <form class="login-form" method="POST" action="{{ route('login') }}">
+      <form class="login-form" method="POST" action="{{ route('dosen.login') }}">
         @csrf
         <h3 class="fw-bold mb-2">Selamat Datang di <span class="text-taskflow">TaskFlow</span>!</h3>
         <p class="text-muted mb-4">Log In akun</p>

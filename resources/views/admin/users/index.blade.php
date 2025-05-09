@@ -82,7 +82,7 @@
     </div>
     @endif
 
-    <a href="{{ route('admin.create') }}" class="btn mb-3 text-white" style="background-color: #008080;">+ Tambah User</a>
+    <a href="{{ route('admin.users.create') }}" class="btn mb-3 text-white" style="background-color: #008080;">+ Tambah User</a>
 
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div class="d-flex flex-row gap-2">
@@ -152,9 +152,9 @@
                             <td>{{ $user->role === 'dosen' ? $user->kode_unik : '-' }}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{ route('admin.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                    <button class="btn btn-sm btn-danger" onclick="confirmDelete('{{ route('admin.destroy', $user->id) }}')">Hapus</button>
-                                    <button class="btn btn-sm btn-dark" onclick="confirmReset('{{ route('admin.reset.password', $user->id) }}')">Reset PW</button>
+                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                    <button class="btn btn-sm btn-danger" onclick="confirmDelete('{{ route('admin.users.destroy', $user->id) }}')">Hapus</button>
+                                    <button class="btn btn-sm btn-dark" onclick="confirmReset('{{ route('admin.users.reset-password', $user->id) }}')">Reset PW</button>
                                 </div>
                             </td>
                         </tr>
