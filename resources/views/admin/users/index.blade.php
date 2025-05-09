@@ -3,8 +3,6 @@
 @section('title', 'Manajemen Pengguna')
 
 @section('content')
-
-<!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
@@ -19,85 +17,75 @@
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         position: relative;
     }
-
     @keyframes fadeSlideDown {
         from { opacity: 0; transform: translateY(-10px); }
         to { opacity: 1; transform: translateY(0); }
     }
-
     .custom-alert .btn-close {
         position: absolute;
         top: 10px;
         right: 15px;
     }
-
-    .role-toggle-btn {
-        background-color: #008080;
-        color: #fff;
-        font-weight: 50;
-        padding: 2px 6px;
-        border: none;
-        border-radius: 6px;
-        transition: background-color 0.3s ease;
+    .rotate-icon {
+        transition: transform 0.3s ease;
     }
-
-    .role-toggle-btn:hover {
-        background-color: #f5a04e;
+    .rotate-icon.rotate {
+        transform: rotate(180deg);
     }
-
-    .user-group.hidden {
+    .user-section {
+        overflow: hidden;
+        transition: max-height 0.5s ease, opacity 0.4s ease;
+        max-height: 0;
+        opacity: 0;
         display: none;
     }
-
-    .btn-group-aksi {
+    .user-section.active {
+        max-height: 1000px;
+        opacity: 1;
+        display: block;
+    }
+    .card-header.align-grid {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 5px;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1.25rem;
     }
-
-    @media (max-width: 768px) {
-        .table td,
-        .table th {
-            font-size: 14px;
-            padding: 8px 6px;
-            word-break: break-word;
-        }
-
-        .btn-group-aksi {
-            flex-direction: column;
-            gap: 6px;
-        }
+    .section-label {
+        padding-left: 1.25rem;
     }
-
-    select.form-select,
-    input.form-control {
-        transition: box-shadow 0.2s ease;
+    .table th,
+    .table td {
+        vertical-align: middle !important;
+        padding: 0.75rem 1rem;
+        white-space: nowrap;
     }
-
-    input.form-control:focus,
-    select.form-select:focus {
-        box-shadow: 0 0 5px rgba(0, 131, 143, 0.5);
-        border-color: #00838f;
+    .table {
+        width: 100%;
+        table-layout: fixed;
     }
+    .table td:nth-child(1) { width: 20%; }
+    .table td:nth-child(2) { width: 25%; }
+    .table td:nth-child(3) { width: 15%; }
+    .table td:nth-child(4) { width: 20%; }
+    .table td:nth-child(5) { width: 20%; }
 </style>
 
-<div class="bg-white p-4 rounded shadow" style="border-left: 6px solid #008080;">
-    <h4 class="fw-bold mb-4 text-dark"><i class="fas fa-users me-2"></i> Manajemen Pengguna</h4>
+<div class="container py-4">
+    <h4 class="fw-bold mb-4 text-dark">
+        <i class="fas fa-users text-warning me-2"></i> Manajemen Pengguna
+    </h4>
+
+    @if(session('success'))
+    <div class="custom-alert" id="success-alert">
+        <span><i class="fas fa-check-circle me-2"></i> {{ session('success') }}</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+    </div>
+    @endif
 
     <a href="{{ route('admin.create') }}" class="btn mb-3 text-white" style="background-color: #008080;">+ Tambah User</a>
 
-    @if(session('success'))
-        <div class="custom-alert" id="success-alert">
-            <span><i class="fas fa-check-circle me-2"></i> {{ session('success') }}</span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
-        </div>
-    @endif
-
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
-        <!-- Filter Role & Sort -->
         <div class="d-flex flex-row gap-2">
-            <!-- Role Filter -->
             <div class="input-group input-group-sm shadow-sm rounded">
                 <span class="input-group-text bg-white">
                     <i class="fas fa-user-tag text-secondary"></i>
@@ -109,8 +97,6 @@
                     <option value="mahasiswa">Mahasiswa</option>
                 </select>
             </div>
-    
-            <!-- Sort Option -->
             <div class="input-group input-group-sm shadow-sm rounded">
                 <span class="input-group-text bg-white">
                     <i class="fas fa-sort-alpha-down text-secondary"></i>
@@ -121,217 +107,186 @@
                 </select>
             </div>
         </div>
-    
-        <!-- Search Box -->
         <div class="input-group input-group-sm shadow-sm rounded" style="max-width: 250px;">
             <span class="input-group-text bg-white">
                 <i class="fas fa-search text-secondary"></i>
             </span>
             <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Cari Nama Pengguna...">
         </div>
-    </div>     
+    </div>
 
-    <div class="table-responsive rounded shadow-sm">
-        <table class="table table-bordered text-center mb-0">
-            <thead style="background-color: #008080; color: white;">
-                <tr>
-                    <th>Nama</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Kode Unik</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="userTableBody">
-                @php
-                    $roleLabels = ['admin' => 'Admin', 'dosen' => 'Dosen', 'mahasiswa' => 'Mahasiswa'];
-                    $groupedUsers = $users->groupBy('role');
-                @endphp
+    @php
+        $roleLabels = ['admin' => 'Admin', 'dosen' => 'Dosen', 'mahasiswa' => 'Mahasiswa'];
+        $icons = ['admin' => 'fa-user-shield', 'dosen' => 'fa-chalkboard-teacher', 'mahasiswa' => 'fa-user-graduate'];
+        $groupedUsers = $users->groupBy('role');
+    @endphp
 
-                @foreach($groupedUsers as $role => $group)
-                    <tr class="bg-light">
-                        <td colspan="5" class="text-start fw-bold">
-                            <button class="role-toggle-btn toggle-role" data-role="{{ $role }}">
-                                <i class="fas fa-chevron-right me-1"></i> {{ $roleLabels[$role] ?? ucfirst($role) }}
-                            </button>
-                        </td>
-                    </tr>
-                    <tbody id="group-{{ $role }}" class="user-group hidden">
+    @foreach($groupedUsers as $role => $group)
+    <div class="card border-0 shadow-sm rounded-4 mb-3">
+        <div class="card-header bg-white fw-semibold fs-6 align-grid">
+            <span class="section-label">
+                <i class="fas {{ $icons[$role] ?? 'fa-users' }} text-warning me-2"></i>{{ $roleLabels[$role] ?? ucfirst($role) }}
+            </span>
+            <button class="btn btn-sm btn-outline-secondary toggle-section" data-role="{{ $role }}">
+                <i class="fas fa-chevron-down rotate-icon"></i>
+            </button>
+        </div>
+        <div class="card-body user-section" id="section-{{ $role }}">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Kode Unik</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         @foreach($group as $user)
-                        <tr class="user-row group-{{ $role }}" style="background-color: #fef9f4;">
+                        <tr class="user-row group-{{ $role }}">
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td><span class="badge" style="background-color: #f5a04e;">{{ ucfirst($user->role) }}</span></td>
                             <td>{{ $user->role === 'dosen' ? $user->kode_unik : '-' }}</td>
                             <td>
-                                <div class="btn-group-aksi">
-                                    <a href="{{ route('admin.edit', $user->id) }}" class="btn btn-sm text-white" style="background-color: #ffc107;">Edit</a>
-                                    <button type="button" class="btn btn-sm text-white" style="background-color: #dc3545;" onclick="confirmDelete('{{ route('admin.destroy', $user->id) }}')">Hapus</button>
-                                    <button type="button" class="btn btn-sm text-white" style="background-color: #343a40;" onclick="confirmReset('{{ route('admin.reset.password', $user->id) }}')">Reset PW</button>
+                                <div class="btn-group">
+                                    <a href="{{ route('admin.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                    <button class="btn btn-sm btn-danger" onclick="confirmDelete('{{ route('admin.destroy', $user->id) }}')">Hapus</button>
+                                    <button class="btn btn-sm btn-dark" onclick="confirmReset('{{ route('admin.reset.password', $user->id) }}')">Reset PW</button>
                                 </div>
                             </td>
                         </tr>
                         @endforeach
                     </tbody>
-                @endforeach
-            </tbody>
-        </table>
+                </table>
+            </div>
+        </div>
     </div>
+    @endforeach
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Toggle Role Table
-        document.querySelectorAll('.toggle-role').forEach(btn => {
-            const role = btn.dataset.role;
-            const group = document.getElementById(`group-${role}`);
-            const icon = btn.querySelector('i');
-            btn.addEventListener('click', () => {
-                const isHidden = group.classList.contains('hidden');
-                group.classList.toggle('hidden', !isHidden);
-                icon.classList.toggle('fa-chevron-down', isHidden);
-                icon.classList.toggle('fa-chevron-right', !isHidden);
-            });
+    function filterTable() {
+        const selectedRole = document.getElementById('roleFilter').value;
+        const searchText = document.getElementById('searchInput').value.toLowerCase();
+        const sortDirection = document.getElementById('sortAZ').value;
+
+        document.querySelectorAll('.user-section').forEach(section => {
+            section.classList.remove('active');
         });
 
-        const roleFilter = document.getElementById('roleFilter');
-        const sortAZ = document.getElementById('sortAZ');
-        const searchInput = document.getElementById('searchInput');
+        document.querySelectorAll('.user-row').forEach(row => {
+            const name = row.cells[0].textContent.toLowerCase();
+            const role = row.querySelector('span.badge')?.innerText.toLowerCase();
+            const matchRole = selectedRole === 'all' || role === selectedRole;
+            const matchSearch = name.includes(searchText);
+            const isVisible = matchRole && matchSearch;
+            row.style.display = isVisible ? '' : 'none';
 
-        function filterTable() {
-            const selectedRole = roleFilter.value;
-            const searchText = searchInput.value.toLowerCase();
-            const sortDirection = sortAZ.value;
-
-            // Sembunyikan semua group (tbody)
-            document.querySelectorAll('.user-group').forEach(group => {
-                group.classList.add('hidden');
-                group.classList.remove('visible');
-            });
-
-            // Tampilkan group sesuai role
-            if (selectedRole === 'all') {
-                document.querySelectorAll('.user-group').forEach(group => {
-                    group.classList.remove('hidden');
-                    group.classList.add('visible');
-                });
-            } else {
-                const selectedGroup = document.getElementById(`group-${selectedRole}`);
-                if (selectedGroup) {
-                    selectedGroup.classList.remove('hidden');
-                    selectedGroup.classList.add('visible');
-                }
+            if (isVisible) {
+                const parentSection = row.closest('.user-section');
+                parentSection?.classList.add('active');
+                parentSection?.previousElementSibling.querySelector('.rotate-icon')?.classList.add('rotate');
             }
+        });
 
-            // Tampilkan atau sembunyikan baris user berdasarkan filter
-            const rows = document.querySelectorAll('.user-row');
-            const filteredRows = Array.from(rows).filter(row => {
-                const role = row.querySelector('span.badge')?.innerText.toLowerCase();
-                const name = row.cells[0].innerText.toLowerCase();
-                const matchRole = selectedRole === 'all' || role === selectedRole;
-                const matchSearch = name.includes(searchText);
-                row.style.display = (matchRole && matchSearch) ? '' : 'none';
-                return row.style.display !== 'none';
-            });
-
-            // Urutkan
-            filteredRows.sort((a, b) => {
+        document.querySelectorAll('.user-section tbody').forEach(tbody => {
+            const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => row.style.display !== 'none');
+            rows.sort((a, b) => {
                 const nameA = a.cells[0].innerText.toLowerCase();
                 const nameB = b.cells[0].innerText.toLowerCase();
                 return sortDirection === 'asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
             });
+            rows.forEach(row => tbody.appendChild(row));
+        });
+    }
 
-            // Masukkan kembali ke DOM
-            const allGroups = document.querySelectorAll('.user-group');
-            allGroups.forEach(group => {
-                filteredRows
-                    .filter(row => group.contains(row))
-                    .forEach(row => group.appendChild(row));
-            });
-        }
-
-        roleFilter.addEventListener('change', filterTable);
-        sortAZ.addEventListener('change', filterTable);
-        searchInput.addEventListener('input', filterTable);
-
-        const alert = document.getElementById('success-alert');
-        if (alert) {
-            setTimeout(() => {
-                alert.classList.add('fade');
-                setTimeout(() => alert.remove(), 300);
-            }, 1000);
-        }
+    document.querySelectorAll('.toggle-section').forEach(button => {
+        const role = button.dataset.role;
+        const section = document.getElementById(`section-${role}`);
+        const icon = button.querySelector('i');
+        button.addEventListener('click', () => {
+            const active = section.classList.toggle('active');
+            icon.classList.toggle('rotate', active);
+        });
     });
 
-    function confirmDelete(url) {
-        Swal.fire({
-            title: 'Yakin ingin menghapus?',
-            text: "Data tidak bisa dikembalikan setelah dihapus.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = url;
-
-                const csrf = document.createElement('input');
-                csrf.type = 'hidden';
-                csrf.name = '_token';
-                csrf.value = '{{ csrf_token() }}';
-
-                const method = document.createElement('input');
-                method.type = 'hidden';
-                method.name = '_method';
-                method.value = 'DELETE';
-
-                form.appendChild(csrf);
-                form.appendChild(method);
-                document.body.appendChild(form);
-                form.submit();
-            }
-        });
-    }
-
-    function confirmReset(url) {
-        Swal.fire({
-            title: 'Reset Password?',
-            text: "Password akan direset ke default (misal: 12345678).",
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonColor: '#343a40',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, reset!',
-            cancelButtonText: 'Batal',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = url;
-
-                const csrf = document.createElement('input');
-                csrf.type = 'hidden';
-                csrf.name = '_token';
-                csrf.value = '{{ csrf_token() }}';
-
-                const method = document.createElement('input');
-                method.type = 'hidden';
-                method.name = '_method';
-                method.value = 'PUT';
-
-                form.appendChild(csrf);
-                form.appendChild(method);
-                document.body.appendChild(form);
-                form.submit();
-            }
-        });
-    }
+    document.getElementById('roleFilter').addEventListener('change', filterTable);
+    document.getElementById('searchInput').addEventListener('input', filterTable);
+    document.getElementById('sortAZ').addEventListener('change', filterTable);
 </script>
 
+<script>
+function confirmDelete(url) {
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Data tidak bisa dikembalikan setelah dihapus.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+
+            const csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = '_token';
+            csrf.value = '{{ csrf_token() }}';
+
+            const method = document.createElement('input');
+            method.type = 'hidden';
+            method.name = '_method';
+            method.value = 'DELETE';
+
+            form.appendChild(csrf);
+            form.appendChild(method);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+
+function confirmReset(url) {
+    Swal.fire({
+        title: 'Reset Password?',
+        text: "Password akan direset ke default (misal: 12345678).",
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#343a40',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, reset!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+
+            const csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = '_token';
+            csrf.value = '{{ csrf_token() }}';
+
+            const method = document.createElement('input');
+            method.type = 'hidden';
+            method.name = '_method';
+            method.value = 'PUT';
+
+            form.appendChild(csrf);
+            form.appendChild(method);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+</script>
 @endsection

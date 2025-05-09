@@ -8,7 +8,8 @@ use App\Models\User;
 use App\Models\Kelas;
 
 class MonitoringController extends Controller
-{public function index()
+{
+    public function index()
     {
         $kelasTeraktif = Kelas::withCount('materi')
             ->orderByDesc('materi_count')

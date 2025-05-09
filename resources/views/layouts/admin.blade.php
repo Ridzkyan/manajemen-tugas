@@ -220,8 +220,8 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="{{ route('admin.kelas.index') }}">
-                    <i class="fas fa-folder-open"></i>Kelas
+                <a class="nav-link {{ request()->routeIs('admin.kelas.index') ? 'active' : '' }}" href="{{ route('admin.kelas.index') }}">
+                    <i class="fas fa-folder-open"></i> Kelas
                 </a>
             </li>
             <li class="nav-item mb-2">
@@ -230,7 +230,7 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="{{ route('admin.monitoring') }}">
+                <a class="nav-link {{ request()->is('admin/monitoring*') ? 'active' : '' }}" href="{{ route('admin.monitoring') }}">
                     <i class="fas fa-chart-bar"></i> Monitoring
                 </a>
             </li>
@@ -311,5 +311,6 @@
         });
     });
 </script>
+@stack('scripts')
 </body>
 </html>
