@@ -8,8 +8,8 @@ use App\Models\Tugas;
 use App\Models\Kelas;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\NilaiMahasiswaExport;
+use App\Notifications\TugasBaruNotification;
+use App\Notifications\TugasDinilaiNotification;
 
 class TugasController extends Controller
 {
@@ -30,12 +30,12 @@ class TugasController extends Controller
             'file_soal' => 'nullable|file|mimes:pdf,docx,doc|max:5120',
             'deadline' => 'nullable|date'
         ]);
-    
+
         $filePath = null;
         if ($request->hasFile('file_soal')) {
             $filePath = $request->file('file_soal')->store('tugas', 'public');
         }
-    
+
         Tugas::create([
             'kelas_id' => $kelasId,
             'judul' => $request->judul,
@@ -44,12 +44,9 @@ class TugasController extends Controller
             'file_soal' => $filePath,
             'deadline' => $request->deadline,
         ]);
-    
-        // Redirect kembali ke halaman form dengan alert sukses
+
         return redirect()->back()->with('success', 'Tugas berhasil ditambahkan!');
     }
-    
-    
 
     public function penilaian($kelasId, $tugasId)
     {
@@ -73,6 +70,14 @@ class TugasController extends Controller
         $tugas->feedback = $request->feedback;
         $tugas->save();
 
-        return redirect()->back()->with('success', 'Penilaian berhasil disimpan!');
+        // Kirim notifikasi ke mahasiswa
+        $kelas = Kelas::findOrFail($kelasId);
+        foreach ($kelas->mahasiswa as $mahasiswa) {
+            if ($mahasiswa->hasVerifiedEmail()) {
+                $mahasiswa->notify(new TugasDinilaiNotification($tugas));
+            }
+        }
+
+        return redirect()->back()->with('success', 'Penilaian berhasil disimpan dan notifikasi dikirim!');
     }
 }

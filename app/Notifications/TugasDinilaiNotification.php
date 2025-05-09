@@ -3,11 +3,12 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use App\Models\Tugas;
 
-class TugasBaruNotification extends Notification implements ShouldQueue
+class TugasDinilaiNotification extends Notification
 {
     use Queueable;
 
@@ -16,10 +17,9 @@ class TugasBaruNotification extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param  mixed  $tugas
-     * @return void
+     * @param \App\Models\Tugas $tugas
      */
-    public function __construct($tugas)
+    public function __construct(Tugas $tugas)
     {
         $this->tugas = $tugas;
     }
@@ -44,17 +44,17 @@ class TugasBaruNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Tugas Baru dari Dosen')
-            ->greeting('Hai ' . $notifiable->name . ' 👋')
-            ->line('Dosen telah mengunggah tugas baru: *' . $this->tugas->judul . '*')
-            ->line('Tipe: ' . ucfirst($this->tugas->tipe))
-            ->line('Deadline: ' . ($this->tugas->deadline ?? 'Tidak ditentukan'))
-            ->action('Lihat Tugas', url('/mahasiswa/kelas/' . $this->tugas->kelas_id . '/tugas'))
-            ->line('Silakan kerjakan tugas sebelum deadline ya!');
+            ->subject('Tugas Kamu Telah Dinilai')
+            ->greeting('Halo, ' . $notifiable->name)
+            ->line('Tugas "' . $this->tugas->judul . '" telah dinilai oleh dosen.')
+            ->line('📝 Nilai: ' . $this->tugas->nilai)
+            ->line('💬 Feedback: ' . ($this->tugas->feedback ?? 'Tidak ada'))
+            ->action('Lihat Tugas', url('/mahasiswa/dashboard'))
+            ->line('Terima kasih atas partisipasimu!');
     }
 
     /**
-     * Get the array representation of the notification.
+     * Get the array representation of the notification (opsional).
      *
      * @param  mixed  $notifiable
      * @return array
@@ -63,9 +63,8 @@ class TugasBaruNotification extends Notification implements ShouldQueue
     {
         return [
             'judul' => $this->tugas->judul,
-            'tipe' => $this->tugas->tipe,
-            'deadline' => $this->tugas->deadline,
-            'kelas_id' => $this->tugas->kelas_id
+            'nilai' => $this->tugas->nilai,
+            'feedback' => $this->tugas->feedback,
         ];
     }
 }
