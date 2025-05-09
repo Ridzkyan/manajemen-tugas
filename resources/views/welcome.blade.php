@@ -50,6 +50,8 @@
             border-radius: 30px;
             padding: 10px 20px;
             transition: 0.3s;
+            font-size: 1rem;
+            height: 48px;
         }
         .btn-custom:hover {
             background: #ffffff;
@@ -64,12 +66,12 @@
         <div class="welcome-title">TaskFlow<br>Management</div>
         <div class="welcome-subtitle">Kelola tugasmu dengan mudah di TaskFlow.</div>
 
-        <div class="d-flex justify-content-center gap-3">
-            <a href="{{ route('login') }}" class="btn btn-custom">
-                <i class="fas fa-sign-in-alt"></i> Login
+        <div class="d-grid gap-3">
+            <a href="{{ url('/dosen/login') }}" class="btn btn-custom d-flex align-items-center justify-content-center w-100">
+                <i class="fas fa-chalkboard-teacher me-2"></i> Login Dosen
             </a>
-            <a href="{{ route('register') }}" class="btn btn-custom">
-                <i class="fas fa-user-plus"></i> Register
+            <a href="{{ url('/mahasiswa/login') }}" class="btn btn-custom d-flex align-items-center justify-content-center w-100">
+                <i class="fas fa-user-graduate me-2"></i> Login Mahasiswa
             </a>
         </div>
     </div>

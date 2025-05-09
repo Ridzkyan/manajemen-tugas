@@ -20,6 +20,8 @@ use App\Http\Controllers\Admin\MonitoringController;
 
 // Halaman landing awal
 Route::get('/', fn () => view('welcome'))->name('welcome');
+Route::get('/dosen/login', fn () => view('auth.dosen-login'))->name('login.dosen'); //hamm nambahin ini
+Route::get('/mahasiswa/login', fn () => view('auth.mahasiswa-login'))->name('login.mahasiswa'); //ham nambahin ini
 
 Auth::routes(['register' => true]);
 Auth::routes(['verify' => true]);
