@@ -30,12 +30,12 @@ class TugasController extends Controller
             'file_soal' => 'nullable|file|mimes:pdf,docx,doc|max:5120',
             'deadline' => 'nullable|date'
         ]);
-
+    
         $filePath = null;
         if ($request->hasFile('file_soal')) {
             $filePath = $request->file('file_soal')->store('tugas', 'public');
         }
-
+    
         Tugas::create([
             'kelas_id' => $kelasId,
             'judul' => $request->judul,
@@ -44,11 +44,13 @@ class TugasController extends Controller
             'file_soal' => $filePath,
             'deadline' => $request->deadline,
         ]);
-
+    
+        // Redirect kembali ke halaman form dengan alert sukses
         return redirect()->back()->with('success', 'Tugas berhasil ditambahkan!');
     }
+    
+    
 
-    // Menampilkan halaman penilaian tugas
     public function penilaian($kelasId, $tugasId)
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->findOrFail($kelasId);
@@ -58,22 +60,19 @@ class TugasController extends Controller
         return view('dosen.kelas.tugas.penilaian', compact('kelas', 'tugas', 'mahasiswa'));
     }
 
-    // Menyimpan nilai dan feedback tugas
     public function nilaiTugas(Request $request, $kelasId, $tugasId)
     {
         $request->validate([
-            'nilai' => 'required|numeric|min:0|max:100',  // Nilai tugas antara 0-100
+            'nilai' => 'required|numeric|min:0|max:100',
             'feedback' => 'nullable|string',
         ]);
 
         $tugas = Tugas::findOrFail($tugasId);
 
-            // Simpan nilai dan feedback
-    $tugas->nilai = $request->nilai;
-    $tugas->feedback = $request->feedback;
-    $tugas->save();
+        $tugas->nilai = $request->nilai;
+        $tugas->feedback = $request->feedback;
+        $tugas->save();
 
-    return redirect()->back()->with('success', 'Penilaian berhasil disimpan!');   
-}
-
+        return redirect()->back()->with('success', 'Penilaian berhasil disimpan!');
+    }
 }

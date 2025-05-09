@@ -38,7 +38,7 @@
 
                 <div class="mb-3">
                     <label>Upload File Soal</label>
-                    <input type="file" name="file_soal" class="form-control">
+                    <div class="dropzone" id="fileUploadDropzone"></div>
                 </div>
 
                 <div class="mb-3">
@@ -63,11 +63,9 @@
                         <li>
                             {{ $tgs->judul }} ({{ ucfirst($tgs->tipe) }}) 
 
-                            {{-- Menampilkan tombol penilaian --}}
-                            @if(!$tgs->nilai)  {{-- Cek jika tugas belum dinilai --}}
+                            @if(!$tgs->nilai)
                                 <a href="{{ route('dosen.tugas.penilaian', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}" class="btn btn-warning btn-sm">Penilaian</a>
                             @else
-                                {{-- Menampilkan nilai dan feedback jika sudah dinilai --}}
                                 <span class="badge bg-success">Nilai: {{ $tgs->nilai }}</span>
                                 <p><strong>Feedback:</strong> {{ $tgs->feedback }}</p>
                             @endif
@@ -88,4 +86,48 @@
     </div>
     <a href="{{ route('dosen.kelas.index') }}" class="btn btn-secondary">Kembali ke Daftar Kelas</a>
 </div>
+
+<!-- Dropzone CSS & JS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+
+<script>
+    Dropzone.autoDiscover = false;
+
+    const dz = new Dropzone("#fileUploadDropzone", {
+        url: "{{ route('dosen.tugas.store', $kelas->id) }}",
+        autoProcessQueue: false,
+        uploadMultiple: false,
+        maxFiles: 1,
+        maxFilesize: 5,
+        acceptedFiles: '.pdf,.doc,.docx',
+        addRemoveLinks: true,
+        headers: {
+            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+        },
+        paramName: 'file_soal',
+        init: function () {
+            const myDropzone = this;
+            document.querySelector("form").addEventListener("submit", function (e) {
+                e.preventDefault();
+                let formData = new FormData(this);
+                if (myDropzone.getAcceptedFiles().length > 0) {
+                    formData.append('file_soal', myDropzone.getAcceptedFiles()[0]);
+                }
+
+                fetch(this.action, {
+                    method: "POST",
+                    body: formData,
+                }).then(response => {
+                    if (response.ok) {
+                        alert("Tugas berhasil diupload!");
+                        window.location.reload();
+                    } else {
+                        alert("Gagal upload!");
+                    }
+                });
+            });
+        }
+    });
+</script>
 @endsection
