@@ -36,7 +36,7 @@ class TugasController extends Controller
             $filePath = $request->file('file_soal')->store('tugas', 'public');
         }
 
-        Tugas::create([
+        $tugas = Tugas::create([
             'kelas_id' => $kelasId,
             'judul' => $request->judul,
             'tipe' => $request->tipe,
@@ -45,7 +45,15 @@ class TugasController extends Controller
             'deadline' => $request->deadline,
         ]);
 
-        return redirect()->back()->with('success', 'Tugas berhasil ditambahkan!');
+        // Kirim notifikasi ke mahasiswa
+        $kelas = Kelas::findOrFail($kelasId);
+        foreach ($kelas->mahasiswa as $mahasiswa) {
+            if ($mahasiswa->hasVerifiedEmail()) {
+                $mahasiswa->notify(new TugasBaruNotification($tugas));
+            }
+        }
+
+        return redirect()->back()->with('success', 'Tugas berhasil ditambahkan dan notifikasi dikirim!');
     }
 
     public function penilaian($kelasId, $tugasId)
