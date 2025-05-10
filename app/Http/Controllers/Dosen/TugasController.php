@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\TugasBaruNotification;
 use App\Notifications\TugasDinilaiNotification;
+use App\Exports\RekapNilaiExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TugasController extends Controller
 {
@@ -122,5 +124,9 @@ class TugasController extends Controller
     return view('dosen.kelas.tugas.rekap_detail', compact('kelas', 'tugas'));
 }
 
+    public function exportRekap($kelasId)
+{
+    return Excel::download(new RekapNilaiExport($kelasId), 'rekap_nilai_kelas_' . $kelasId . '.xlsx');
+}
 
 }

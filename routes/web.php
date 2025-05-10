@@ -18,8 +18,7 @@ use App\Http\Controllers\Admin\KontenController;
 use App\Http\Controllers\Auth\LoginDosenController;
 use App\Http\Controllers\Auth\LoginMahasiswaController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Exports\RekapNilaiExport;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\Dosen\RekapController;
 // ==============================
 // PUBLIC ROUTES
 // ==============================
@@ -102,52 +101,51 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
     Route::get('/konten', [KontenController::class, 'index'])->name('konten.index');
 });
+
 // ---------- DOSEN ----------
 Route::middleware(['auth:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
-
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\Dosen\DashboardController::class, 'index'])->name('dashboard');
 
-    // Halaman Materi & Kelas (upload + daftar kelas)
-    Route::get('/materi-dan-kelas', [KelasController::class, 'materiDanKelas'])->name('materikelas');
-    Route::post('/materi-dan-kelas/upload', [KelasController::class, 'uploadMateriGlobal'])->name('materikelas.upload');
+    // Halaman Materi & Kelas (untuk upload & daftar kelas)
+    Route::get('/materi-dan-kelas', [App\Http\Controllers\Dosen\KelasController::class, 'materiDanKelas'])->name('materikelas');
+    Route::post('/materi-dan-kelas/upload', [App\Http\Controllers\Dosen\KelasController::class, 'uploadMateriGlobal'])->name('materikelas.upload');
 
-    // Detail materi tiap kelas
-    Route::get('/materi-dan-kelas/{id}', [KelasController::class, 'detailMateri'])->name('materikelas.detail');
+    // Halaman daftar materi per kelas (tanpa upload form)
+    Route::get('/materi-dan-kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'detailMateri'])->name('materikelas.detail');
 
-    // CRUD Kelas
-    Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
-    Route::get('/kelas/create', [KelasController::class, 'create'])->name('kelas.create');
-    Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
-    Route::get('/kelas/{id}/edit', [KelasController::class, 'edit'])->name('kelas.edit');
-    Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update');
-    Route::delete('/kelas/{id}', [KelasController::class, 'destroy'])->name('kelas.destroy');
-    Route::get('/kelas/{id}', [KelasController::class, 'show'])->name('kelas.show');
+    // Kelas CRUD
+    Route::get('/kelas', [App\Http\Controllers\Dosen\KelasController::class, 'index'])->name('kelas.index');
+    Route::get('/kelas/create', [App\Http\Controllers\Dosen\KelasController::class, 'create'])->name('kelas.create');
+    Route::post('/kelas', [App\Http\Controllers\Dosen\KelasController::class, 'store'])->name('kelas.store');
+    Route::get('/kelas/{id}/edit', [App\Http\Controllers\Dosen\KelasController::class, 'edit'])->name('kelas.edit');
+    Route::put('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'update'])->name('kelas.update');
+    Route::delete('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'destroy'])->name('kelas.destroy');
+    Route::get('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'show'])->name('kelas.show');
 
     // Komunikasi (list grup WA)
-    Route::get('/komunikasi', [KelasController::class, 'komunikasi'])->name('komunikasi');
+    Route::get('/komunikasi', [App\Http\Controllers\Dosen\KelasController::class, 'komunikasi'])->name('komunikasi');
 
-    // Kelola isi kelas
-    Route::get('/kelas/{id}/manage', [KelasController::class, 'manage'])->name('kelas.manage');
-    Route::post('/kelas/{id}/materi', [KelasController::class, 'uploadMateri'])->name('kelas.uploadMateri');
+    // Kelola isi kelas (materi + tugas per kelas)
+    Route::get('/kelas/{id}/manage', [App\Http\Controllers\Dosen\KelasController::class, 'manage'])->name('kelas.manage');
+    Route::post('/kelas/{id}/materi', [App\Http\Controllers\Dosen\KelasController::class, 'uploadMateri'])->name('kelas.uploadMateri');
 
-    // CRUD Tugas per kelas
-    Route::get('/kelas/{kelas}/tugas', [TugasController::class, 'index'])->name('tugas.index');
-    Route::post('/kelas/{kelas}/tugas', [TugasController::class, 'store'])->name('tugas.store');
+    // Tugas - CRUD per kelas
+    Route::get('/kelas/{kelas}/tugas', [App\Http\Controllers\Dosen\TugasController::class, 'index'])->name('tugas.index');
+    Route::post('/kelas/{kelas}/tugas', [App\Http\Controllers\Dosen\TugasController::class, 'store'])->name('tugas.store');
+    Route::get('/kelas/{kelas}/tugas/{tugas}/penilaian', [App\Http\Controllers\Dosen\TugasController::class, 'penilaian'])->name('tugas.penilaian');
+    Route::post('/kelas/{kelas}/tugas/{tugas}/penilaian', [App\Http\Controllers\Dosen\TugasController::class, 'nilaiTugas'])->name('tugas.nilai');
     Route::get('/kelas/{kelas}/tugas/detail', [TugasController::class, 'detail'])->name('tugas.detail');
-    Route::get('/kelas/{kelas}/tugas/{tugas}/penilaian', [TugasController::class, 'penilaian'])->name('tugas.penilaian');
-    Route::post('/kelas/{kelas}/tugas/{tugas}/penilaian', [TugasController::class, 'nilaiTugas'])->name('tugas.nilai');
 
-    // Rekap nilai (daftar kelas)
-    Route::get('/rekap-nilai', [TugasController::class, 'rekapNilai'])->name('rekap.nilai');
+// Rekap Nilai - Daftar Semua atau berdasarkan kelas (opsional pakai ?)
+Route::get('/rekap-nilai', [TugasController::class, 'rekapNilai'])->name('rekap.nilai');
 
-    // Rekap nilai per kelas
-    Route::get('/rekap-nilai/{kelas}', [TugasController::class, 'rekapPerKelas'])->name('rekap.detail');
+// Rekap Nilai per kelas (jika ingin halaman khusus tiap kelas)
+Route::get('/rekap-nilai/{kelas}', [TugasController::class, 'rekapPerKelas'])->name('rekap.detail');
 
-    // Export Excel nilai per kelas
-    Route::get('/rekap-nilai/export/{kelasId}', function ($kelasId) {
-        return Excel::download(new RekapNilaiExport($kelasId), 'rekap_nilai_kelas_' . $kelasId . '.xlsx');
-    })->name('rekap.nilai.export');
+// Ekspor Rekap Nilai ke Excel
+Route::get('/rekap-nilai/export/{kelasId}', [TugasController::class, 'exportRekap'])->name('rekap.nilai.export');
+
 
 });
 
