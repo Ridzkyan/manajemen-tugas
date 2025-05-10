@@ -18,7 +18,8 @@ use App\Http\Controllers\Admin\KontenController;
 use App\Http\Controllers\Auth\LoginDosenController;
 use App\Http\Controllers\Auth\LoginMahasiswaController;
 use App\Http\Controllers\Auth\RegisterController;
-
+use App\Exports\RekapNilaiExport;
+use Maatwebsite\Excel\Facades\Excel;
 // ==============================
 // PUBLIC ROUTES
 // ==============================
@@ -101,26 +102,56 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
     Route::get('/konten', [KontenController::class, 'index'])->name('konten.index');
 });
-
-
 // ---------- DOSEN ----------
 Route::middleware(['auth:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\Dosen\KelasController::class, 'index'])->name('dashboard');
-    Route::resource('/kelas', App\Http\Controllers\Dosen\KelasController::class)->except(['show']);
-    Route::get('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'show'])->name('kelas.show');
-    Route::get('/kelas/{id}/manage', [App\Http\Controllers\Dosen\KelasController::class, 'manage'])->name('kelas.manage');
-    Route::get('/kelas/{kelas}/materi', [MateriController::class, 'index'])->name('materi.index');
-    Route::post('/kelas/{kelas}/materi', [MateriController::class, 'store'])->name('materi.store');
-    Route::delete('/materi/{materi}', [MateriController::class, 'destroy'])->name('materi.destroy');
-    Route::delete('/materi/bulk-delete', [MateriController::class, 'bulkDelete'])->name('materi.bulkDelete');
+
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Halaman Materi & Kelas (upload + daftar kelas)
+    Route::get('/materi-dan-kelas', [KelasController::class, 'materiDanKelas'])->name('materikelas');
+    Route::post('/materi-dan-kelas/upload', [KelasController::class, 'uploadMateriGlobal'])->name('materikelas.upload');
+
+    // Detail materi tiap kelas
+    Route::get('/materi-dan-kelas/{id}', [KelasController::class, 'detailMateri'])->name('materikelas.detail');
+
+    // CRUD Kelas
+    Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
+    Route::get('/kelas/create', [KelasController::class, 'create'])->name('kelas.create');
+    Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
+    Route::get('/kelas/{id}/edit', [KelasController::class, 'edit'])->name('kelas.edit');
+    Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update');
+    Route::delete('/kelas/{id}', [KelasController::class, 'destroy'])->name('kelas.destroy');
+    Route::get('/kelas/{id}', [KelasController::class, 'show'])->name('kelas.show');
+
+    // Komunikasi (list grup WA)
+    Route::get('/komunikasi', [KelasController::class, 'komunikasi'])->name('komunikasi');
+
+    // Kelola isi kelas
+    Route::get('/kelas/{id}/manage', [KelasController::class, 'manage'])->name('kelas.manage');
+    Route::post('/kelas/{id}/materi', [KelasController::class, 'uploadMateri'])->name('kelas.uploadMateri');
+
+    // CRUD Tugas per kelas
     Route::get('/kelas/{kelas}/tugas', [TugasController::class, 'index'])->name('tugas.index');
     Route::post('/kelas/{kelas}/tugas', [TugasController::class, 'store'])->name('tugas.store');
+    Route::get('/kelas/{kelas}/tugas/detail', [TugasController::class, 'detail'])->name('tugas.detail');
     Route::get('/kelas/{kelas}/tugas/{tugas}/penilaian', [TugasController::class, 'penilaian'])->name('tugas.penilaian');
     Route::post('/kelas/{kelas}/tugas/{tugas}/penilaian', [TugasController::class, 'nilaiTugas'])->name('tugas.nilai');
-    Route::view('/materi', 'dosen.materi')->name('materi');
-    Route::view('/tugas', 'dosen.tugas')->name('tugas');
-    Route::view('/komunikasi', 'dosen.komunikasi')->name('komunikasi');
+
+    // Rekap nilai (daftar kelas)
+    Route::get('/rekap-nilai', [TugasController::class, 'rekapNilai'])->name('rekap.nilai');
+
+    // Rekap nilai per kelas
+    Route::get('/rekap-nilai/{kelas}', [TugasController::class, 'rekapPerKelas'])->name('rekap.detail');
+
+    // Export Excel nilai per kelas
+    Route::get('/rekap-nilai/export/{kelasId}', function ($kelasId) {
+        return Excel::download(new RekapNilaiExport($kelasId), 'rekap_nilai_kelas_' . $kelasId . '.xlsx');
+    })->name('rekap.nilai.export');
+
 });
+
+
 
 // ---------- MAHASISWA ----------
 Route::middleware(['auth:mahasiswa', 'mahasiswa.verified'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {

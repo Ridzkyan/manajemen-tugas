@@ -1,131 +1,106 @@
 @extends('layouts.dosen')
 
 @section('content')
-<div class="container">
-    <h3>Dashboard Dosen</h3>
+<div class="container py-4">
+    {{-- Welcome Box --}}
+    <div class="alert alert-warning rounded shadow-sm text-dark fs-5">
+        <strong>Halo, {{ Auth::user()->nama ?? 'Nama Dosen' }}!</strong><br>
+        Selamat datang, mari kita mulai hari dengan semangat dan produktivitas tinggi.
+    </div>
 
-    {{-- Alert Success --}}
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+    {{-- Statistik Box --}}
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card bg-warning text-white shadow-sm rounded">
+                <div class="card-body text-center">
+                    <h3>{{ $userCount ?? 0 }}</h3>
+                    <p class="mb-0">Users</p>
+                </div>
+            </div>
         </div>
-    @endif
-
-    {{-- Tombol Tambah Kelas --}}
-    <a href="{{ route('dosen.kelas.create') }}" class="btn btn-primary mb-3">+ Tambah Kelas Baru</a>
-
-    {{-- Daftar Kelas --}}
-    <div class="card">
-        <div class="card-header">
-            Daftar Kelas Saya
+        <div class="col-md-4 mb-3">
+            <div class="card bg-info text-white shadow-sm rounded">
+                <div class="card-body text-center">
+                    <h3>{{ $mataKuliahCount ?? 0 }}</h3>
+                    <p class="mb-0">Mata Kuliah</p>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            @if($kelas->count() > 0)
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Nama Kelas</th>
-                            <th>Mata Kuliah</th>
-                            <th>Kode Unik</th>
-                            <th>Grup WhatsApp</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                    <tbody>
-                        @foreach($kelas as $kls)
-                        <tr>
-                            <td>{{ $kls->nama_kelas }}</td>
-                            <td>{{ $kls->nama_matakuliah }}</td>
-                            <td>
-                                {{ $kls->kode_unik }}
-                                <button type="button" class="btn btn-sm btn-outline-secondary copy-btn" data-code="{{ $kls->kode_unik }}">
-                                    📋 Salin
-                                </button>
-                            </td>
-                            <td>
-                                @if($kls->whatsapp_link)
-                                    <a href="{{ $kls->whatsapp_link }}" target="_blank" class="btn btn-success btn-sm">Join WhatsApp</a>
-                                @else
-                                    <span class="text-muted">Tidak ada link</span>
-                                @endif
-                            </td>
-                            <td>
-                                <div class="d-flex flex-wrap gap-1">
-                                    <a href="{{ route('dosen.kelas.manage', $kls->id) }}" class="btn btn-primary btn-sm">Masuk</a>
-                                    <a href="{{ route('dosen.kelas.show', $kls->id) }}" class="btn btn-info btn-sm">Lihat Mahasiswa</a>
-                                    <a href="{{ route('dosen.kelas.edit', $kls->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                    <form action="{{ route('dosen.kelas.destroy', $kls->id) }}" method="POST" class="d-inline form-delete">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @else
-                <p class="text-muted">Belum ada kelas yang dibuat.</p>
-            @endif
+        <div class="col-md-4 mb-3">
+            <div class="card bg-orange text-white shadow-sm rounded">
+                <div class="card-body text-center">
+                    <h3>{{ $materiCount ?? 0 }}</h3>
+                    <p class="mb-0">Konten/Materi</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Grafik + Tabel Ringkasan --}}
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header fw-semibold">
+                    Statistik Rata-rata Nilai
+                </div>
+                <div class="card-body">
+                    <canvas id="nilaiChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                    <span>Kelas / Mata Kuliah</span>
+                    <a href="{{ route('dosen.kelas.create') }}" class="btn btn-sm btn-warning text-white">
+                        + Tambah Kelas
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if($kelas->count() > 0)
+                        <ul class="list-group">
+                            @foreach($kelas as $kls)
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>{{ $kls->nama_matakuliah }}</span>
+                                    <small class="text-muted">{{ $kls->nama_kelas }}</small>
+                                </li>
+                            @endforeach
+                        </ul>
+                        <a href="{{ route('dosen.kelas.index', $kelas->first()->id) }}" class="btn btn-sm btn-outline-primary mt-3 float-end">Selengkapnya</a>
+                    @else
+                        <p class="text-muted">Belum ada kelas yang dibuat.</p>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 </div>
 @endsection
 
 @section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{{-- Chart.js CDN --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // Konfirmasi hapus kelas
-    document.querySelectorAll('.form-delete').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            Swal.fire({
-                title: 'Yakin Hapus?',
-                text: 'Kelas yang dihapus tidak bisa dikembalikan!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then(result => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const buttons = document.querySelectorAll('.copy-btn');
-
-        buttons.forEach(btn => {
-            btn.addEventListener('click', function () {
-                const code = this.getAttribute('data-code');
-
-                navigator.clipboard.writeText(code).then(() => {
-                    // Notifikasi salin sukses
-                    Swal.fire({
-                        toast: true,
-                        icon: 'success',
-                        title: 'Kode disalin!',
-                        text: code,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }).catch(() => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal menyalin!',
-                        text: 'Periksa izin clipboard browser Anda.'
-                    });
-                });
-            });
-        });
+    const ctx = document.getElementById('nilaiChart').getContext('2d');
+    const nilaiChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: @json(array_keys($statistikNilai ?? [])),
+            datasets: [{
+                data: @json(array_values($statistikNilai ?? [])),
+                backgroundColor: [
+                    '#9c27b0', '#2196f3', '#4caf50', '#ff9800', '#f44336'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
     });
 </script>
 @endsection

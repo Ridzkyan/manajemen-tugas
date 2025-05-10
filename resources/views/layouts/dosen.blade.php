@@ -15,66 +15,69 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
 </head>
 <body>
-    <div id="app">
-        {{-- Navbar --}}
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'TaskFlow') }}
+<div id="app" class="d-flex">
+    {{-- Sidebar --}}
+    <aside class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+        <h5 class="mb-4">NAMA LOGO</h5>
+
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+                <a href="{{ route('dosen.dashboard') }}"
+                   class="nav-link {{ Route::is('dosen.dashboard') ? 'text-warning' : 'text-white' }}">
+                    📊 Dashboard
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            </li>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side -->
-                    <ul class="navbar-nav me-auto"></ul>
+            <li class="nav-item mb-2">
+                <a href="{{ route('dosen.materikelas') }}"
+                   class="nav-link {{ Route::is('dosen.materikelas') ? 'text-warning' : 'text-white' }}">
+                    📁 Materi & Kelas
+                </a>
+            </li>
 
-                    <!-- Right Side -->
-                    <ul class="navbar-nav ms-auto">
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
+            <li class="nav-item mb-2">
+                <a href="{{ route('dosen.tugas.index', $kelasPertama->id ?? 1) }}"
+                   class="nav-link {{ Route::is('dosen.tugas.*') ? 'text-warning' : 'text-white' }}">
+                    📝 Tugas & Ujian
+                </a>
+            </li>
 
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                   data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{ Auth::user()->name }}
-                                </a>
+            <li class="nav-item mb-2">
+                <a href="{{ route('dosen.komunikasi') }}"
+                   class="nav-link {{ Route::is('dosen.komunikasi') ? 'text-warning' : 'text-white' }}">
+                    💬 Komunikasi
+                </a>
+            </li>
 
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('dosen.logout') }}"
-                                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
+            <li class="nav-item mb-2">
+                <a href="{{ route('dosen.kelas.index') }}"
+                   class="nav-link {{ Route::is('dosen.kelas.*') ? 'text-warning' : 'text-white' }}">
+                    🔧 Kelola Kelas
+                </a>
+            </li>
 
-                                    <form id="logout-form" action="{{ route('dosen.logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav>
+            <li class="nav-item mb-2">
+    <a href="{{ route('dosen.rekap.nilai') }}"
+       class="nav-link {{ Route::is('dosen.rekap.nilai') ? 'text-warning' : 'text-white' }}">
+        📑 Rekap Nilai
+    </a>
+</li>
 
-        {{-- Main Content --}}
-        <main class="py-4">
-            @yield('content')
-        </main>
-    </div>
-    @yield('scripts')
-    @stack('scripts')
+        </ul>
+
+        <form action="{{ route('dosen.logout') }}" method="POST" class="mt-4">
+            @csrf
+            <button class="btn btn-sm btn-outline-light w-100">🔓 Logout</button>
+        </form>
+    </aside>
+
+    {{-- Konten Utama --}}
+    <main class="flex-grow-1 p-4">
+        @yield('content')
+    </main>
+</div>
+
+@yield('scripts')
+@stack('scripts')
 </body>
 </html>

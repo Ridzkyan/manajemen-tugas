@@ -36,6 +36,7 @@ class Kelas extends Model
 
     public function tugas()
     {
-        return $this->hasMany(Tugas::class);
+    return $this->hasMany(\App\Models\Tugas::class);
     }
+
 }

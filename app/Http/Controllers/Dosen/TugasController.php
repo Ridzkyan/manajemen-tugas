@@ -55,6 +55,13 @@ class TugasController extends Controller
 
         return redirect()->back()->with('success', 'Tugas berhasil ditambahkan dan notifikasi dikirim!');
     }
+    public function detail($kelasId)
+    {
+    $kelas = Kelas::with('tugas')->where('id', $kelasId)->where('dosen_id', Auth::id())->firstOrFail();
+    $tugas = $kelas->tugas;
+
+    return view('dosen.kelas.tugas.detail', compact('kelas', 'tugas'));
+    }
 
     public function penilaian($kelasId, $tugasId)
     {
@@ -88,4 +95,32 @@ class TugasController extends Controller
 
         return redirect()->back()->with('success', 'Penilaian berhasil disimpan dan notifikasi dikirim!');
     }
+
+    public function rekapNilai(Request $request)
+    {
+    $dosenId = Auth::id();
+    $kelasList = Kelas::where('dosen_id', $dosenId)->get();
+
+    $selectedKelasId = $request->kelas_id;
+    
+    $tugas = collect(); // Default kosong
+    if ($selectedKelasId) {
+        $tugas = Tugas::where('kelas_id', $selectedKelasId)
+            ->with('kelas')
+            ->get();
+    }
+
+    return view('dosen.kelas.tugas.rekap', compact('kelasList', 'tugas', 'selectedKelasId'));
+}
+
+
+    public function rekapPerKelas($kelasId)
+{
+    $kelas = Kelas::with('tugas')->where('dosen_id', Auth::id())->findOrFail($kelasId);
+    $tugas = $kelas->tugas;
+
+    return view('dosen.kelas.tugas.rekap_detail', compact('kelas', 'tugas'));
+}
+
+
 }
