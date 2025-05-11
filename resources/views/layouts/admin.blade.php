@@ -10,8 +10,8 @@
 
     <style>
         html, body {
-            height: 100%;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-x: hidden;
             background-color: #fef9f4;
             font-family: 'Arial', sans-serif;
         }
@@ -177,19 +177,12 @@
         }
 
         @php
-            $isFixedPage = request()->is('admin/pengaturan') || request()->is('admin/profil') || request()->is('admin/password') || request()->is('admin/ganti-password');
+            $isFixedPage = request()->is('admin/profil') || request()->is('admin/password') || request()->is('admin/ganti-password');
         @endphp
 
         @if($isFixedPage)
-        html, body {
-            height: 100vh !important;
-            overflow: hidden !important;
-        }
-        .main-content {
-            overflow: hidden !important;
-        }
         .content-wrapper {
-            height: calc(100vh - 90px);
+            min-height: calc(100vh - 90px);
             display: flex;
             justify-content: center;
             align-items: center;

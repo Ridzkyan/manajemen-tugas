@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\MonitoringController;
 use App\Http\Controllers\Admin\KontenController;
+use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Auth\LoginDosenController;
 use App\Http\Controllers\Auth\LoginMahasiswaController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -99,6 +100,11 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
 
     Route::patch('/admin/konten/tugas/{id}/setujui', [KontenController::class, 'setujuiTugas'])->name('admin.konten.tugas.setujui');
     Route::patch('/admin/konten/tugas/{id}/tolak', [KontenController::class, 'tolakTugas'])->name('admin.konten.tugas.tolak');
+
+    Route::get('/pengaturan/data', [PengaturanController::class, 'data'])->name('pengaturan.data');
+    Route::post('/backup', [PengaturanController::class, 'backup'])->name('backup');
+    Route::post('/backup-zip', [PengaturanController::class, 'backupZip'])->name('backup.zip');
+    Route::post('/restore', [PengaturanController::class, 'restore'])->name('restore');
 });
 
 // ---------- DOSEN ----------

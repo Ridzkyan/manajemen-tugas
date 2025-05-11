@@ -127,11 +127,11 @@
             <div class="badge bg-secondary text-white">Soon</div>
             <div class="fw-bold mt-2">Notifikasi</div>
         </div>
-        <div class="setting-card">
-            <i class="fas fa-sliders-h text-secondary"></i>
-            <div class="badge bg-secondary text-white">Soon</div>
-            <div class="fw-bold mt-2">Sistem</div>
-        </div>
+        <a href="{{ route('admin.pengaturan.data') }}" class="setting-card text-decoration-none text-dark">
+            <i class="fas fa-sliders-h text-success"></i>
+            <div class="badge bg-success text-white">Aktif</div>
+            <div class="fw-bold mt-2">Backup & Restore Data</div>
+        </a>
         <div class="setting-card text-danger" onclick="handleLogout()" style="cursor: pointer;">
             <i class="fas fa-sign-out-alt"></i>
             <div class="badge bg-danger text-white">Logout</div>
