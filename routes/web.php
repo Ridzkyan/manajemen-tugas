@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
-
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -22,8 +21,6 @@ use App\Http\Controllers\Mahasiswa\MateriController as MahasiswaMateriController
 use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Dosen\RekapController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use App\Http\Controllers\Auth\VerificationController;
 // ==============================
 // PUBLIC ROUTES
 // ==============================
@@ -96,7 +93,6 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
     Route::get('/konten', [KontenController::class, 'index'])->name('konten.index');
-});
 
     Route::patch('/admin/konten/materi/{id}/setujui', [KontenController::class, 'setujuiMateri'])->name('admin.konten.materi.setujui');
     Route::patch('/admin/konten/materi/{id}/tolak', [KontenController::class, 'tolakMateri'])->name('admin.konten.materi.tolak');
