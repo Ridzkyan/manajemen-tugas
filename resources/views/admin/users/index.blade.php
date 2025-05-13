@@ -49,6 +49,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 0.75rem 1.25rem;
+        cursor: pointer;
     }
     .section-label {
         padding-left: 1.25rem;
@@ -123,15 +124,13 @@
 
     @foreach($groupedUsers as $role => $group)
     <div class="card border-0 shadow-sm rounded-4 mb-3">
-        <div class="card-header bg-white fw-semibold fs-6 align-grid">
+        <div class="card-header bg-white fw-semibold fs-6 align-grid toggle-header" data-role="{{ $role }}">
             <span class="section-label">
                 <i class="fas {{ $icons[$role] ?? 'fa-users' }} text-warning me-2"></i>{{ $roleLabels[$role] ?? ucfirst($role) }}
             </span>
-            <button class="btn btn-sm btn-outline-secondary toggle-section" data-role="{{ $role }}">
-                <i class="fas fa-chevron-down rotate-icon"></i>
-            </button>
+            <i class="fas fa-chevron-down rotate-icon"></i>
         </div>
-        <div class="card-body user-section" id="section-{{ $role }}">
+        <div class="card-body user-section d-none" id="section-{{ $role }}">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
@@ -203,19 +202,22 @@
         });
     }
 
-    document.querySelectorAll('.toggle-section').forEach(button => {
-        const role = button.dataset.role;
-        const section = document.getElementById(`section-${role}`);
-        const icon = button.querySelector('i');
-        button.addEventListener('click', () => {
-            const active = section.classList.toggle('active');
-            icon.classList.toggle('rotate', active);
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.toggle-header').forEach(header => {
+            header.addEventListener('click', function () {
+                const role = this.dataset.role;
+                const section = document.getElementById(`section-${role}`);
+                const icon = this.querySelector('.rotate-icon');
+                section.classList.toggle('active'); // tampilkan/sematikan
+                section.classList.toggle('d-none'); // hilangkan d-none saat tampil
+                icon.classList.toggle('rotate');
+            });
         });
-    });
 
-    document.getElementById('roleFilter').addEventListener('change', filterTable);
-    document.getElementById('searchInput').addEventListener('input', filterTable);
-    document.getElementById('sortAZ').addEventListener('change', filterTable);
+        document.getElementById('roleFilter').addEventListener('change', filterTable);
+        document.getElementById('searchInput').addEventListener('input', filterTable);
+        document.getElementById('sortAZ').addEventListener('change', filterTable);
+    });
 </script>
 
 <script>
