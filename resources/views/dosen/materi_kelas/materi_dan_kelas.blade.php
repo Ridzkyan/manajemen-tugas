@@ -21,7 +21,7 @@
         <ul class="list-unstyled mb-0">
             @forelse($kelas as $kls)
                 <li class="mb-1">
-                    <a href="{{ route('dosen.materikelas.detail', $kls->id) }}" class="text-primary text-decoration-none">
+                    <a href="{{ route('dosen.materi_kelas.detail', $kls->id) }}" class="text-primary text-decoration-none">
                         {{ $kls->nama_matakuliah }}
                     </a>
                 </li>
@@ -37,7 +37,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <h6 class="fw-bold mb-3">Form Unggah Materi</h6>
-            <form action="{{ route('dosen.kelas.uploadMateri', $kelasPertama->id ?? 1) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('dosen.materi_kelas.upload', $kelasPertama->id ?? 1) }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-3">

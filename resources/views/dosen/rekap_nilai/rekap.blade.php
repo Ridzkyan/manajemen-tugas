@@ -5,7 +5,7 @@
     <h4 class="mb-4">Rekap Nilai</h4>
 
     {{-- Pilih Kelas --}}
-    <form method="GET" action="{{ route('dosen.rekap.nilai') }}" class="mb-3">
+    <form method="GET" action="{{ route('dosen.rekap_nilai.index') }}" class="mb-3">
         <div class="input-group">
             <select name="kelas_id" class="form-select" onchange="this.form.submit()">
                 <option value="">-- Pilih Kelas --</option>
@@ -39,7 +39,7 @@
                     </tr>
                 @endforeach
                 @if($selectedKelasId)
-    <a href="{{ route('dosen.rekap.nilai.export', $selectedKelasId) }}" class="btn btn-success mb-3">
+    <a href="{{ route('dosen.rekap_nilai.export', $selectedKelasId) }}" class="btn btn-success mb-3">
         📥 Export Excel
     </a>
 @endif

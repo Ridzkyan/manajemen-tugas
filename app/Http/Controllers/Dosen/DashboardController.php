@@ -6,20 +6,36 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Kelas;
 use App\Models\Materi;
-use App\Models\User;
+use App\Models\Mahasiswa;
+
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $dosenId = Auth::id();
+        // Ambil data dosen login
+        $dosen = Auth::guard('dosen')->user();
+        $dosenId = $dosen->id;
 
-        $userCount = User::count();
-        $materiCount = Materi::count();
-        $mataKuliahCount = Kelas::where('dosen_id', $dosenId)->distinct('nama_matakuliah')->count();
-        $kelas = Kelas::where('dosen_id', $dosenId)->get();
+        // Ambil semua kelas yang diajar oleh dosen beserta mahasiswanya
+        $kelas = Kelas::with('mahasiswa')->where('dosen_id', $dosenId)->get();
 
-        // Ambil statistik nilai nyata dari tugas tiap mata kuliah
+        // Hitung mahasiswa unik dari semua kelas yang diajar
+        $mahasiswaIds = [];
+        foreach ($kelas as $kls) {
+            foreach ($kls->mahasiswa as $mhs) {
+                $mahasiswaIds[] = $mhs->id;
+            }
+        }
+        $userCount = count(array_unique($mahasiswaIds));
+
+        // Hitung jumlah materi yang hanya dari kelas dosen ini
+        $materiCount = Materi::whereIn('kelas_id', $kelas->pluck('id'))->count();
+
+        // Hitung jumlah matakuliah unik
+        $mataKuliahCount = $kelas->pluck('nama_matakuliah')->unique()->count();
+
+        // Ambil statistik nilai dari tugas per matakuliah
         $statistikNilai = [];
         foreach ($kelas as $kls) {
             $avgNilai = $kls->tugas()->avg('nilai');
@@ -29,7 +45,7 @@ class DashboardController extends Controller
         }
 
         return view('dosen.dashboard', compact(
-            'userCount', 'materiCount', 'mataKuliahCount', 'kelas', 'statistikNilai'
+            'dosen', 'userCount', 'materiCount', 'mataKuliahCount', 'kelas', 'statistikNilai'
         ));
     }
 }

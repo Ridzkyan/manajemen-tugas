@@ -1,5 +1,5 @@
 {{-- dosen/kelas/form.blade.php --}}
-<form method="POST" action="{{ isset($kelas) ? route('dosen.kelas.update', $kelas->id) : route('dosen.kelas.store') }}">
+<form method="POST" action="{{ isset($kelas) ? route('dosen.kelola_kelas.update', $kelas->id) : route('dosen.kelola_kelas.store') }}">
     @csrf
     @if(isset($kelas))
         @method('PUT')

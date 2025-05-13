@@ -24,6 +24,6 @@
         <p class="text-muted">Belum ada materi yang diunggah untuk kelas ini.</p>
     @endif
 
-    <a href="{{ route('dosen.materikelas') }}" class="btn btn-secondary mt-3">⬅️ Kembali</a>
+    <a href="{{ route('dosen.materi_kelas.index') }}" class="btn btn-secondary mt-3">⬅️ Kembali</a>
 </div>
 @endsection

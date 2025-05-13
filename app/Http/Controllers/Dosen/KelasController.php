@@ -15,12 +15,12 @@ class KelasController extends Controller
     public function index()
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->get();
-        return view('dosen.kelas.index', compact('kelas'));
+        return view('dosen.kelola_kelas.index', compact('kelas'));
     }
 
     public function create()
     {
-        return view('dosen.kelas.create');
+        return view('dosen.kelola_kelas.create');
     }
 
     public function store(Request $request)
@@ -39,7 +39,7 @@ class KelasController extends Controller
             'whatsapp_link' => $request->whatsapp_link,
         ]);
 
-        return redirect()->route('dosen.kelas.index')->with('success', 'Kelas berhasil dibuat!');
+        return redirect()->route('dosen.kelola_kelas.index')->with('success', 'Kelas berhasil dibuat!');
     }
 
     public function show($id)
@@ -47,13 +47,13 @@ class KelasController extends Controller
         $kelas = Kelas::where('dosen_id', Auth::id())->where('id', $id)->firstOrFail();
         $mahasiswa = $kelas->mahasiswa;
 
-        return view('dosen.kelas.show', compact('kelas', 'mahasiswa'));
+        return view('dosen.kelola_kelas.show', compact('kelas', 'mahasiswa'));
     }
 
     public function edit($id)
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->where('id', $id)->firstOrFail();
-        return view('dosen.kelas.edit', compact('kelas'));
+        return view('dosen.kelola_kelas.edit', compact('kelas'));
     }
 
     public function update(Request $request, $id)
@@ -80,7 +80,7 @@ class KelasController extends Controller
         $kelas = Kelas::where('dosen_id', Auth::id())->where('id', $id)->firstOrFail();
         $kelas->delete();
 
-        return redirect()->route('dosen.dashboard')->with('success', 'Kelas berhasil dihapus!');
+        return redirect()->route('dosen.kelola_kelas.index')->with('success', 'Kelas berhasil dihapus!');
     }
 
     public function manage($id)
@@ -88,7 +88,7 @@ class KelasController extends Controller
         $kelas = Kelas::with('materi')->where('dosen_id', Auth::id())->where('id', $id)->firstOrFail();
         $allKelas = Kelas::where('dosen_id', Auth::id())->get();
 
-        return view('dosen.kelas.index', compact('kelas', 'allKelas'));
+        return view('dosen.kelola_kelas.index', compact('kelas', 'allKelas'));
     }
 
     public function uploadMateri(Request $request, $kelasId)
@@ -138,7 +138,7 @@ class KelasController extends Controller
         $kelas = Kelas::where('dosen_id', Auth::id())->get();
         $kelasPertama = $kelas->first();
 
-        return view('dosen.kelas.materi_dan_kelas', compact('kelas', 'kelasPertama'));
+        return view('dosen.materi_kelas.materi_dan_kelas', compact('kelas', 'kelasPertama'));
     }
 
     public function uploadMateriGlobal(Request $request)
@@ -189,12 +189,12 @@ class KelasController extends Controller
         $kelas = Kelas::where('dosen_id', Auth::id())->findOrFail($id);
         $materis = $kelas->materi;
 
-        return view('dosen.kelas.detail_materi', compact('kelas', 'materis'));
+        return view('dosen.kelola_kelas.detail_materi', compact('kelas', 'materis'));
     }
 
     public function komunikasi()
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->get();
-        return view('dosen.kelas.komunikasi', compact('kelas'));
+        return view('dosen.komunikasi.komunikasi', compact('kelas'));
     }
 }

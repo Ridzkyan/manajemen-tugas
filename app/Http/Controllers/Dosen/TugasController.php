@@ -20,7 +20,7 @@ class TugasController extends Controller
         $kelas = Kelas::where('dosen_id', Auth::id())->findOrFail($kelasId);
         $tugas = Tugas::where('kelas_id', $kelasId)->get();
 
-        return view('dosen.kelas.tugas.index', compact('kelas', 'tugas'));
+        return view('dosen.tugas_ujian.index', compact('kelas', 'tugas'));
     }
 
     public function store(Request $request, $kelasId)
@@ -47,7 +47,6 @@ class TugasController extends Controller
             'deadline' => $request->deadline,
         ]);
 
-        // Kirim notifikasi ke mahasiswa
         $kelas = Kelas::findOrFail($kelasId);
         foreach ($kelas->mahasiswa as $mahasiswa) {
             if ($mahasiswa->hasVerifiedEmail()) {
@@ -57,12 +56,13 @@ class TugasController extends Controller
 
         return redirect()->back()->with('success', 'Tugas berhasil ditambahkan dan notifikasi dikirim!');
     }
+
     public function detail($kelasId)
     {
-    $kelas = Kelas::with('tugas')->where('id', $kelasId)->where('dosen_id', Auth::id())->firstOrFail();
-    $tugas = $kelas->tugas;
+        $kelas = Kelas::with('tugas')->where('id', $kelasId)->where('dosen_id', Auth::id())->firstOrFail();
+        $tugas = $kelas->tugas;
 
-    return view('dosen.kelas.tugas.detail', compact('kelas', 'tugas'));
+        return view('dosen.tugas_ujian.detail_tugas', compact('kelas', 'tugas'));
     }
 
     public function penilaian($kelasId, $tugasId)
@@ -71,7 +71,7 @@ class TugasController extends Controller
         $tugas = Tugas::findOrFail($tugasId);
 
         $mahasiswa = $kelas->mahasiswa;
-        return view('dosen.kelas.tugas.penilaian', compact('kelas', 'tugas', 'mahasiswa'));
+        return view('dosen.tugas_ujian.penilaian', compact('kelas', 'tugas', 'mahasiswa'));
     }
 
     public function nilaiTugas(Request $request, $kelasId, $tugasId)
@@ -87,7 +87,6 @@ class TugasController extends Controller
         $tugas->feedback = $request->feedback;
         $tugas->save();
 
-        // Kirim notifikasi ke mahasiswa
         $kelas = Kelas::findOrFail($kelasId);
         foreach ($kelas->mahasiswa as $mahasiswa) {
             if ($mahasiswa->hasVerifiedEmail()) {
@@ -100,33 +99,40 @@ class TugasController extends Controller
 
     public function rekapNilai(Request $request)
     {
-    $dosenId = Auth::id();
-    $kelasList = Kelas::where('dosen_id', $dosenId)->get();
+        $dosenId = Auth::id();
+        $kelasList = Kelas::where('dosen_id', $dosenId)->get();
 
-    $selectedKelasId = $request->kelas_id;
-    
-    $tugas = collect(); // Default kosong
-    if ($selectedKelasId) {
-        $tugas = Tugas::where('kelas_id', $selectedKelasId)
-            ->with('kelas')
-            ->get();
+        $selectedKelasId = $request->kelas_id;
+
+        $tugas = collect(); // default kosong
+        if ($selectedKelasId) {
+            $tugas = Tugas::where('kelas_id', $selectedKelasId)
+                ->with('kelas')
+                ->get();
+        }
+
+        return view('dosen.rekap_nilai.rekap', compact('kelasList', 'tugas', 'selectedKelasId'));
     }
 
-    return view('dosen.kelas.tugas.rekap', compact('kelasList', 'tugas', 'selectedKelasId'));
-}
-
-
     public function rekapPerKelas($kelasId)
-{
-    $kelas = Kelas::with('tugas')->where('dosen_id', Auth::id())->findOrFail($kelasId);
-    $tugas = $kelas->tugas;
+    {
+        $kelas = Kelas::with('tugas')->where('dosen_id', Auth::id())->findOrFail($kelasId);
+        $tugas = $kelas->tugas;
 
-    return view('dosen.kelas.tugas.rekap_detail', compact('kelas', 'tugas'));
-}
+        return view('dosen.rekap_nilai.rekap_detail', compact('kelas', 'tugas'));
+    }
 
     public function exportRekap($kelasId)
-{
-    return Excel::download(new RekapNilaiExport($kelasId), 'rekap_nilai_kelas_' . $kelasId . '.xlsx');
-}
+    {
+        return Excel::download(new RekapNilaiExport($kelasId), 'rekap_nilai_kelas_' . $kelasId . '.xlsx');
+    }
+
+    public function pilihKelas()
+    {
+    $dosenId = Auth::id();
+    $kelasList = Kelas::where('dosen_id', $dosenId)->get();
+    return view('dosen.tugas_ujian.pilih_kelas', compact('kelasList'));
+    }
+
 
 }

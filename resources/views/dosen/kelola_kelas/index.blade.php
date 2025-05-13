@@ -10,7 +10,7 @@
     @endif
 
     {{-- Tombol Tambah Kelas --}}
-    <a href="{{ route('dosen.kelas.create') }}" class="btn btn-primary mb-3">+ Tambah Kelas</a>
+    <a href="{{ route('dosen.kelola_kelas.create') }}" class="btn btn-primary mb-3">+ Tambah Kelas</a>
 
     {{-- Tabel Daftar Kelas --}}
     <div class="card shadow-sm">
@@ -44,9 +44,9 @@
                                 @endif
                             </td>
                             <td class="d-flex justify-content-center gap-2 flex-wrap">
-                                <a href="{{ route('dosen.kelas.show', $kls->id) }}" class="btn btn-sm btn-info text-white">👥 Mahasiswa</a>
-                                <a href="{{ route('dosen.kelas.edit', $kls->id) }}" class="btn btn-sm btn-warning text-white">✏️ Edit</a>
-                                <form action="{{ route('dosen.kelas.destroy', $kls->id) }}" method="POST" class="d-inline">
+                                <a href="{{ route('dosen.kelola_kelas.show', $kls->id) }}" class="btn btn-sm btn-info text-white">👥 Mahasiswa</a>
+                                <a href="{{ route('dosen.kelola_kelas.edit', $kls->id) }}" class="btn btn-sm btn-warning text-white">✏️ Edit</a>
+                                <form action="{{ route('dosen.kelola_kelas.destroy', $kls->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger">🗑 Hapus</button>

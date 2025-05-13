@@ -8,7 +8,7 @@
         </div>
         <div class="card-body">
             {{-- Include form reusable --}}
-            @include('dosen.kelas.form')
+            @include('dosen.kelola_kelas.form')
         </div>
     </div>
 </div>

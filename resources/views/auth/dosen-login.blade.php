@@ -112,7 +112,7 @@
         <h3 class="fw-bold mb-2">Selamat Datang di <span class="text-taskflow">TaskFlow</span>!</h3>
         <p class="text-muted mb-4">Log In akun</p>
         <div class="mb-3">
-          <label for="email" class="form-label">Username/Email</label>
+          <label for="email" class="form-label">Email</label>
           <input type="email" class="form-control" id="email" name="email" required placeholder="Masukkan username/email">
         </div>
         <div class="mb-3">

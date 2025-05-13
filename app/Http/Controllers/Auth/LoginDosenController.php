@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
+
 class LoginDosenController extends Controller
 {
     public function __construct()
@@ -53,17 +54,25 @@ class LoginDosenController extends Controller
         ]);
     }
 
-    public function logout(Request $request)
-    {
-        $user = Auth::guard('dosen')->user();
+   public function logout(Request $request)
+{
+    $user = Auth::guard('dosen')->user();
+
+    // Update status user (opsional)
+    if ($user) {
         $user->is_online = false;
         $user->save();
-
-        Auth::guard('dosen')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/');
     }
+
+   
+    Auth::guard('dosen')->logout();
+
+    // Hapus semua session & regenerate token
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    // Redirect ke halaman login dosen
+    return redirect()->route('dosen.login')->with('message', 'Anda telah logout.');
+}
+
 }
