@@ -7,74 +7,158 @@
 
     <title>{{ config('app.name', 'TaskFlow') }}</title>
 
-    <!-- Fonts and Styles -->
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <!-- Bootstrap & Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <style>
+        body {
+            background-color: #fef9f4;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        #app {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            background-color: #00838f;
+            color: white;
+            width: 240px;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .sidebar .nav-link {
+            color: white;
+            font-weight: 600;
+            border-radius: 30px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            transition: background 0.3s ease;
+            font-size: 15px;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar .nav-link.active, .sidebar .nav-link.text-warning {
+            background-color: white !important;
+            color: #f5a04e !important;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background-color: #f5a04e;
+            padding: 15px 30px;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .topbar h5 {
+            margin: 0;
+            color: white;
+            font-weight: bold;
+        }
+
+        .content-wrapper {
+            padding: 30px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+    </style>
 </head>
 <body>
-    <div id="app">
-        {{-- Navbar --}}
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'TaskFlow') }}
+<div id="app">
+    {{-- Sidebar --}}
+    <aside class="sidebar">
+        <h5>TASKFLOW</h5>
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+                <a href="{{ route('dosen.dashboard') }}" class="nav-link {{ Route::is('dosen.dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-th-large"></i> Dashboard
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="{{ route('dosen.materi_kelas.index') }}" class="nav-link {{ Route::is('dosen.materi_kelas.index') ? 'active' : '' }}">
+                    <i class="fas fa-folder"></i> Materi & Kelas
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="{{ route('dosen.tugas_ujian.pilih_kelas', $kelasPertama->id ?? 1) }}" class="nav-link {{ Route::is('dosen.tugas_ujian.*') ? 'active' : '' }}">
+                    <i class="fas fa-tasks"></i> Tugas & Ujian
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="{{ route('dosen.komunikasi') }}" class="nav-link {{ Route::is('dosen.komunikasi') ? 'active' : '' }}">
+                    <i class="fas fa-comments"></i> Komunikasi
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="{{ route('dosen.kelola_kelas.index') }}" class="nav-link {{ Route::is('dosen.kelola_kelas.*') ? 'active' : '' }}">
+                    <i class="fas fa-cog"></i> Kelola Kelas
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="{{ route('dosen.rekap_nilai.index') }}" class="nav-link {{ Route::is('dosen.rekap_nilai') ? 'active' : '' }}">
+                    <i class="fas fa-clipboard-list"></i> Rekap Nilai
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+    <a href="{{ route('dosen.pengaturan') }}" class="nav-link {{ request()->is('dosen/pengaturan*') ? 'active' : '' }}">
+        <i class="fas fa-user-cog"></i> Pengaturan Profil
+    </a>
+</li>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side -->
-                    <ul class="navbar-nav me-auto"></ul>
 
-                    <!-- Right Side -->
-                    <ul class="navbar-nav ms-auto">
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
+</ul>
+</aside>
 
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                   data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('dosen.logout') }}"
-                                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('dosen.logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
+    {{-- Main --}}
+    <div class="main-content">
+        {{-- Topbar --}}
+        <div class="topbar">
+            <h5>Dashboard Dosen</h5>
+            <div class="text-white">
+                <strong>{{ Auth::guard('dosen')->user()->name ?? 'Nama Dosen' }}</strong><br>
+                <small>Dosen</small>
             </div>
-        </nav>
+        </div>
 
-        {{-- Main Content --}}
-        <main class="py-4">
+        {{-- Konten --}}
+        <div class="content-wrapper">
             @yield('content')
-        </main>
+        </div>
     </div>
-    @yield('scripts')
-    @stack('scripts')
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+@yield('scripts')
+@stack('scripts')
 </body>
 </html>

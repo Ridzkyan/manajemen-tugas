@@ -38,17 +38,17 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\User\User::class, // ✅ disesuaikan
         ],
 
         'dosens' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Dosen::class, // <- SUDAH DIGANTI
+            'model' => App\Models\User\Dosen::class, // ✅ disesuaikan
         ],
 
         'mahasiswas' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Mahasiswa::class, // <- SUDAH DIGANTI
+            'model' => App\Models\User\Mahasiswa::class, // ✅ disesuaikan
         ],
     ],
 
