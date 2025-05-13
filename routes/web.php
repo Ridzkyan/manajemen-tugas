@@ -136,6 +136,7 @@ Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name
     Route::get('/tugas-ujian/{kelas}/detail', [App\Http\Controllers\Dosen\TugasController::class, 'detail'])->name('tugas_ujian.detail');
     Route::get('/tugas-ujian/{kelas}/{tugas}/penilaian', [App\Http\Controllers\Dosen\TugasController::class, 'penilaian'])->name('tugas_ujian.penilaian');
     Route::post('/tugas-ujian/{kelas}/{tugas}/penilaian', [App\Http\Controllers\Dosen\TugasController::class, 'nilaiTugas'])->name('tugas_ujian.nilai');
+    Route::get('/tugas-ujian/{kelas}/{tugas}/mahasiswa', [App\Http\Controllers\Dosen\TugasController::class, 'penilaianPerMahasiswa'])->name('tugas_ujian.mahasiswa');
 
     // Rekap Nilai → views/dosen/rekap_nilai/
     Route::get('/rekap-nilai', [App\Http\Controllers\Dosen\TugasController::class, 'rekapNilai'])->name('rekap_nilai.index');
@@ -145,8 +146,8 @@ Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name
       // 🔧 Pengaturan Dosen
     Route::get('/pengaturan', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'pengaturan'])->name('pengaturan');
 
-    Route::get('/pengaturan/profil', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'editProfil'])->name('pengaturan.profil');
-    Route::post('/pengaturan/profil', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'updateProfil'])->name('pengaturan.profil.update');
+    Route::get('/pengaturan/index', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'editProfil'])->name('pengaturan.profil');
+    Route::post('/pengaturan/index', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'updateProfil'])->name('pengaturan.profil.update');
 
     Route::get('/pengaturan/password', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'editPassword'])->name('pengaturan.password');
     Route::post('/pengaturan/password', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'updatePassword'])->name('pengaturan.password.update');

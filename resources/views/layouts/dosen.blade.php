@@ -130,10 +130,12 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-    <a href="{{ route('dosen.pengaturan.profil') }}" class="nav-link {{ Route::is('dosen.pengaturan.profil') ? 'active' : '' }}">
+    <a href="{{ route('dosen.pengaturan') }}" class="nav-link {{ request()->is('dosen/pengaturan*') ? 'active' : '' }}">
         <i class="fas fa-user-cog"></i> Pengaturan Profil
     </a>
 </li>
+
+
 </ul>
 </aside>
 

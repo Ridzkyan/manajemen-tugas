@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
-
 
 class LoginDosenController extends Controller
 {
@@ -29,15 +27,14 @@ class LoginDosenController extends Controller
         ]);
 
         $credentials = $request->only('email', 'password');
-
         $user = \App\Models\Dosen::where('email', $credentials['email'])->first();
 
+        // Cek kode unik
         if (!$user || $user->kode_unik !== $request->kode_unik) {
-            return back()->withErrors([
-                'kode_unik' => 'Kode Unik tidak sesuai atau kosong.',
-            ])->withInput();
+            return back()->withInput()->with('error', 'Kode Unik tidak sesuai atau kosong.');
         }
 
+        // Cek login
         if (Auth::guard('dosen')->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
@@ -49,30 +46,24 @@ class LoginDosenController extends Controller
             return redirect()->intended(route('dosen.dashboard'));
         }
 
-        throw ValidationException::withMessages([
-            'email' => [trans('auth.failed')],
-        ]);
+        // Jika login gagal
+        return back()->withInput()->with('error', 'Email atau password salah.');
     }
 
-   public function logout(Request $request)
-{
-    $user = Auth::guard('dosen')->user();
+    public function logout(Request $request)
+    {
+        $user = Auth::guard('dosen')->user();
 
-    // Update status user (opsional)
-    if ($user) {
-        $user->is_online = false;
-        $user->save();
+        if ($user) {
+            $user->is_online = false;
+            $user->save();
+        }
+
+        Auth::guard('dosen')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('dosen.login')->with('message', 'Anda telah logout.');
     }
-
-   
-    Auth::guard('dosen')->logout();
-
-    // Hapus semua session & regenerate token
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    // Redirect ke halaman login dosen
-    return redirect()->route('dosen.login')->with('message', 'Anda telah logout.');
-}
-
 }

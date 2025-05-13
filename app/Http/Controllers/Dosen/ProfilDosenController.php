@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User\Dosen;
 
 class ProfilDosenController extends Controller
 {
@@ -22,19 +23,18 @@ class ProfilDosenController extends Controller
 
     public function updateProfil(Request $request)
     {
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255|unique:users,email,' . Auth::id(),
-    ]);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . Auth::id(),
+        ]);
 
-    $dosen = Auth::guard('dosen')->user();
-    $dosen->name = $request->name;
-    $dosen->email = $request->email;
-    $dosen->save();
+        $dosen = Auth::guard('dosen')->user();
+        $dosen->name = $request->name;
+        $dosen->email = $request->email;
+        $dosen->save();
 
-    return back()->with('success', 'Profil berhasil diperbarui.');
+        return redirect()->route('dosen.pengaturan')->with('success', 'Profil berhasil diperbarui.');
     }
-
 
     public function editPassword()
     {
@@ -44,13 +44,20 @@ class ProfilDosenController extends Controller
     public function updatePassword(Request $request)
     {
         $request->validate([
-            'password' => 'required|string|min:6|confirmed',
+            'current_password' => ['required'],
+            'new_password' => ['required', 'min:6', 'confirmed'],
         ]);
 
         $dosen = Auth::guard('dosen')->user();
-        $dosen->password = Hash::make($request->password);
+
+        if (!Hash::check($request->current_password, $dosen->password)) {
+            return back()->with('error', 'Password lama salah.');
+        }
+
+        $dosen->password = Hash::make($request->new_password);
         $dosen->save();
 
-        return back()->with('success', 'Password berhasil diperbarui.');
+        return redirect()->route('dosen.pengaturan')
+                         ->with('success', 'Password berhasil diperbarui!');
     }
 }

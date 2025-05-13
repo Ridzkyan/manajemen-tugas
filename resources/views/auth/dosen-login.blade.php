@@ -35,7 +35,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem 6rem 2rem 4rem; /* Tambah padding kanan */
+      padding: 2rem 6rem 2rem 4rem;
       background: linear-gradient(to bottom right, #fff9f4, #fefefe);
     }
     .login-form {
@@ -107,27 +107,55 @@
       <div class="mt-2">TASKFLOW - MANAGEMENT</div>
     </div>
     <div class="right-pane">
-      <form class="login-form" method="POST" action="{{ route('dosen.login') }}">
-        @csrf
-        <h3 class="fw-bold mb-2">Selamat Datang di <span class="text-taskflow">TaskFlow</span>!</h3>
-        <p class="text-muted mb-4">Log In akun</p>
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input type="email" class="form-control" id="email" name="email" required placeholder="Masukkan username/email">
-        </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input type="password" class="form-control" id="password" name="password" required placeholder="Masukkan Password">
-        </div>
-        <div class="mb-4">
-          <label for="kode_unik" class="form-label">Kode Unik</label>
-          <input type="text" class="form-control" id="kode_unik" name="kode_unik" required placeholder="Masukkan Kode Unik">
-        </div>
-        <button type="submit" class="btn btn-login w-100">
-            <i class="fas fa-sign-in-alt me-1"></i> Log In
-        </button>
-      </form>
+      <div class="login-form">
+
+        {{-- ALERT AREA --}}
+        @if(session('error'))
+          <div class="alert alert-danger alert-dismissible fade show small py-2 px-3 mb-3" role="alert" style="font-size: 0.9rem;">
+            {{ session('error') }}
+            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        @endif
+
+        @if(session('message'))
+          <div class="alert alert-success alert-dismissible fade show small py-2 px-3 mb-3" role="alert" style="font-size: 0.9rem;">
+            {{ session('message') }}
+            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        @endif
+
+        @if($errors->any())
+          <div class="alert alert-danger alert-dismissible fade show small py-2 px-3 mb-3" role="alert" style="font-size: 0.9rem;">
+            {{ $errors->first() }}
+            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        @endif
+
+        <form method="POST" action="{{ route('dosen.login') }}">
+          @csrf
+          <h3 class="fw-bold mb-2">Selamat Datang di <span class="text-taskflow">TaskFlow</span>!</h3>
+          <p class="text-muted mb-4">Log In akun</p>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required placeholder="Masukkan username/email" value="{{ old('email') }}">
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required placeholder="Masukkan Password">
+          </div>
+          <div class="mb-4">
+            <label for="kode_unik" class="form-label">Kode Unik</label>
+            <input type="text" class="form-control" id="kode_unik" name="kode_unik" required placeholder="Masukkan Kode Unik" value="{{ old('kode_unik') }}">
+          </div>
+          <button type="submit" class="btn btn-login w-100">
+              <i class="fas fa-sign-in-alt me-1"></i> Log In
+          </button>
+        </form>
+      </div>
     </div>
   </div>
+
+  {{-- Bootstrap JS --}}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

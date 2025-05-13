@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Dosen;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Kelas;
-use App\Models\Materi;
-use App\Notifications\MateriBaruNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Kelas\Kelas;
+use App\Models\Kelas\Materi;
+use App\Notifications\MateriBaruNotification;
 
 class KelasController extends Controller
 {
@@ -133,7 +133,7 @@ class KelasController extends Controller
         return redirect()->back()->with('success', 'Materi berhasil diupload dan notifikasi dikirim!');
     }
 
-    public function materiDanKelas()    
+    public function materiDanKelas()
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->get();
         $kelasPertama = $kelas->first();

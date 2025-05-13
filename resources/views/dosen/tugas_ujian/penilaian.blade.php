@@ -2,29 +2,49 @@
 
 @section('content')
 <div class="container">
-    <h3>Penilaian Tugas: {{ $tugas->judul }}</h3>
+    <h4 class="mb-4">Penilaian Tugas: {{ $tugas->judul }} - Kelas {{ $tugas->kelas->nama_kelas }}</h4>
 
-    <form method="POST" action="{{ route('dosen.tugas.nilai', ['kelas' => $kelas->id, 'tugas' => $tugas->id]) }}">
-        @csrf
-
-        <div class="mb-3">
-            <label>Nilai</label>
-            <input type="number" name="nilai" class="form-control" required min="0" max="100">
-        </div>
-
-        <div class="mb-3">
-            <label>Feedback</label>
-            <textarea name="feedback" class="form-control"></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Berikan Nilai</button>
-    </form>
-
-    <h4>Mahasiswa yang Mengumpulkan Tugas:</h4>
-    <ul>
-        @foreach($mahasiswa as $mhs)
-            <li>{{ $mhs->nama }} - {{ $mhs->pivot->created_at }} </li>
-        @endforeach
-    </ul>
+    @if($pengumpul->count() > 0)
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Nama Mahasiswa</th>
+                <th>File Jawaban</th>
+                <th>Nilai</th>
+                <th>Feedback</th>
+                <th>Penilaian</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($pengumpul as $item)
+            <tr>
+                <td>{{ $item->mahasiswa->name }}</td>
+                <td>
+                    @if($item->file)
+                        <a href="{{ asset('storage/' . $item->file) }}" target="_blank">Lihat File</a>
+                    @else
+                        Tidak ada file
+                    @endif
+                </td>
+                <td>
+                    <form action="{{ route('dosen.tugas_ujian.nilai', ['kelas' => $kelas->id, 'tugas' => $tugas->id]) }}" method="POST" class="d-flex gap-2 align-items-center">
+                        @csrf
+                        <input type="hidden" name="mahasiswa_id" value="{{ $item->mahasiswa_id }}">
+                        <input type="number" name="nilai" class="form-control form-control-sm" min="0" max="100" value="{{ $item->nilai }}" placeholder="Nilai" style="width: 80px;">
+                </td>
+                <td>
+                        <input type="text" name="feedback" class="form-control form-control-sm" value="{{ $item->feedback }}" placeholder="Feedback">
+                </td>
+                <td>
+                        <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    @else
+        <div class="alert alert-info">Belum ada mahasiswa yang mengumpulkan tugas ini.</div>
+    @endif
 </div>
 @endsection

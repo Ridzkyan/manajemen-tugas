@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Dosen;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Tugas;
-use App\Models\Kelas;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Tugas\Tugas;
+use App\Models\Tugas\PengumpulanTugas;
+use App\Models\Kelas\Kelas;
+use App\Models\User\Mahasiswa;
 use App\Notifications\TugasBaruNotification;
 use App\Notifications\TugasDinilaiNotification;
 use App\Exports\RekapNilaiExport;
@@ -15,6 +17,14 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class TugasController extends Controller
 {
+    public function pilihKelas()
+    {
+        $dosenId = Auth::id();
+        $kelasList = Kelas::where('dosen_id', $dosenId)->get();
+
+        return view('dosen.tugas_ujian.pilih_kelas', compact('kelasList'));
+    }
+
     public function index($kelasId)
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->findOrFail($kelasId);
@@ -33,10 +43,9 @@ class TugasController extends Controller
             'deadline' => 'nullable|date'
         ]);
 
-        $filePath = null;
-        if ($request->hasFile('file_soal')) {
-            $filePath = $request->file('file_soal')->store('tugas', 'public');
-        }
+        $filePath = $request->hasFile('file_soal') 
+            ? $request->file('file_soal')->store('tugas', 'public')
+            : null;
 
         $tugas = Tugas::create([
             'kelas_id' => $kelasId,
@@ -68,30 +77,35 @@ class TugasController extends Controller
     public function penilaian($kelasId, $tugasId)
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->findOrFail($kelasId);
-        $tugas = Tugas::findOrFail($tugasId);
+        $tugas = Tugas::with('kelas')->findOrFail($tugasId);
 
-        $mahasiswa = $kelas->mahasiswa;
-        return view('dosen.tugas_ujian.penilaian', compact('kelas', 'tugas', 'mahasiswa'));
+        $pengumpul = PengumpulanTugas::with('mahasiswa')
+            ->where('tugas_id', $tugasId)
+            ->get();
+
+        return view('dosen.tugas_ujian.penilaian', compact('kelas', 'tugas', 'pengumpul'));
     }
 
     public function nilaiTugas(Request $request, $kelasId, $tugasId)
     {
         $request->validate([
+            'mahasiswa_id' => 'required|exists:users,id',
             'nilai' => 'required|numeric|min:0|max:100',
             'feedback' => 'nullable|string',
         ]);
 
-        $tugas = Tugas::findOrFail($tugasId);
+        $pengumpulan = PengumpulanTugas::where('tugas_id', $tugasId)
+            ->where('mahasiswa_id', $request->mahasiswa_id)
+            ->firstOrFail();
 
-        $tugas->nilai = $request->nilai;
-        $tugas->feedback = $request->feedback;
-        $tugas->save();
+        $pengumpulan->nilai = $request->nilai;
+        $pengumpulan->feedback = $request->feedback;
+        $pengumpulan->save();
 
-        $kelas = Kelas::findOrFail($kelasId);
-        foreach ($kelas->mahasiswa as $mahasiswa) {
-            if ($mahasiswa->hasVerifiedEmail()) {
-                $mahasiswa->notify(new TugasDinilaiNotification($tugas));
-            }
+        $mahasiswa = Mahasiswa::findOrFail($request->mahasiswa_id);
+        if ($mahasiswa->hasVerifiedEmail()) {
+            $tugas = Tugas::findOrFail($tugasId);
+            $mahasiswa->notify(new TugasDinilaiNotification($tugas));
         }
 
         return redirect()->back()->with('success', 'Penilaian berhasil disimpan dan notifikasi dikirim!');
@@ -104,12 +118,9 @@ class TugasController extends Controller
 
         $selectedKelasId = $request->kelas_id;
 
-        $tugas = collect(); // default kosong
-        if ($selectedKelasId) {
-            $tugas = Tugas::where('kelas_id', $selectedKelasId)
-                ->with('kelas')
-                ->get();
-        }
+        $tugas = $selectedKelasId
+            ? Tugas::where('kelas_id', $selectedKelasId)->with('kelas')->get()
+            : collect();
 
         return view('dosen.rekap_nilai.rekap', compact('kelasList', 'tugas', 'selectedKelasId'));
     }
@@ -126,13 +137,4 @@ class TugasController extends Controller
     {
         return Excel::download(new RekapNilaiExport($kelasId), 'rekap_nilai_kelas_' . $kelasId . '.xlsx');
     }
-
-    public function pilihKelas()
-    {
-    $dosenId = Auth::id();
-    $kelasList = Kelas::where('dosen_id', $dosenId)->get();
-    return view('dosen.tugas_ujian.pilih_kelas', compact('kelasList'));
-    }
-
-
 }

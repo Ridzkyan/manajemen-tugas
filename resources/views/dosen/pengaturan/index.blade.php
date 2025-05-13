@@ -1,166 +1,66 @@
 @extends('layouts.dosen')
 
+@if(session('success'))
+    <div class="alert alert-success py-2 px-3 mb-3 small alert-dismissible fade show" role="alert" style="font-size: 0.9rem;">
+        {{ session('success') }}
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger py-2 px-3 mb-3 small alert-dismissible fade show" role="alert" style="font-size: 0.9rem;">
+        {{ session('error') }}
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 @section('content')
+<div class="container">
+    <h3 class="mb-4 fw-bold">⚙️ Pengaturan Dosen</h3>
+    <p class="text-muted mb-4">Kelola pengaturan akun dosen di bawah ini.</p>
 
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <div class="row g-4">
 
-<style>
-    html, body {
-        height: 100vh;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-
-    .setting-wrapper {
-        padding: 1rem 2rem 2rem;
-        min-height: 85vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        animation: fadeSlideUp 0.6s ease;
-    }
-
-    @keyframes fadeSlideUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .setting-title {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.2rem;
-        font-weight: bold;
-        margin-bottom: 0.3rem;
-        margin-top: 0.8rem;
-    }
-
-    .setting-title i {
-        color: #f5a04e;
-        margin-right: 0.6rem;
-    }
-
-    .setting-subtext {
-        text-align: center;
-        color: #666;
-        margin-bottom: 1.5rem;
-    }
-
-    .setting-grid-row {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .setting-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
-        padding: 3.5rem 2.5rem;
-        text-align: center;
-        position: relative;
-        transition: transform 0.2s ease;
-        width: 280px;
-        height: 280px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .setting-card:hover {
-        transform: translateY(-6px);
-    }
-
-    .setting-card i {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        transition: transform 0.2s ease;
-    }
-
-    .setting-card:hover i {
-        transform: scale(1.1);
-    }
-
-    .setting-card .badge {
-        position: absolute;
-        top: 12px;
-        right: 16px;
-        font-size: 0.7rem;
-        padding: 0.3em 0.6em;
-    }
-
-    @media (max-width: 768px) {
-        .setting-grid-row {
-            flex-direction: column;
-            align-items: center;
-        }
-    }
-</style>
-
-<div class="setting-wrapper">
-    <div class="setting-title">
-        <i class="fas fa-cogs"></i> Pengaturan Dosen
-    </div>
-    <p class="setting-subtext">Kelola pengaturan akun dosen Anda di bawah ini.</p>
-
-    <div class="setting-grid-row">
-        <a href="{{ route('dosen.pengaturan.profil') }}" class="setting-card text-decoration-none text-dark">
-            <i class="fas fa-user-cog text-primary"></i>
-            <div class="badge bg-primary text-white">Aktif</div>
-            <div class="fw-bold mt-2">Ubah Profil</div>
-        </a>
-        <a href="{{ route('dosen.pengaturan.password') }}" class="setting-card text-decoration-none text-dark">
-            <i class="fas fa-key text-danger"></i>
-            <div class="badge bg-danger text-white">Keamanan</div>
-            <div class="fw-bold mt-2">Ganti Password</div>
-        </a>
-    </div>
-
-    <div class="setting-grid-row">
-        <div class="setting-card">
-            <i class="fas fa-bell text-info"></i>
-            <div class="badge bg-secondary text-white">Soon</div>
-            <div class="fw-bold mt-2">Notifikasi</div>
+        {{-- Ubah Profile --}}
+        <div class="col-md-4">
+            <a href="{{ route('dosen.pengaturan.profil') }}" class="text-decoration-none">
+                <div class="card shadow-sm h-100 text-center p-4 border border-primary-subtle">
+                    <div class="text-primary mb-2">
+                        <i class="fas fa-user-cog fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Ubah Profil</h5>
+                    <span class="badge bg-primary mt-2">Aktif</span>
+                </div>
+            </a>
         </div>
-        <div class="setting-card">
-            <i class="fas fa-sliders-h text-secondary"></i>
-            <div class="badge bg-secondary text-white">Soon</div>
-            <div class="fw-bold mt-2">Sistem</div>
+
+        {{-- Ganti Password --}}
+        <div class="col-md-4">
+            <a href="{{ route('dosen.pengaturan.password.update') }}" class="text-decoration-none">
+                <div class="card shadow-sm h-100 text-center p-4 border border-danger-subtle">
+                    <div class="text-danger mb-2">
+                        <i class="fas fa-key fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Ganti Password</h5>
+                    <span class="badge bg-danger mt-2">Keamanan</span>
+                </div>
+            </a>
         </div>
-        <div class="setting-card text-danger" onclick="handleLogout()" style="cursor: pointer;">
-            <i class="fas fa-sign-out-alt"></i>
-            <div class="badge bg-danger text-white">Logout</div>
-            <div class="fw-bold mt-2">Logout</div>
-            <form id="logoutForm" action="{{ route('dosen.logout') }}" method="POST" style="display: none;">
+
+        {{-- Logout --}}
+        <div class="col-md-4">
+            <form method="POST" action="{{ route('dosen.logout') }}">
                 @csrf
+                <button type="submit" class="card shadow-sm h-100 text-center p-4 w-100 border border-danger-subtle btn btn-link text-decoration-none">
+                    <div class="text-danger mb-2">
+                        <i class="fas fa-sign-out-alt fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Logout</h5>
+                    <span class="badge bg-danger mt-2">Logout</span>
+                </button>
             </form>
         </div>
+
     </div>
 </div>
-
-<script>
-    function handleLogout() {
-        Swal.fire({
-            title: 'Yakin ingin logout?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, Logout',
-            cancelButtonText: 'Batal',
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#6c757d',
-            reverseButtons: true,
-            animation: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('logoutForm').submit();
-            }
-        });
-    }
-</script>
-
 @endsection
