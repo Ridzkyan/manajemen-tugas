@@ -44,8 +44,6 @@ class LoginController extends Controller
                     return redirect()->intended(route('dosen.dashboard'));
                 case 'mahasiswa':
                     return redirect()->intended(route('mahasiswa.dashboard'));
-                default:
-                    return redirect('/');
             }
             
         }

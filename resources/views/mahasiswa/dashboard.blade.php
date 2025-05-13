@@ -1,73 +1,84 @@
-@extends('layouts.app')
+@extends('layouts.mahasiswa')
+@section('title', 'Dashboard')
 
 @section('content')
-<div class="container">
-    <h3>Dashboard Mahasiswa</h3>
+{{-- Welcome Section --}}
+<div class="mb-4 p-3 bg-warning rounded text-white shadow-sm">
+    <h5>Halo, {{ Auth::user()->nama ?? 'Nama Mahasiswa' }}!</h5>
+    <p>Selamat datang, mari kita mulai hari dengan semangat dan produktivitas tinggi.</p>
+</div>
 
-    {{-- Alert Success/Error --}}
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+{{-- 2 Card Utama --}}
+<div class="row">
+    {{-- Card Kelas --}}
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">Kelas / Mata Kuliah</h6>
+                    {{-- <a href="{{ route('mahasiswa.kelas.materi') }}" class="btn btn-sm btn-outline-warning">Selengkapnya</a> --}}
+                </div>
 
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-
-    {{-- Tombol Arahkan ke Join Kelas --}}
-    <div class="card mb-4">
-        <div class="card-body d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Belum punya kelas? Gabung sekarang!</h5>
-            <a href="{{ route('mahasiswa.join.index') }}" class="btn btn-success">
-                ➕ Gabung ke Kelas
-            </a>
+                @if($kelasmahasiswa->count())
+                    <ul class="list-unstyled mb-0">
+                        @foreach($kelasmahasiswa as $kelas)
+                            <li class="mb-3">
+                                <strong>{{ $kelas->nama_matakuliah }}</strong><br>
+                                <small>{{ $kelas->kode_kelas ?? '-' }} - {{ optional($kelas->dosen)->name ?? 'Dosen Tidak Dikenal' }}</small>
+                            </li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="text-muted">Belum bergabung ke kelas manapun.</p>
+                @endif
+            </div>
         </div>
     </div>
 
-    {{-- Daftar Kelas Yang Diikuti --}}
-    <div class="card">
-        <div class="card-header">
-            Kelas Yang Kamu Ikuti
-        </div>
-        <div class="card-body">
-            @if($kelasmahasiswa->count() > 0)
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Nama Kelas</th>
-                            <th>Mata Kuliah</th>
-                            <th>Dosen Pengajar</th>
-                            <th>Grup WhatsApp</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($kelasmahasiswa as $kelas)
-                        <tr>
-                            <td>{{ $kelas->nama_kelas }}</td>
-                            <td>{{ $kelas->nama_matakuliah }}</td>
-                            <td>{{ optional($kelas->dosen)->name ?? 'Tidak diketahui' }}</td>
-                            <td>
-                                @if($kelas->whatsapp_link)
-                                    <a href="{{ $kelas->whatsapp_link }}" target="_blank" class="btn btn-success btn-sm">Join WhatsApp</a>
-                                @else
-                                    <span class="text-muted">Tidak ada link</span>
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('mahasiswa.kelas.show', $kelas->id) }}" class="btn btn-primary btn-sm">Masuk</a>
-                                <form action="{{ route('mahasiswa.kelas.leave', $kelas->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin keluar dari kelas ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Keluar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>                            
-                </table>
-            @else
-                <p class="text-muted">Kamu belum bergabung ke kelas manapun.</p>
-            @endif
+    {{-- Card Tugas --}}
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">Daftar Tugas Aktif</h6>
+                    {{-- - <a href="{{ route('mahasiswa.kelas.tugas') }}" class="btn btn-sm btn-outline-warning">Selengkapnya</a>--}}
+                </div>
+
+                @if($tugasAktif->count())
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Judul</th>
+                                <th>Kelas</th>
+                                <th>Deadline</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($tugasAktif as $tugas)
+                            <tr>
+                                <td>
+                                    {{ $tugas->judul }}
+                                    @if(in_array($tugas->id, $tugasSudahDikumpulkan))
+                                        <span class="badge bg-success">✅ Terkumpul</span>
+                                    @else
+                                        <span class="badge bg-danger">❌ Belum</span>
+                                    @endif
+                                </td>
+                                <td>{{ $tugas->kelas->nama_matakuliah ?? '-' }}</td>
+                                <td>
+                                    {{ \Carbon\Carbon::parse($tugas->deadline)->format('Y-m-d') }}<br>
+                                    <small class="text-danger">
+                                    {{ \Carbon\Carbon::parse($tugas->deadline)->diffForHumans(now(), ['parts' => 2]) }}
+                                    </small>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <p class="text-muted">Tidak ada tugas aktif saat ini.</p>
+                @endif
+            </div>
         </div>
     </div>
 </div>

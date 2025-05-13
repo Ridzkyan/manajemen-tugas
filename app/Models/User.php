@@ -50,6 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function kelasMahasiswa()
     {
-        return $this->belongsToMany(Kelas::class, 'kelas_mahasiswa', 'mahasiswa_id', 'kelas_id');
+    return $this->belongsToMany(Kelas::class, 'kelas_mahasiswa', 'mahasiswa_id', 'kelas_id');
     }
+
 }

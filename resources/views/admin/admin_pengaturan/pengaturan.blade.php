@@ -11,8 +11,6 @@
             <ul>
                 <li><a href="{{ route('admin.profil.edit') }}"><i class="fas fa-user"></i> Ubah Profil</a></li>
                 <li><a href="{{ route('admin.password.edit') }}"><i class="fas fa-lock"></i> Ganti Password</a></li>
-                <li>Pengaturan Notifikasi</li>
-                <li>Pengaturan Sistem</li>
             </ul>
 
             <hr>

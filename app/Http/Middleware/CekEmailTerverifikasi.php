@@ -10,7 +10,7 @@ class CekEmailTerverifikasi
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = Auth::user();
+        $user = Auth::guard('mahasiswa')->user();
 
         // Pastikan user login dan role mahasiswa
         if ($user && $user->role === 'mahasiswa') {
