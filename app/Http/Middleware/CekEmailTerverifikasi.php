@@ -10,7 +10,7 @@ class CekEmailTerverifikasi
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = Auth::guard('mahasiswa')->user();
+        $user = Auth::guard('mahasiswa')->guard('mahasiswa')->user();
     
         // Bypass route tertentu agar tidak terjebak di redirect loop
         if ($request->routeIs('verification.notice', 'verification.send', 'verification.verify')) {

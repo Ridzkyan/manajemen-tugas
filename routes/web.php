@@ -22,6 +22,8 @@ use App\Http\Controllers\Mahasiswa\MateriController as MahasiswaMateriController
 use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Dosen\RekapController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Http\Controllers\Auth\VerificationController;
 // ==============================
 // PUBLIC ROUTES
 // ==============================
@@ -165,11 +167,32 @@ Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name
 // ---------- MAHASISWA ----------
 Route::middleware(['auth:mahasiswa', 'mahasiswa.verified'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Mahasiswa\HomeController::class, 'index'])->name('dashboard');
-    Route::get('/join', [JoinKelasController::class, 'index'])->name('join.index');
-    Route::post('/join', [JoinKelasController::class, 'store'])->name('join.store');
-    Route::get('/kelas/{id}', [JoinKelasController::class, 'show'])->name('kelas.show');
-    Route::delete('/kelas/{id}', [JoinKelasController::class, 'leave'])->name('kelas.leave');
-    Route::delete('/leave-kelas/{id}', [JoinKelasController::class, 'leave'])->name('leave.kelas');
-    Route::get('/kelas/{kelas}/materi', [MahasiswaMateriController::class, 'index'])->name('materi.index');
-    Route::get('/kelas/{kelas}/tugas', [MahasiswaTugasController::class, 'index'])->name('tugas.index');
+    Route::get('/join', [App\Http\Controllers\Mahasiswa\JoinKelasController::class, 'index'])->name('join.index');
+    Route::post('/join', [App\Http\Controllers\Mahasiswa\JoinKelasController::class, 'store'])->name('join.store');
+    Route::get('/kelas/{id}', [App\Http\Controllers\Mahasiswa\JoinKelasController::class, 'show'])->name('kelas.show');
+    Route::delete('/kelas/{id}', [App\Http\Controllers\Mahasiswa\JoinKelasController::class, 'leave'])->name('kelas.leave');
+    Route::delete('/leave-kelas/{id}', [App\Http\Controllers\Mahasiswa\JoinKelasController::class, 'leave'])->name('leave.kelas');
+    Route::get('/kelas/{kelas}/materi', [App\Http\Controllers\Mahasiswa\MateriController::class, 'index'])->name('materi.index');
+    Route::get('/kelas/tugas', [App\Http\Controllers\Mahasiswa\TugasController::class, 'index'])->name('tugas.index');
+    Route::get('/kelas', [App\Http\Controllers\Mahasiswa\MateriController::class, 'daftarKelasMateri'])->name('kelas.index');
+    Route::post('/kelas/{kelas}/tugas/{tugas}/upload', [App\Http\Controllers\Mahasiswa\TugasController::class, 'upload'])->name('tugas.upload');
+    Route::get('/kelas/{kelas}/tugas/{tugas}/preview', [App\Http\Controllers\Mahasiswa\TugasController::class, 'preview'])->name('tugas.preview');
+    Route::delete('/kelas/{kelas}/tugas/{tugas}/delete', [App\Http\Controllers\Mahasiswa\TugasController::class, 'delete'])->name('tugas.delete');
+    Route::get('/komunikasi', [App\Http\Controllers\Mahasiswa\KomunikasiController::class, 'index'])->name('komunikasi.index');
+
+    Route::get('/pengaturan', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'index'])->name('pengaturan.index');
+    Route::get('/edit-profil', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'editProfile'])->name('profile-edit.edit');
+    Route::post('/edit-profil', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'updateProfile'])->name('profile-edit.update');
+    
+    Route::get('/ganti-password', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'editPassword'])->name('password-edit.edit');
+    Route::post('/ganti-password', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'updatePassword'])->name('password-edit.update');
+
+    // Rute verifikasi email untuk mahasiswa
+    Route::middleware(['auth:mahasiswa'])->group(function () {
+    Route::get('email/verify', [VerificationController::class, 'show'])->name('verification.notice');
+    Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->middleware('signed')->name('verification.verify');
+    Route::post('email/resend', [VerificationController::class, 'resend'])->middleware('throttle:6,1')->name('verification.resend');
+
+});
+
 });
