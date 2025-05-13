@@ -14,7 +14,10 @@ class TugasController extends Controller
     public function index($kelasId)
     {
         $kelas = Kelas::findOrFail($kelasId);
-        $tugas = Tugas::where('kelas_id', $kelasId)->get();
+        $tugas= Tugas::where('kelas_id', $kelasId)
+            ->where('status', 'disetujui')
+            ->get();
+    
 
         // Ambil daftar tugas yang sudah dikumpulkan oleh mahasiswa ini
         $pengumpulanTugas = PengumpulanTugas::where('mahasiswa_id', auth()->id())

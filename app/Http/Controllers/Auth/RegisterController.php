@@ -64,6 +64,11 @@ class RegisterController extends Controller
         // Kirim email verifikasi
         $user->sendEmailVerificationNotification();
 
-        return redirect('/login')->with('success', 'Akun berhasil dibuat! Silakan cek email kamu untuk verifikasi.');
+        return redirect()->route('login.mahasiswa')->with('success', 'Akun berhasil dibuat! Silakan cek email kamu untuk verifikasi.');
+    }
+
+    public function showRegistrationForm()
+    {
+        return view('auth.mahasiswa-register'); // atau 'auth.mahasiswa-register'
     }
 }

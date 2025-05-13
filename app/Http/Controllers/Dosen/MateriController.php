@@ -49,6 +49,7 @@ class MateriController extends Controller
             'tipe' => $request->tipe,
             'file' => $filePath,
             'link' => $request->link,
+            'status' => 'menunggu', // Set status default ke menunggu
         ]);
 
         $materi->load('kelas');
@@ -63,7 +64,7 @@ class MateriController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Materi berhasil diupload dan notifikasi dikirim!');
+        return redirect()->back()->with('success', 'Materi berhasil diupload dan notifikasi dikirim dan menunggu persetujuan admin.');
     }
 
     public function destroy($id)

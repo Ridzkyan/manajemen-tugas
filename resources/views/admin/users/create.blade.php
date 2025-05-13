@@ -10,7 +10,7 @@
     <div class="bg-white p-4 rounded shadow" style="border-left: 6px solid #008080;">
         <h4 class="fw-bold mb-4 text-dark">➕ Tambah User Baru</h4>
 
-        <form id="formUser" method="POST" action="{{ route('admin.store') }}">
+        <form id="formUser" method="POST" action="{{ route('admin.users.store') }}">
             @csrf
 
             {{-- Nama --}}
@@ -48,7 +48,7 @@
             </div>
 
             <button type="submit" class="btn text-white me-2" style="background-color: #008080;">Simpan</button>
-            <a href="{{ route('admin.dashboard.users') }}" class="btn btn-secondary">Batal</a>
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Batal</a>
         </form>
     </div>
 </div>

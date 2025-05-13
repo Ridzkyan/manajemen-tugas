@@ -13,9 +13,12 @@ class MateriController extends Controller
     public function index($kelasId)
     {
         $kelas = Kelas::findOrFail($kelasId);
-        $materis = Materi::where('kelas_id', $kelasId)->get();
-
-        return view('mahasiswa.kelas.materi.index', compact('kelas', 'materis'));
+    
+        $materi = Materi::where('kelas_id', $kelasId)
+            ->where('status', 'disetujui')
+            ->get();
+    
+        return view('mahasiswa.kelas.materi.index', compact('kelas', 'materi'));
     }
 
     public function daftarKelasMateri()

@@ -10,15 +10,17 @@ class CekEmailTerverifikasi
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = Auth::guard('mahasiswa')->user();
-
-        // Pastikan user login dan role mahasiswa
-        if ($user && $user->role === 'mahasiswa') {
-            if (!$user->hasVerifiedEmail()) {
-                return redirect()->route('verification.notice')->with('error', 'Kamu harus verifikasi email dulu ya 😊');
-            }
+        $user = Auth::guard('mahasiswa')->guard('mahasiswa')->user();
+    
+        // Bypass route tertentu agar tidak terjebak di redirect loop
+        if ($request->routeIs('verification.notice', 'verification.send', 'verification.verify')) {
+            return $next($request);
         }
-
+    
+        if ($user && !$user->hasVerifiedEmail() && $request->route()->getName() !== 'verification.notice') {
+            return redirect()->route('verification.notice')->with('error', 'Verifikasi email dulu ya!');
+        }
+    
         return $next($request);
     }
 }
