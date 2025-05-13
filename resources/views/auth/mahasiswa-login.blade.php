@@ -107,7 +107,7 @@
       <!-- Sign In Link -->
       <div class="position-absolute top-0 end-0 p-4 d-flex align-items-center gap-2">
         <span class="fw-semibold text-muted">Belum punya akun</span>
-        <a href="{{ route('register.mahasiswa') }}" class="btn btn-signin">Sign In</a>
+        <a href="{{ route('register.mahasiswa') }}" class="btn btn-signin">Sign Up</a>
       </div>
       <!-- Form -->
       <form class="login-form" method="POST" action="{{ route('mahasiswa.login') }}">
