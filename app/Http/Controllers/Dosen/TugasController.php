@@ -12,17 +12,33 @@ use App\Models\Kelas\Kelas;
 use App\Models\User\Mahasiswa;
 use App\Notifications\TugasBaruNotification;
 use App\Notifications\TugasDinilaiNotification;
-use App\Exports\RekapNilaiExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\RekapNilaiExport;
 
 class TugasController extends Controller
 {
     public function pilihKelas()
     {
         $dosenId = Auth::id();
-        $kelasList = Kelas::where('dosen_id', $dosenId)->get();
+        $kelasList = Kelas::where('dosen_id', $dosenId)
+            ->with('tugas') // pastikan eager loading relasi tugas
+            ->get();
 
-        return view('dosen.tugas_ujian.pilih_kelas', compact('kelasList'));
+        // Tambahkan properti deadline_terdekat ke tiap kelas
+        foreach ($kelasList as $kelas) {
+            $kelas->deadline_terdekat = $kelas->tugas
+                ->whereNotNull('deadline')
+                ->sortBy('deadline')
+                ->first()
+                ->deadline ?? null;
+        }
+
+        // Kelompokkan berdasarkan huruf awal nama_kelas
+        $kelasGrouped = $kelasList->groupBy(function ($kelas) {
+            return strtoupper(substr($kelas->nama_kelas, 0, 1));
+        });
+
+        return view('dosen.tugas_ujian.pilih_kelas', compact('kelasGrouped'));
     }
 
     public function index($kelasId)
@@ -33,6 +49,7 @@ class TugasController extends Controller
         return view('dosen.tugas_ujian.index', compact('kelas', 'tugas'));
     }
 
+    // Store Task
     public function store(Request $request, $kelasId)
     {
         $request->validate([
@@ -56,6 +73,7 @@ class TugasController extends Controller
             'deadline' => $request->deadline,
         ]);
 
+        // Notify students
         $kelas = Kelas::findOrFail($kelasId);
         foreach ($kelas->mahasiswa as $mahasiswa) {
             if ($mahasiswa->hasVerifiedEmail()) {
@@ -63,7 +81,54 @@ class TugasController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Tugas berhasil ditambahkan dan menunggu persetujuan admin.');
+        return redirect()->route('dosen.tugas_ujian.index', $kelasId)->with('success', 'Tugas berhasil ditambahkan!');
+    }
+
+    // Menampilkan form untuk mengedit tugas
+    public function edit($kelasId, $tugasId)
+    {
+        $kelas = Kelas::findOrFail($kelasId);
+        $tugas = Tugas::findOrFail($tugasId);
+
+        return view('dosen.tugas_ujian.edit', compact('kelas', 'tugas'));
+    }
+
+    // Update Task
+    public function update(Request $request, $kelasId, $tugasId)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'tipe' => 'required|in:tugas,ujian',
+            'deskripsi' => 'nullable|string',
+            'file_soal' => 'nullable|file|mimes:pdf,docx,doc|max:5120',
+            'deadline' => 'nullable|date'
+        ]);
+
+        $tugas = Tugas::findOrFail($tugasId);
+
+        // Handle file upload if there is a new file
+        $filePath = $request->hasFile('file_soal') 
+            ? $request->file('file_soal')->store('tugas', 'public')
+            : $tugas->file_soal;
+
+        $tugas->update([
+            'judul' => $request->judul,
+            'tipe' => $request->tipe,
+            'deskripsi' => $request->deskripsi,
+            'file_soal' => $filePath,
+            'deadline' => $request->deadline,
+        ]);
+
+        return redirect()->route('dosen.tugas_ujian.index', $kelasId)->with('success', 'Tugas berhasil diupdate!');
+    }
+
+    // Delete Task
+    public function destroy($kelasId, $tugasId)
+    {
+        $tugas = Tugas::findOrFail($tugasId);
+        $tugas->delete();
+
+        return redirect()->route('dosen.tugas_ujian.index', $kelasId)->with('success', 'Tugas berhasil dihapus!');
     }
 
     public function detail($kelasId)

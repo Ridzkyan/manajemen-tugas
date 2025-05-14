@@ -132,17 +132,17 @@ Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name
     Route::get('/kelas/{id}/manage', [App\Http\Controllers\Dosen\KelasController::class, 'manage'])->name('kelola_kelas.manage');
     Route::post('/kelas/{id}/materi', [App\Http\Controllers\Dosen\KelasController::class, 'uploadMateri'])->name('kelola_kelas.upload_materi');
 
-    // Tugas & Ujian → views/dosen/tugas_ujian/
+    // Pilih kelas untuk tugas/ujian
     Route::get('/tugas-ujian', [TugasController::class, 'pilihKelas'])->name('tugas_ujian.pilih_kelas');
-    Route::get('/tugas-ujian', [App\Http\Controllers\Dosen\TugasController::class, 'pilihKelas'])->name('tugas_ujian.pilih_kelas'); // <--- Tambahan: pilih kelas dulu
-    Route::get('/tugas-ujian/{kelas}', [App\Http\Controllers\Dosen\TugasController::class, 'index'])->name('tugas_ujian.index');
-    Route::post('/tugas-ujian/{kelas}', [App\Http\Controllers\Dosen\TugasController::class, 'store'])->name('tugas_ujian.store');
-    Route::get('/tugas-ujian/{kelas}/detail', [App\Http\Controllers\Dosen\TugasController::class, 'detail'])->name('tugas_ujian.detail');
-    Route::get('/tugas-ujian/{kelas}/{tugas}/penilaian', [App\Http\Controllers\Dosen\TugasController::class, 'penilaian'])->name('tugas_ujian.penilaian');
-    Route::post('/tugas-ujian/{kelas}/{tugas}/penilaian', [App\Http\Controllers\Dosen\TugasController::class, 'nilaiTugas'])->name('tugas_ujian.nilai');
-    Route::get('/tugas-ujian/{kelas}/{tugas}/mahasiswa', [App\Http\Controllers\Dosen\TugasController::class, 'penilaianPerMahasiswa'])->name('tugas_ujian.mahasiswa');
-
-    // Rekap Nilai → views/dosen/rekap_nilai/
+    Route::get('/tugas-ujian/{kelas}', [TugasController::class, 'index'])->name('tugas_ujian.index');
+    Route::post('/tugas-ujian/{kelas}', [TugasController::class, 'store'])->name('tugas_ujian.store');
+    Route::get('/tugas-ujian/{kelas}/detail', [TugasController::class, 'detail'])->name('tugas_ujian.detail');
+    Route::get('/tugas-ujian/{kelas}/{tugas}/edit', [TugasController::class, 'edit'])->name('tugas_ujian.edit');
+    Route::put('/tugas-ujian/{kelas}/{tugas}', [TugasController::class, 'update'])->name('tugas_ujian.update');
+    Route::delete('/tugas-ujian/{kelas}/{tugas}', [TugasController::class, 'destroy'])->name('tugas_ujian.destroy');
+    Route::get('/tugas-ujian/{kelas}/{tugas}/penilaian', [TugasController::class, 'penilaian'])->name('tugas_ujian.penilaian');
+    Route::post('/tugas-ujian/{kelas}/{tugas}/penilaian', [TugasController::class, 'nilaiTugas'])->name('tugas_ujian.nilai');
+    Route::get('/tugas-ujian/{kelas}/{tugas}/mahasiswa', [TugasController::class, 'penilaianPerMahasiswa'])->name('tugas_ujian.mahasiswa');
     Route::get('/rekap-nilai', [App\Http\Controllers\Dosen\TugasController::class, 'rekapNilai'])->name('rekap_nilai.index');
     Route::get('/rekap-nilai/{kelas}', [App\Http\Controllers\Dosen\TugasController::class, 'rekapPerKelas'])->name('rekap_nilai.detail');
     Route::get('/rekap-nilai/export/{kelasId}', [App\Http\Controllers\Dosen\TugasController::class, 'exportRekap'])->name('rekap_nilai.export');

@@ -42,7 +42,7 @@
 
         @forelse($kelasGrouped as $namaKelas => $kelasList)
             <div class="mb-4 kelas-kategori" data-kategori="{{ $namaKelas }}">
-                <h5 class="fw-bold text-teal mb-3">{{ $namaKelas }}</h5>
+                <h5 class="fw-bold text-teal mb-3">Kelas {{ $namaKelas }}</h5>
                 <div class="row">
                     @foreach($kelasList as $kls)
                         <div class="col-md-4 mb-3 kelas-item"
