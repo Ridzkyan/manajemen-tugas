@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Tugas\Tugas;
+use App\Models\Tugas;
 use App\Models\Tugas\PengumpulanTugas;
-use App\Models\Kelas\Kelas;
-use App\Models\User\Mahasiswa;
+use App\Models\Kelas;
+use App\Models\Mahasiswa;
 use App\Exports\RekapNilaiExport;
 use Maatwebsite\Excel\Facades\Excel;
 

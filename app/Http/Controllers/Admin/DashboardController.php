@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\User;
 use App\Models\Kelas;
-use App\Models\Kelas\Materi;
+use App\Models\Materi;
 use App\Models\Tugas;
 use Carbon\Carbon;
 

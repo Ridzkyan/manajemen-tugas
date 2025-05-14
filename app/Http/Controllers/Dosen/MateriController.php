@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Dosen;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Kelas\Materi;
+use App\Models\Materi;
 use App\Models\Kelas;
 use App\Models\User;
 use App\Notifications\MateriBaruNotification;

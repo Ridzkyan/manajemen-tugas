@@ -46,6 +46,9 @@ Route::post('/mahasiswa/logout', [LoginMahasiswaController::class, 'logout'])->n
 
 Route::get('/mahasiswa/register', [RegisterController::class, 'showRegistrationForm'])->name('register.mahasiswa');
 Route::post('/mahasiswa/register', [RegisterController::class, 'register'])->name('mahasiswa.register');
+Route::get('/email/verify', [VerificationController::class, 'notice'])->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->middleware(['signed'])->name('verification.verify');
+Route::post('/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
 // Login Dosen
 Route::get('/dosen/login', [LoginDosenController::class, 'showLoginForm'])->name('login.dosen');
@@ -56,21 +59,6 @@ Route::post('/dosen/logout', [LoginDosenController::class, 'logout'])->name('dos
 Route::get('/admin', [App\Http\Controllers\Auth\AdminLoginController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin', [App\Http\Controllers\Auth\AdminLoginController::class, 'login']);
 Route::post('/admin/logout', [App\Http\Controllers\Auth\AdminLoginController::class, 'logout'])->name('admin.logout');
-
-// Email Verification
-Route::get('/email/verify', function () {
-    return view('auth.verify');
-})->middleware('auth')->name('verification.notice');
-
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    return redirect('/mahasiswa/dashboard');
-})->middleware(['auth', 'signed'])->name('verification.verify');
-
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-    return back()->with('message', 'Link verifikasi telah dikirim!');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 // ==============================
 // PROTECTED ROUTES
@@ -182,13 +170,5 @@ Route::middleware(['auth:mahasiswa', 'mahasiswa.verified'])->prefix('mahasiswa')
     
     Route::get('/ganti-password', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'editPassword'])->name('password-edit.edit');
     Route::post('/ganti-password', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'updatePassword'])->name('password-edit.update');
-
-    // Rute verifikasi email untuk mahasiswa
-    Route::middleware(['auth:mahasiswa'])->group(function () {
-    Route::get('email/verify', [VerificationController::class, 'show'])->name('verification.notice');
-    Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->middleware('signed')->name('verification.verify');
-    Route::post('email/resend', [VerificationController::class, 'resend'])->middleware('throttle:6,1')->name('verification.resend');
-
-});
 
 });

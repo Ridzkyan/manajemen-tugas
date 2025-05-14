@@ -4,19 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Tugas;
+use App\Models\Mahasiswa;
 
 class PengumpulanTugas extends Model
 {
     use HasFactory;
 
-    protected $table = 'pengumpulan_tugas';
+    protected $fillable = ['tugas_id', 'mahasiswa_id', 'file', 'nilai', 'feedback'];
 
-    protected $fillable = [
-        'mahasiswa_id',
-        'kelas_id',
-        'tugas_id',
-        'file'
-    ];
+    public function tugas()
+    {
+        return $this->belongsTo(Tugas::class);
+    }
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(Mahasiswa::class);
+    }
 }
-
-

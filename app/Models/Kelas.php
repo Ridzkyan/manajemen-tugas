@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Kelas;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User\User;
-use App\Models\Tugas\Tugas;
-use App\Models\Kelas\Materi;
+use App\Models\User;
+use App\Models\Tugas;
+use App\Models\Materi;
 
 class Kelas extends Model
 {
