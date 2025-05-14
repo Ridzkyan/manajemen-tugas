@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Tugas;
-use App\Models\Tugas\PengumpulanTugas;
+use App\Models\PengumpulanTugas;
 use App\Models\Kelas;
 use App\Models\Mahasiswa;
 use Maatwebsite\Excel\Facades\Excel;
@@ -88,7 +88,7 @@ class TugasController extends Controller
         $kelas = Kelas::findOrFail($kelasId);
         $tugas = Tugas::findOrFail($tugasId);
 
-        return view('dosen.tugas_ujian.edit', compact('kelas', 'tugas'));
+        return view('dosen.kelola_kelas.edit', compact('kelas', 'tugas'));
     }
 
     // Update Task

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Dosen;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kelas\Kelas;
-use App\Models\Kelas\Materi;
+use App\Models\Materi;
 use App\Models\Tugas\Tugas;
 
 class SearchController extends Controller

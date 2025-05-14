@@ -22,8 +22,6 @@ use App\Http\Controllers\Dosen\RekapController;
 use App\Http\Controllers\Mahasiswa\JoinKelasController;
 use App\Http\Controllers\Mahasiswa\MateriController as MahasiswaMateriController;
 use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
-use App\Http\Controllers\Auth\VerificationController;
-use App\Http\Controllers\Dosen\RekapController;
 // ==============================
 // PUBLIC ROUTES
 // ==============================

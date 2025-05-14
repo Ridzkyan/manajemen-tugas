@@ -209,7 +209,7 @@
 
                     {{-- Tombol Edit, Hapus, dan Penilaian --}}
                     <div class="card-actions">
-                        <a href="{{ route('dosen.tugas_ujian.edit', [$kelas->id, $tgs->id]) }}" class="btn btn-icon">
+                        <a href="{{ route('dosen.kelola_kelas.edit', [$kelas->id, $tgs->id]) }}" class="btn btn-icon">
                             <i class="bi bi-pencil-square"></i>
                         </a>
                         <form action="{{ route('dosen.tugas_ujian.destroy', [$kelas->id, $tgs->id]) }}" method="POST" class="d-inline mt-2">
