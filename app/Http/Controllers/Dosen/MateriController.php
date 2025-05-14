@@ -20,8 +20,8 @@ class MateriController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'tipe' => 'required|in:pdf,link',
-            'link' => 'nullable|url',
-            'file' => 'nullable|file|mimes:pdf|max:5120'
+            'file' => 'nullable|file|mimes:pdf|max:5120',
+            'link' => 'nullable|url'
         ]);
 
         $materi = Materi::findOrFail($id);
@@ -45,6 +45,37 @@ class MateriController extends Controller
         $materi->save();
 
         return back()->with('success', 'Materi berhasil diperbarui.');
+        if ($request->tipe === 'link' && !$request->link) {
+            return back()->with('error', 'Link YouTube harus diisi.');
+        }
+
+        $filePath = null;
+        if ($request->tipe === 'pdf' && $request->hasFile('file')) {
+            $filePath = $request->file('file')->store('materi', 'public');
+        }
+
+        $materi = Materi::create([
+            'kelas_id' => $kelasId,
+            'judul' => $request->judul,
+            'tipe' => $request->tipe,
+            'file' => $filePath,
+            'link' => $request->link,
+            'status' => 'menunggu', // Set status default ke menunggu
+        ]);
+
+        $materi->load('kelas');
+
+        // ===== Kirim Notifikasi ke Mahasiswa =====
+        $kelas = Kelas::findOrFail($kelasId);
+        $mahasiswas = $kelas->mahasiswas; // relasi di model Kelas
+
+        foreach ($mahasiswas as $mhs) {
+            if ($mhs->hasVerifiedEmail()) {
+                $mhs->notify(new MateriBaruNotification($materi));
+            }
+        }
+
+        return redirect()->back()->with('success', 'Materi berhasil diupload dan notifikasi dikirim dan menunggu persetujuan admin.');
     }
 
     public function destroy($id)

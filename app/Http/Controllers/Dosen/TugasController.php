@@ -6,12 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Tugas\Tugas;
+use App\Models\Tugas;
 use App\Models\Tugas\PengumpulanTugas;
-use App\Models\Kelas\Kelas;
-use App\Models\User\Mahasiswa;
-use App\Notifications\TugasBaruNotification;
-use App\Notifications\TugasDinilaiNotification;
+use App\Models\Kelas;
+use App\Models\Mahasiswa;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapNilaiExport;
 
@@ -162,7 +160,6 @@ class TugasController extends Controller
         $pengumpulan = PengumpulanTugas::where('tugas_id', $tugasId)
             ->where('mahasiswa_id', $request->mahasiswa_id)
             ->firstOrFail();
-
         $pengumpulan->nilai = $request->nilai;
         $pengumpulan->feedback = $request->feedback;
         $pengumpulan->save();

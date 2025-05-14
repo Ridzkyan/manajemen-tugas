@@ -1,24 +1,29 @@
 @extends('layouts.mahasiswa')
 
+@section('title', 'Kelas Saya')
+
 @section('content')
 <div class="container">
-    <h3>Halaman Detail Kelas</h3>
-    <p><strong>Nama Kelas:</strong> {{ $kelas->nama_kelas }}</p>
-    <p><strong>Nama Dosen:</strong> {{ $kelas->dosen->name }}</p>
+    <h4 class="fw-bold mb-4">Daftar Kelas yang Kamu Ikuti</h4>
 
-    <!-- Tombol Aksi -->
-    <div class="d-flex gap-2 mt-4 flex-wrap">
-        <a href="{{ route('mahasiswa.materi.index', ['kelas' => $kelas->id]) }}" class="btn btn-primary">
-            📚 Lihat Materi
-        </a>
+    <div class="row">
+        @forelse($kelasmahasiswa as $kelas)
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $kelas->nama_kelas }}</h5>
+                        <p class="text-muted mb-2"><strong>Mata Kuliah:</strong> {{ $kelas->nama_matakuliah }}</p>
+                        <p class="text-muted mb-2"><strong>Dosen:</strong> {{ $kelas->dosen->name ?? '-' }}</p>
 
-        <a href="{{ route('mahasiswa.tugas.index', ['kelas' => $kelas->id]) }}" class="btn btn-success">
-            📝 Lihat Tugas
-        </a>
-
-        <a href="{{ route('mahasiswa.dashboard') }}" class="btn btn-secondary">
-            ⬅️ Kembali ke Dashboard
-        </a>
+                        <a href="{{ route('mahasiswa.kelas.show', $kelas->id) }}" class="btn btn-sm btn-secondary">
+                            🔍 Lihat Kelas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <p class="text-muted">Kamu belum tergabung di kelas manapun.</p>
+        @endforelse
     </div>
 </div>
 @endsection

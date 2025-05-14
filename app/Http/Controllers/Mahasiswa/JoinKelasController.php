@@ -28,7 +28,7 @@ class JoinKelasController extends Controller
     public function show($id)
     {
         $kelas = Kelas::with('dosen')->findOrFail($id);
-        return view('mahasiswa.kelas.index', compact('kelas'));
+        return view('mahasiswa.kelas.show', compact('kelas'));
     }
 
     /**
