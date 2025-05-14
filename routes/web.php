@@ -8,25 +8,24 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\MonitoringController;
 use App\Http\Controllers\Admin\KontenController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Auth\LoginDosenController;
+use App\Http\Controllers\Dosen\SearchController;
 use App\Http\Controllers\Auth\LoginMahasiswaController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Dosen\KelasController;
 use App\Http\Controllers\Dosen\MateriController;
 use App\Http\Controllers\Dosen\TugasController;
+use App\Http\Controllers\Dosen\RekapController;
 use App\Http\Controllers\Mahasiswa\JoinKelasController;
 use App\Http\Controllers\Mahasiswa\MateriController as MahasiswaMateriController;
 use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
-use App\Http\Controllers\Auth\VerificationController;
-use App\Http\Controllers\Admin\MonitoringController;
-use App\Http\Controllers\Admin\KontenController;
-use App\Http\Controllers\Auth\LoginDosenController;
-use App\Http\Controllers\Auth\LoginMahasiswaController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Dosen\RekapController;
+
+// sisanya tetap sama...
+
 // ==============================
 // PUBLIC ROUTES
 // ==============================
@@ -102,14 +101,20 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
 });
 
 // ---------- DOSEN ----------
+
 Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name('dosen.')->group(function () {
+    // Search Global
+    Route::get('/search', [App\Http\Controllers\Dosen\SearchController::class, 'index'])->name('search');
+
     // Dashboard → views/dosen/dashboard.blade.php
     Route::get('/dashboard', [App\Http\Controllers\Dosen\DashboardController::class, 'index'])->name('dashboard');
 
     // Materi & Kelas → views/dosen/materi_kelas/materi_dan_kelas.blade.php
-    Route::get('/materi-kelas', [App\Http\Controllers\Dosen\KelasController::class, 'materiDanKelas'])->name('materi_kelas.index');
-    Route::post('/materi-kelas/upload', [App\Http\Controllers\Dosen\KelasController::class, 'uploadMateriGlobal'])->name('materi_kelas.upload');
-    Route::get('/materi-kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'detailMateri'])->name('materi_kelas.detail');
+    Route::get('/materi-kelas', [KelasController::class, 'materiDanKelas'])->name('materi_kelas.index'); // Arham nambah
+    Route::post('/materi-kelas/upload', [KelasController::class, 'uploadMateriGlobal'])->name('materi_kelas.upload'); // Arham nambah
+    Route::get('/materi-kelas/{id}-{slug}', [KelasController::class, 'detailMateri'])->name('materi_kelas.detail'); // Arham nambah
+    Route::delete('/materi-kelas/{id}', [MateriController::class, 'destroy'])->name('materi_kelas.destroy'); // Arham nambah
+    Route::put('/materi-kelas/{id}', [MateriController::class, 'update'])->name('materi_kelas.update'); // Arham nambah
 
     // Kelola Kelas → views/dosen/kelola_kelas/
     Route::get('/kelas', [App\Http\Controllers\Dosen\KelasController::class, 'index'])->name('kelola_kelas.index');

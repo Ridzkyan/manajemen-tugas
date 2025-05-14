@@ -122,9 +122,7 @@ class KelasController extends Controller
         ]);
 
         $kelas = Kelas::findOrFail($kelasId);
-        $mahasiswa = $kelas->mahasiswa;
-
-        foreach ($mahasiswa as $mhs) {
+        foreach ($kelas->mahasiswa as $mhs) {
             if ($mhs->hasVerifiedEmail()) {
                 $mhs->notify(new MateriBaruNotification($materi));
             }
@@ -135,10 +133,14 @@ class KelasController extends Controller
 
     public function materiDanKelas()
     {
-        $kelas = Kelas::where('dosen_id', Auth::id())->get();
-        $kelasPertama = $kelas->first();
+        $kelasList = Kelas::with('materi')
+            ->where('dosen_id', Auth::id())
+            ->get();
 
-        return view('dosen.materi_kelas.materi_dan_kelas', compact('kelas', 'kelasPertama'));
+        $kelasGrouped = $kelasList->groupBy('nama_kelas');
+        $kelasPertama = $kelasList->first();
+
+        return view('dosen.materi_kelas.materi_dan_kelas', compact('kelasGrouped', 'kelasPertama'));
     }
 
     public function uploadMateriGlobal(Request $request)
@@ -173,9 +175,7 @@ class KelasController extends Controller
         ]);
 
         $kelas = Kelas::findOrFail($request->kelas_id);
-        $mahasiswa = $kelas->mahasiswa;
-
-        foreach ($mahasiswa as $mhs) {
+        foreach ($kelas->mahasiswa as $mhs) {
             if ($mhs->hasVerifiedEmail()) {
                 $mhs->notify(new MateriBaruNotification($materi));
             }
@@ -184,12 +184,12 @@ class KelasController extends Controller
         return redirect()->back()->with('success', 'Materi berhasil diunggah dan notifikasi dikirim!');
     }
 
-    public function detailMateri($id)
+    public function detailMateri($id, $slug)
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->findOrFail($id);
         $materis = $kelas->materi;
 
-        return view('dosen.kelola_kelas.detail_materi', compact('kelas', 'materis'));
+        return view('dosen.materi_kelas.detail_materi', compact('kelas', 'materis'));   
     }
 
     public function komunikasi()

@@ -27,7 +27,7 @@ class LoginDosenController extends Controller
         ]);
 
         $credentials = $request->only('email', 'password');
-        $user = \App\Models\Dosen::where('email', $credentials['email'])->first();
+        $user = \App\Models\User\Dosen::where('email', $credentials['email'])->first();
 
         // Cek kode unik
         if (!$user || $user->kode_unik !== $request->kode_unik) {
@@ -43,7 +43,7 @@ class LoginDosenController extends Controller
             $user->last_login_at = now();
             $user->save();
 
-            return redirect()->intended(route('dosen.dashboard'));
+            return redirect()->route('dosen.dashboard')->with('success', 'Berhasil login!');
         }
 
         // Jika login gagal
