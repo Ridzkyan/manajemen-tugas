@@ -3,7 +3,7 @@
 return [
 
     'defaults' => [
-        'guard' => 'web', // default bisa tetap web, tapi akan kita override berdasarkan role
+        'guard' => 'web',
         'passwords' => 'users',
     ],
 
@@ -11,7 +11,7 @@ return [
     // GUARDS
     // =============================
     'guards' => [
-        'web' => [ // default Laravel login
+        'web' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
@@ -28,7 +28,7 @@ return [
 
         'mahasiswa' => [
             'driver' => 'session',
-            'provider' => 'mahasiswas',
+            'provider' => 'users',
         ],
     ],
 
@@ -36,24 +36,24 @@ return [
     // PROVIDERS
     // =============================
     'providers' => [
-        'users' => [ // dipakai oleh admin
+        'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\User::class, // ✅ disesuaikan
         ],
 
         'dosens' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class, 
+            'model' => App\Models\Dosen::class, // ✅ disesuaikan
         ],
 
         'mahasiswas' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class, 
+            'model' => App\Models\Mahasiswa::class, // ✅ disesuaikan
         ],
     ],
 
     // =============================
-    // RESET PASSWORD (boleh tetap satu saja)
+    // RESET PASSWORD
     // =============================
     'passwords' => [
         'users' => [

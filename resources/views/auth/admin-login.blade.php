@@ -11,17 +11,21 @@
 
     <!-- Custom Styles -->
     <style>
-        body {
-            background: url('{{ asset("images/Background.png") }}') center/cover no-repeat fixed;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        html, body {
+            height: 100vh;
+            overflow: hidden;
             margin: 0;
+            padding: 0;
             font-family: 'Nunito', sans-serif;
         }
 
-        /* Style untuk card */
+        body {
+            background: url('{{ asset("images/Background.png") }}') center/cover no-repeat fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .login-card {
             background-color: #008080;
             color: white;
@@ -100,5 +104,44 @@
 
     <!-- Bootstrap + FontAwesome JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- SweetAlert Triggers -->
+    @if(session('logout_success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil Logout',
+            text: '{{ session('logout_success') }}',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    </script>
+    @endif
+
+    @if(session('login_failed'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Login Gagal',
+            text: '{{ session('login_failed') }}',
+            showConfirmButton: true
+        });
+    </script>
+    @endif
+
+    @if(session('login_success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Login Berhasil',
+            text: '{{ session('login_success') }}',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    </script>
+    @endif
 </body>
 </html>

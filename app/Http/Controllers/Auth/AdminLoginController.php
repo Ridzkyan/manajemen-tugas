@@ -20,24 +20,32 @@ class AdminLoginController extends Controller
             'password' => 'required'
         ]);
 
-        
         if (Auth::guard('admin')->attempt([
-            'email' => $request->email,
+            'email'    => $request->email,
             'password' => $request->password,
-            'role' => 'admin'
+            'role'     => 'admin'
         ])) {
-            return redirect()->route('admin.dashboard');
+            $user = Auth::guard('admin')->user();
+            $user->is_online = true;
+            $user->last_login_at = now();
+            $user->save();
+
+            return redirect()->route('admin.dashboard')->with('login_success', 'Selamat datang kembali, ' . $user->name . '!');
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah.']);
+        return back()->with('login_failed', 'Email atau password salah.');
     }
 
     public function logout(Request $request)
     {
-        Auth::guard('admin')->logout(); // gunakan guard yang sama saat login
+        $user = Auth::guard('admin')->user();
+        $user->is_online = false;
+        $user->save();
+
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/admin');
+        return redirect('/admin')->with('logout_success', 'Anda berhasil logout!');
     }
 }

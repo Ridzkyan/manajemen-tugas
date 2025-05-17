@@ -18,6 +18,7 @@ class CreateTugasTable extends Migration
             $table->date('deadline')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
+            $table->enum('status', ['menunggu', 'disetujui', 'ditolak'])->default('menunggu');
         });
     }
 
