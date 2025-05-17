@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kelas;
-use App\Models\KelasMahasiswa;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Tugas\Tugas; 
+use App\Models\Kelas\KelasMahasiswa;
 
 /**
  * Class JoinKelasController
@@ -26,10 +27,14 @@ class JoinKelasController extends Controller
      * Tampilkan detail isi kelas yang diikuti mahasiswa.
      */
     public function show($id)
-    {
-        $kelas = Kelas::with('dosen')->findOrFail($id);
-        return view('mahasiswa.kelas.show', compact('kelas'));
-    }
+{
+    $kelas = Kelas::findOrFail($id);
+    $tugas = Tugas::where('kelas_id', $id)->get();
+
+    return view('mahasiswa.kelas.show', compact('kelas', 'tugas'));
+}
+
+
 
     /**
      * Proses join ke kelas dengan kode unik.

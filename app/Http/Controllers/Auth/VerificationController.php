@@ -8,22 +8,16 @@ use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:mahasiswa'); // guard sesuai kebutuhan
+        $this->middleware('signed')->only('verify');
+        $this->middleware('throttle:6,1')->only('verify', 'resend');
+    }
+
     public function notice()
     {
         return view('auth.verify');
-    }
-
-    public function verify(EmailVerificationRequest $request)
-    {
-        $request->fulfill();
-        return redirect('/home');
-    }
-
-    public function resend(Request $request)
-    {
-        $this->middleware('auth:mahasiswa'); // pakai guard sesuai kebutuhan
-        $this->middleware('signed')->only('verify');
-        $this->middleware('throttle:6,1')->only('verify', 'resend');
     }
 
     public function show(Request $request)

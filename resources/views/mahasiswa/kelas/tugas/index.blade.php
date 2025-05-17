@@ -1,8 +1,9 @@
 @extends('layouts.mahasiswa')
-@section('title', 'Tugas & Ujian')
+
+@section('title', 'Tugas')
 
 @section('content')
-<h4 class="fw-bold mb-4">Tugas & Ujian</h4>
+<h4 class="fw-bold mb-4">Tugas</h4>
 
 @forelse($tugas as $tgs)
     <div class="card mb-4 shadow-sm">
@@ -115,6 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         alert("❌ Gagal mengunggah file.");
                     });
                 }
+                
             });
 
             modal.show();

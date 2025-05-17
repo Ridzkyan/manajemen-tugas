@@ -19,7 +19,7 @@
 
         <div class="mb-3">
             <label for="kode_unik" class="form-label">Masukkan Kode Unik Kelas</label>
-            <input type="text" id="kode_unik" name="kode_unik" class="form-control" placeholder="Contoh: ABC123" required>
+            <input type="text" id="kode_unik" name="kode_unik" class="form-control" placeholder="KLS- " required>
         </div>
 
         <div class="d-flex gap-2">

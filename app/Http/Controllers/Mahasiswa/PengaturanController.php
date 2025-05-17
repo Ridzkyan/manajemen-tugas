@@ -15,7 +15,7 @@ class PengaturanController extends Controller
     public function index()
     {
         $user = Auth::guard('mahasiswa')->user();
-        return view('mahasiswa.kelas.pengaturan.index', compact('user'));
+        return view('mahasiswa.pengaturan.index', compact('user'));
     }
 
     /**
@@ -24,7 +24,7 @@ class PengaturanController extends Controller
     public function editProfile()
     {
         $mahasiswa = Auth::guard('mahasiswa')->user();
-        return view('mahasiswa.kelas.pengaturan.profile-edit', compact('mahasiswa'));
+        return view('mahasiswa.pengaturan.profile-edit', compact('mahasiswa'));
     }
 
     /**
@@ -59,7 +59,7 @@ class PengaturanController extends Controller
      */
     public function editPassword()
     {
-        return view('mahasiswa.kelas.pengaturan.password-edit');
+        return view('mahasiswa.pengaturan.password-edit');
     }
 
     /**

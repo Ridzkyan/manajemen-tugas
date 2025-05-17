@@ -17,7 +17,7 @@ class KomunikasiController extends Controller
     {
         $kelasmahasiswa = auth()->user()->kelasMahasiswa;
 
-        return view('mahasiswa.kelas.komunikasi.index', compact('kelasmahasiswa'));
+        return view('mahasiswa.komunikasi.index', compact('kelasmahasiswa'));
     }
 
 }

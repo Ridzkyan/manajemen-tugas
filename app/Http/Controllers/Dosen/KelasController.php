@@ -170,6 +170,7 @@ class KelasController extends Controller
             'tipe' => $request->tipe,
             'file' => $filePath,
             'link' => $request->link,
+            'status' => 'pending',
         ]);
 
         $kelas = Kelas::findOrFail($request->kelas_id);

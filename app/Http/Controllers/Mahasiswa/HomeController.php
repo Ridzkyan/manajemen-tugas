@@ -3,39 +3,37 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
-use App\models\PengumpulanTugas;
-use App\Models\Tugas;
-use App\Models\User;
-use App\Models\KelasMahasiswa;
-use App\Models\Kelas;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Kelas\Kelas;
+use App\Models\Tugas\Tugas;
+use App\Models\Tugas\PengumpulanTugas;
 
 class HomeController extends Controller
 {
-   public function index()
-{
-    $user = auth()->user();
+    public function index()
+    {
+        $user = Auth::guard('mahasiswa')->user();
 
-    // Kelas yang diikuti mahasiswa
-    $kelasmahasiswa = $user->kelasMahasiswa()->with('dosen')->get()->unique('id');
+        // Ambil semua kelas yang diikuti oleh mahasiswa
+        $kelasmahasiswa = $user->kelasMahasiswa()->with('dosen')->get();
 
-    // Ambil ID kelas
-    $kelasIds = $kelasmahasiswa->pluck('id');
+        // Ambil ID dari kelas yang diikuti
+        $kelasIds = $kelasmahasiswa->pluck('id')->toArray(); // ini id dari kelas, pastikan benar
 
-    // Ambil semua tugas aktif dari kelas yang diikuti
-    $tugasAktif = Tugas::whereIn('kelas_id', $kelasIds)
-        ->whereDate('deadline', '>=', now())
-        ->with('kelas')
-        ->orderBy('deadline')
-        ->take(3)
-        ->get();
+        // Ambil semua tugas dari kelas yang diikuti
+        $tugasAktif = Tugas::whereIn('kelas_id', $kelasIds)->get();
 
-    // Ambil ID tugas yang sudah dikumpulkan oleh mahasiswa
-    $tugasSudahDikumpulkan = PengumpulanTugas::where('mahasiswa_id', auth()->id())
-        ->whereIn('kelas_id', $kelasIds)
-        ->pluck('tugas_id')
-        ->toArray();
 
-    return view('mahasiswa.dashboard', compact('kelasmahasiswa', 'tugasAktif', 'tugasSudahDikumpulkan'));
+        // Cek tugas yang sudah dikumpulkan oleh mahasiswa
+        $tugasSudahDikumpulkan = PengumpulanTugas::where('mahasiswa_id', $user->id)
+            ->pluck('tugas_id')
+            ->toArray();
+
+        return view('mahasiswa.dashboard', compact(
+            'kelasmahasiswa',
+            'tugasAktif',
+            'tugasSudahDikumpulkan'
+        ));
+    }
 }
-}
+

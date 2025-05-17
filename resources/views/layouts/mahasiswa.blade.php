@@ -2,78 +2,43 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>TaskFlow | Mahasiswa</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-</head>
-<body>
-    @yield('content')
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
     <title>@yield('title', 'Mahasiswa')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Bootstrap & Icons -->
+    <!-- Bootstrap & Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
     <style>
         html, body {
             height: 100%;
-            overflow: hidden;
+            margin: 0;
             background-color: #fef9f4;
             font-family: 'Arial', sans-serif;
         }
 
-        #wrapper { display: flex; height: 100%; }
+        #wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
 
         .sidebar {
-            background-color: #00838f;
+            background-color: #008080;
             color: white;
-            min-height: 100vh;
             width: 240px;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar.hide { margin-left: -240px; }
-
-        .sidebar .logo-wrapper {
+            flex-shrink: 0;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-        }
-
-        .sidebar .logo-wrapper img {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-        }
-
-        .sidebar .logo-wrapper h5 {
-            font-size: 1rem;
-            font-weight: bold;
-            color: white;
-            margin-top: 10px;
-            letter-spacing: 1px;
         }
 
         .sidebar .nav-link {
             color: white;
             font-weight: 600;
-            border-radius: 30px;
             padding: 10px 20px;
+            border-radius: 30px;
+            margin: 5px 10px;
             display: flex;
             align-items: center;
-            transition: background 0.3s ease;
-            font-size: 15px;
-        }
-
-        .sidebar .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .sidebar .nav-link.active {
@@ -81,184 +46,160 @@
             color: #f5a04e !important;
         }
 
-        .main-content {
-            flex: 1;
-            transition: margin-left 0.3s ease;
-            width: 100%;
-            overflow-y: auto;
+        .sidebar .nav-link.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
         }
 
         .topbar {
             background-color: #f5a04e;
-            padding: 15px 30px;
-            border-radius: 0 0 12px 12px;
-            margin-bottom: 20px;
+            padding: 10px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        .search-box {
-            flex: 1;
-            margin: 0 30px;
-            position: relative;
-        }
-
-        .search-box input {
-            width: 100%;
-            border-radius: 50px;
+        .topbar .search-box input {
             border: none;
-            padding: 10px 20px 10px 40px;
+            border-radius: 20px;
+            padding: 6px 15px;
+            width: 250px;
         }
 
-        .search-box i {
-            position: absolute;
-            top: 10px;
-            left: 15px;
-            color: #aaa;
-        }
-
-        .user-info {
-            text-align: right;
+        .topbar .profile-info {
+            display: flex;
+            align-items: center;
             color: white;
         }
 
-        .avatar {
+        .topbar .profile-info img {
+            border-radius: 50%;
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-left: 10px;
+            object-fit: cover;
+            margin-left: 15px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .content-wrapper {
+            flex: 1;
             padding: 30px;
-        }
-
-        .overlay { display: none; }
-
-        #toggleSidebar {
-            cursor: pointer;
-            font-size: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: -240px;
-                z-index: 1000;
-            }
-
-            .sidebar.active { left: 0; }
-
-            .overlay.show {
-                display: block;
-                position: fixed;
-                top: 0; left: 0;
-                width: 100%; height: 100%;
-                background-color: rgba(0,0,0,0.2);
-                z-index: 999;
-            }
+            overflow-y: auto;
         }
     </style>
 </head>
 <body>
-<div id="wrapper">
-    @php
-        $user = Auth::guard('mahasiswa')->user();
-        $foto = $user->foto ? asset($user->foto) : asset('default.png');
-    @endphp
+    <div id="wrapper">
+       @php
+    $user = Auth::guard('mahasiswa')->user();
+    $foto = $user->foto ? asset($user->foto) : asset('default.png');
+    // Cek fallback jika $kelasId tidak tersedia
+    $kelasAktifId = $kelasId ?? optional($user->kelasMahasiswa()->first())->id;
+@endphp
 
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="logo-wrapper">
-            <img src="{{ asset('images/LogoWelcome.png') }}" alt="Logo">
-            <h5>TASKFLOW</h5>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="text-center py-4">
+                <img src="{{ asset('images/LogoWelcome.png') }}" width="60" alt="Logo">
+                <h5 class="mt-2">TASKFLOW</h5>
+            </div>
+            <ul class="nav flex-column mt-2">
+                <li>
+                    <a class="nav-link {{ request()->routeIs('mahasiswa.dashboard') ? 'active' : '' }}" href="{{ route('mahasiswa.dashboard') }}">
+                        <i class="fas fa-th-large"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link {{ request()->routeIs('mahasiswa.kelas.index') ? 'active' : '' }}" href="{{ route('mahasiswa.kelas.index') }}">
+                        <i class="fas fa-folder-open"></i> Materi & Kelas
+                    </a>
+                </li>
+
+             {{-- Tugas --}}
+                <li>
+                    @if($kelasAktifId)
+                        <a class="nav-link {{ request()->is("mahasiswa/kelas/$kelasAktifId/tugas*") ? 'active' : '' }}"
+                        href="{{ route('mahasiswa.kelas.tugas.index', ['kelas' => $kelasAktifId]) }}">
+                            <i class="fas fa-file-alt"></i> Tugas
+                        </a>
+                    @else
+                        <a class="nav-link text-white-50 disabled" href="#">
+                            <i class="fas fa-file-alt"></i> Tugas
+                        </a>
+                    @endif
+                </li>
+
+                {{-- Ujian --}}
+                <li>
+                    @if($kelasAktifId)
+                        <a class="nav-link {{ request()->is("mahasiswa/kelas/$kelasAktifId/ujian*") ? 'active' : '' }}"
+                        href="{{ route('mahasiswa.ujian.index', ['kelas' => $kelasAktifId]) }}">
+                            <i class="fas fa-file-signature"></i> Ujian
+                        </a>
+                    @else
+                        <a class="nav-link text-white-50 disabled" href="#">
+                            <i class="fas fa-file-signature"></i> Ujian
+                        </a>
+                    @endif
+                </li>
+
+
+                {{-- Gabung Kelas --}}
+                <li>
+                    <a class="nav-link {{ request()->routeIs('mahasiswa.join.index') ? 'active' : '' }}" href="{{ route('mahasiswa.join.index') }}">
+                        <i class="fas fa-plus-circle"></i> Gabung Kelas
+                    </a>
+                </li>
+
+                {{-- Komunikasi --}}
+                <li>
+                    <a class="nav-link {{ request()->routeIs('mahasiswa.komunikasi.index') ? 'active' : '' }}" href="{{ route('mahasiswa.komunikasi.index') }}">
+                        <i class="fas fa-comments"></i> Komunikasi
+                    </a>
+                </li>
+
+                {{-- Pengaturan --}}
+                <li>
+                    <a class="nav-link {{ request()->routeIs('mahasiswa.pengaturan.index') ? 'active' : '' }}" href="{{ route('mahasiswa.pengaturan.index') }}">
+                        <i class="fas fa-cog"></i> Pengaturan
+                    </a>
+                </li>
+            </ul>
         </div>
-        <ul class="nav flex-column px-3">
-            <li class="nav-item mb-2">
-                <a class="nav-link {{ request()->routeIs('mahasiswa.dashboard') ? 'active' : '' }}" href="{{ route('mahasiswa.dashboard') }}">
-                    <i class="fas fa-th-large"></i> Dashboard
-                </a>
-            </li>
-            <li class="nav-item mb-2">
-                <a class="nav-link" href="{{ route('mahasiswa.kelas.index') }}">
-                    <i class="fas fa-folder-open"></i> Materi & Kelas
-                </a>
-            </li>
-            <li class="nav-item mb-2">
-                <a class="nav-link" href="{{ route('mahasiswa.tugas.index') }}">
-                    <i class="fas fa-file-alt"></i> Tugas & Ujian
-                </a>
-            </li>
-            <li class="nav-item mb-2">
-                <a class="nav-link" href="{{ route('mahasiswa.komunikasi.index') }}">
-                    <i class="fas fa-comments"></i> Komunikasi
-                </a>
-            </li>
-            <li class="nav-item mb-2">
-                <a class="nav-link" href="#"><i class="fas fa-chart-bar"></i> Rekap Nilai</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a class="nav-link" href="{{ route('mahasiswa.pengaturan.index') }}">
-                    <i class="fas fa-cog"></i> Pengaturan
-                </a>
-            </li>
-        </ul>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="topbar">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-light d-md-none"><i class="fas fa-bars"></i></button>
+                    <h5 class="mb-0 text-white">@yield('title')</h5>
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <div class="search-box me-4">
+                        <input type="text" class="form-control" placeholder="Cari...">
+                    </div>
+                    <div class="profile-info">
+                        <span>{{ $user->nama }}</span>
+                        <img src="{{ $foto }}" alt="Foto Profil">
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                @yield('content')
+            </div>
+        </div>
     </div>
-
-    <div class="overlay" id="overlay"></div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="topbar">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-bars me-3" id="toggleSidebar"></i>
-                <h5 class="mb-0">@yield('title')</h5>
-            </div>
-            <div class="search-box">
-                <input type="text" class="form-control" placeholder="Cari...">
-                <i class="fas fa-search"></i>
-            </div>
-            <div class="user-info me-2">
-                <div><strong>{{ $user->nama }}</strong></div>
-                <small>Mahasiswa</small>
-            </div>
-            <div class="avatar">
-                <img src="{{ $foto }}" class="rounded-circle" width="40" height="40" style="object-fit: cover;" alt="Foto Profil">
-            </div>
-        </div>
-
-        <div class="content-wrapper">
-            @yield('content')
-        </div>
-    </div>
-</div>
-
-<!-- JS Sidebar toggle -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggleBtn = document.getElementById('toggleSidebar');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            sidebar.classList.toggle('hide');
-            toggleBtn.classList.toggle('active');
-            overlay.classList.toggle('show');
-        });
-
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-            sidebar.classList.add('hide');
-            toggleBtn.classList.remove('active');
-            overlay.classList.remove('show');
-        });
-    });
-</script>
 </body>
 </html>

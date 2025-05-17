@@ -8,7 +8,7 @@
         </div>
         <div class="card-body">
             {{-- Include form reusable dan kirim data kelas --}}
-            @include('dosen.kelas.form', ['kelas' => $kelas])
+            @include('dosen.kelola_kelas.form', ['kelas' => $kelas])
             
             {{-- Tombol batal di luar form jika ingin terpisah --}}
             <a href="{{ route('dosen.dashboard') }}" class="btn btn-secondary mt-2">Batal</a>

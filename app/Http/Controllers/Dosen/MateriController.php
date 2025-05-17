@@ -9,6 +9,7 @@ use App\Models\Kelas;
 use App\Models\User;
 use App\Notifications\MateriBaruNotification;
 use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Support\Facades\Auth;
 
 class MateriController extends Controller

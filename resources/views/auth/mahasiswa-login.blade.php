@@ -58,18 +58,17 @@
       background-color: #f5a04e;
     }
     .btn-signin {
-  background-color: #008080;
-        color: white;
-        font-weight: bold;
-        padding: 6px 16px;
-        border-radius: 20px;
-        border: none;
-        transition: background-color 0.3s ease;
+      background-color: #008080;
+      color: white;
+      font-weight: bold;
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: none;
+      transition: background-color 0.3s ease;
     }
-
     .btn-signin:hover {
-        background-color: #f5a04e;
-        color: white;
+      background-color: #f5a04e;
+      color: white;
     }
     @media (max-width: 768px) {
       .login-container {
@@ -109,14 +108,35 @@
         <span class="fw-semibold text-muted">Belum punya akun</span>
         <a href="{{ route('register.mahasiswa') }}" class="btn btn-signin">Sign Up</a>
       </div>
+
       <!-- Form -->
       <form class="login-form" method="POST" action="{{ route('mahasiswa.login') }}">
         @csrf
         <h3 class="fw-bold mb-2">Selamat Datang di <span style="color: #008080;">TaskFlow</span>!</h3>
         <p class="text-muted mb-4">Log In akun</p>
+
+        {{-- Flash Message --}}
+        @if (session('success'))
+          <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        @if (session('error'))
+          <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
+        {{-- Validation Errors --}}
+        @if ($errors->any())
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
+
         <div class="mb-3">
           <label for="email" class="form-label">Username/Email</label>
-          <input type="email" class="form-control" id="email" name="email" required placeholder="Masukkan username/email">
+          <input type="email" class="form-control" id="email" name="email" required placeholder="Masukkan username/email" value="{{ old('email') }}">
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>

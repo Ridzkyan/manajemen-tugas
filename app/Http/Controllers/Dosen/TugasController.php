@@ -12,6 +12,8 @@ use App\Models\Kelas\Kelas;
 use App\Models\User\Mahasiswa;
 use App\Exports\RekapNilaiExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Notifications\TugasBaruNotification;
+use App\Notifications\TugasDinilaiNotification;
 
 class TugasController extends Controller
 {

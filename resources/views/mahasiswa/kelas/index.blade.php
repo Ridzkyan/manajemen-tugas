@@ -1,29 +1,50 @@
 @extends('layouts.mahasiswa')
-
 @section('title', 'Kelas Saya')
 
 @section('content')
 <div class="container">
-    <h4 class="fw-bold mb-4">Daftar Kelas yang Kamu Ikuti</h4>
+    <h3 class="mb-4">📚 Daftar Kelas yang Kamu Ikuti</h3>
 
-    <div class="row">
-        @forelse($kelasmahasiswa as $kelas)
-            <div class="col-md-6">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $kelas->nama_kelas }}</h5>
-                        <p class="text-muted mb-2"><strong>Mata Kuliah:</strong> {{ $kelas->nama_matakuliah }}</p>
-                        <p class="text-muted mb-2"><strong>Dosen:</strong> {{ $kelas->dosen->name ?? '-' }}</p>
+    {{-- Notifikasi --}}
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
-                        <a href="{{ route('mahasiswa.kelas.show', $kelas->id) }}" class="btn btn-sm btn-secondary">
-                            🔍 Lihat Kelas
-                        </a>
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+
+    {{-- Daftar kelas --}}
+    @if($kelasmahasiswa->count())
+        <div class="row">
+            @foreach($kelasmahasiswa as $kelas)
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $kelas->nama_matakuliah }}</h5>
+                            <p class="mb-1"><strong>Kode Kelas:</strong> {{ $kelas->kode_unik }}</p>
+                            <p class="mb-2"><strong>Dosen:</strong> {{ $kelas->dosen->name ?? 'Tidak diketahui' }}</p>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ route('mahasiswa.kelas.show', $kelas->id) }}" class="btn btn-sm btn-primary">
+                                    Masuk Kelas
+                                </a>
+
+                                {{-- Form keluar kelas --}}
+                                <form action="{{ route('mahasiswa.kelas.leave', $kelas->id) }}" method="POST" onsubmit="return confirm('Yakin ingin keluar dari kelas ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Keluar</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @empty
-            <p class="text-muted">Kamu belum tergabung di kelas manapun.</p>
-        @endforelse
-    </div>
+            @endforeach
+        </div>
+    @else
+        <div class="alert alert-info">Kamu belum bergabung dengan kelas manapun.</div>
+        <a href="{{ route('mahasiswa.join.index') }}" class="btn btn-success">🔑 Gabung ke Kelas</a>
+    @endif
 </div>
 @endsection

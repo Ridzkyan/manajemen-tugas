@@ -18,13 +18,14 @@ class Kelas extends Model
 
     public function materi()
     {
-        return $this->hasMany(Materi::class);
+        return $this->hasMany(Materi::class, 'materi_id');
     }
 
     public function dosen()
     {
-        return $this->belongsTo(User::class, 'dosen_id');
+    return $this->belongsTo(\App\Models\User::class, 'dosen_id');
     }
+
 
     public function mahasiswa()
     {

@@ -22,5 +22,8 @@ class KelasMahasiswa extends Model
     {
         return $this->belongsTo(\App\Models\Kelas::class, 'kelas_id');
     }
-
+    public function mahasiswa()
+    {
+    return $this->belongsTo(\App\Models\User\Mahasiswa::class);
+    }
 }

@@ -62,7 +62,7 @@ class Kernel extends HttpKernel
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'mahasiswa.verified' => \App\Http\Middleware\CekEmailTerverifikasi::class,
+        'verified' => \App\Http\Middleware\EnsureMahasiswaEmailIsVerified::class,
         'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
 
     ];

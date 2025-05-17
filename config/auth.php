@@ -28,7 +28,7 @@ return [
 
         'mahasiswa' => [
             'driver' => 'session',
-            'provider' => 'mahasiswas',
+            'provider' => 'users',
         ],
     ],
 
