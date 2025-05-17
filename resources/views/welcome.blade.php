@@ -11,53 +11,64 @@
 
     <!-- Custom Styles -->
     <style>
-        body {
-            background: url('{{ asset("images/Background.png") }}') center/cover no-repeat fixed;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            font-family: 'Nunito', sans-serif;
-        }
-        .welcome-card {
-            background: #008080;
-            color: white;
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 400px;
-        }
-        .logo-img {
-            width: 100px;
-            margin-bottom: 20px;
-        }
-        .welcome-title {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .welcome-subtitle {
-            font-size: 1rem;
-            margin-bottom: 30px;
-        }
-        .btn-custom {
-            background-color: #FFB347;
-            color: #000;
-            font-weight: bold;
-            border-radius: 30px;
-            padding: 10px 20px;
-            transition: 0.3s;
-            font-size: 1rem;
-            height: 48px;
-        }
-        .btn-custom:hover {
-            background: #ffffff;
-            color: #008080;
-        }
-    </style>
+    html, body {
+        height: 100vh; /* FULL layar */
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* ❌ Tidak bisa scroll */
+        font-family: 'Nunito', sans-serif;
+    }
+
+    body {
+        background: url('{{ asset("images/Background.png") }}') center/cover no-repeat fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .welcome-card {
+        background: #008080;
+        color: white;
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .logo-img {
+        width: 100px;
+        margin-bottom: 20px;
+    }
+
+    .welcome-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .welcome-subtitle {
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+
+    .btn-custom {
+        background-color: #FFB347;
+        color: #000;
+        font-weight: bold;
+        border-radius: 30px;
+        padding: 10px 20px;
+        transition: 0.3s;
+        font-size: 1rem;
+        height: 48px;
+    }
+
+    .btn-custom:hover {
+        background: #ffffff;
+        color: #008080;
+    }
+</style>
 </head>
 
 <body>
