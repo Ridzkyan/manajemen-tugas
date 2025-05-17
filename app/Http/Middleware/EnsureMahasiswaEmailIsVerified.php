@@ -13,7 +13,7 @@ class EnsureMahasiswaEmailIsVerified
         $user = Auth::guard('mahasiswa')->user();
 
         if (!$user || !$user->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice');
+            return redirect()->route('mahasiswa.verification.notice');
         }
 
         return $next($request);

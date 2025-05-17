@@ -44,7 +44,7 @@ Route::get('/login', function () {
         if ($user->hasVerifiedEmail()) {
             return redirect()->route('mahasiswa.dashboard');
         } else {
-            return redirect()->route('verification.notice'); // arahin ke halaman verifikasi
+            return redirect()->route('mahasiswa.verification.notice'); // arahin ke halaman verifikasi
         }
     }
 
