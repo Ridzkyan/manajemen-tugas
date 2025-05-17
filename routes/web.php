@@ -24,7 +24,6 @@ use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
 use App\Http\Controllers\Mahasiswa\KomunikasiController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Mahasiswa\PengaturanController as MahasiswaPengaturanController;
-use App\Http\Controllers\Mahasiswa\HomeController;
 use App\Http\Controllers\Mahasiswa\UjianController;
 
 // ==============================
