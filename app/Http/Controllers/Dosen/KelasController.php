@@ -8,15 +8,21 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Kelas;
 use App\Models\Materi;
+use App\Models\Tugas;
 use App\Notifications\MateriBaruNotification;
 
 class KelasController extends Controller
 {
     public function index()
     {
-        $kelas = Kelas::where('dosen_id', Auth::id())->get();
-        return view('dosen.kelola_kelas.index', compact('kelas'));
+    $kelas = Kelas::where('dosen_id', Auth::id())->get();
+
+    $kelasGrouped = $kelas->groupBy('nama_kelas')->sortKeys();
+    $kategoriList = $kelas->pluck('nama_kelas')->unique()->sort();
+
+    return view('dosen.kelola_kelas.index', compact('kelasGrouped', 'kategoriList'));
     }
+
 
     public function create()
     {
@@ -137,10 +143,18 @@ class KelasController extends Controller
             ->where('dosen_id', Auth::id())
             ->get();
 
-        $kelasGrouped = $kelasList->groupBy('nama_kelas');
-        $kelasPertama = $kelasList->first();
+        $kelasGrouped = $kelasList
+            ->sortBy(function ($kelas) {
+                return strtoupper(trim(substr($kelas->nama_kelas, -1)));
+            })
+            ->groupBy(function ($kelas) {
+                return strtoupper(trim(substr($kelas->nama_kelas, -1)));
+            });
 
-        return view('dosen.materi_kelas.materi_dan_kelas', compact('kelasGrouped', 'kelasPertama'));
+        $kelasPertama = $kelasList->first();
+        $kategoriList = $kelasGrouped->keys()->sort()->values();
+
+        return view('dosen.materi_kelas.materi_dan_kelas', compact('kelasGrouped', 'kelasPertama', 'kategoriList'));
     }
 
     public function uploadMateriGlobal(Request $request)
@@ -195,6 +209,17 @@ class KelasController extends Controller
     public function komunikasi()
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->get();
-        return view('dosen.komunikasi.komunikasi', compact('kelas'));
+
+        // Map kategori manual dari nama_kelas, contoh: 'A' dari 'Kelas A'
+        $kelasGrouped = $kelas->sortBy(function ($item) {
+            // Ambil huruf terakhir dari nama_kelas, misal: "Kelas A" → "A"
+            return strtoupper(trim(substr($item->nama_kelas, -1)));
+        })->groupBy(function ($item) {
+            return strtoupper(trim(substr($item->nama_kelas, -1)));
+        });
+
+        $kategoriList = $kelasGrouped->keys()->sort()->values()->all();
+
+        return view('dosen.komunikasi.komunikasi', compact('kelasGrouped', 'kategoriList'));
     }
 }

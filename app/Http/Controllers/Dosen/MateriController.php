@@ -9,6 +9,31 @@ use Illuminate\Support\Facades\Storage;
 
 class MateriController extends Controller
 {
+    public function index()
+    {
+        $kelasList = Kelas::with('materi')
+            ->where('dosen_id', auth()->id())
+            ->get();
+
+        // Grouping berdasarkan huruf terakhir nama_kelas (misal: A, B, C)
+        $kelasGrouped = $kelasList->groupBy(function ($kls) {
+            return strtoupper(substr($kls->nama_kelas, -1));
+        });
+
+        return view('dosen.materi_kelas.materi_dan_kelas', compact('kelasGrouped'));
+    }
+    public function materiDanKelas()
+    {
+        $kelasList = Kelas::with('materi')
+            ->where('dosen_id', Auth::id())
+            ->get();
+
+        $kelasGrouped = $kelasList->groupBy(function ($kelas) {
+            return strtoupper(substr($kelas->nama_kelas, 0, 1));
+        })->sortKeys();
+
+        return view('dosen.materi_kelas.materi_dan_kelas', compact('kelasGrouped'));
+    }
     public function edit($id)
     {
         $materi = Materi::findOrFail($id);

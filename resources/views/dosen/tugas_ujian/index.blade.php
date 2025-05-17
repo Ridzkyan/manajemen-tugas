@@ -91,6 +91,49 @@
         box-shadow: 0 6px 12px rgba(245, 160, 78, 0.3);
     }
 
+    .btn-upload {
+        background-color: #008080;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 10px rgba(0, 128, 128, 0.2);
+    }
+
+    .btn-upload:hover {
+        background-color: #f5a04e;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(245, 160, 78, 0.3);
+    }
+
+    .btn-lihat-file {
+        background-color: #008080;
+        color: white;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-lihat-file:hover {
+        background-color: #f5a04e;
+        color: white;
+        text-decoration: none;
+    }
+
     .badge-taskflow {
         background-color: #008080;
         color: white;
@@ -186,12 +229,6 @@
                                     Deadline: {{ \Carbon\Carbon::parse($tgs->deadline)->translatedFormat('d F Y') }}
                                 </p>
                             @endif
-
-                            @if($tgs->file_soal)
-                                <p class="mb-0">
-                                    📎 <a href="{{ asset('storage/' . $tgs->file_soal) }}" target="_blank">Lihat File</a>
-                                </p>
-                            @endif
                         </div>
 
                         <div class="d-flex justify-content-center mt-3 gap-3">
@@ -202,10 +239,16 @@
                             <form action="{{ route('dosen.tugas_ujian.destroy', [$kelas->id, $tgs->id]) }}" method="POST" class="form-delete d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="btn btn-delete btn-confirm-delete">
+                                <button type="button" class="btn btn-delete btn-confirm-delete" data-form-id="form-delete-{{ $tgs->id }}">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
+
+                            @if($tgs->file_soal)
+                                <a href="{{ asset('storage/' . $tgs->file_soal) }}" target="_blank" class="btn btn-lihat-file">
+                                    <i class="bi bi-file-earmark-text"></i> Lihat File
+                                </a>
+                            @endif
 
                             <a href="{{ route('dosen.tugas_ujian.penilaian', [$kelas->id, $tgs->id]) }}" class="btn-penilaian">
                                 Penilaian
@@ -225,7 +268,7 @@
                     <i class="bi bi-upload fs-5" style="color: #008080;"></i> Upload Tugas / Ujian
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('dosen.tugas_ujian.store', $kelas->id) }}" enctype="multipart/form-data">
+                    <form method="POST" id = "formUploadTugas" action="{{ route('dosen.tugas_ujian.store', $kelas->id) }}" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
                             <label class="form-label fw-semibold d-flex align-items-center" style="gap: 6px;">
@@ -251,17 +294,17 @@
                             <textarea name="deskripsi" class="form-control shadow-sm" rows="3" placeholder="Tulis deskripsi tugas di sini..."></textarea>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold d-flex align-items-center" style="gap: 6px;">
-                                <i class="bi bi-file-earmark-arrow-up fs-5" style="color: #008080;"></i> Upload File Soal
-                            </label>
-                            <div class="dropzone border rounded p-4 text-center shadow-sm" id="fileUploadDropzone" style="min-height: 120px;">
-                                <div class="dz-message">
-                                    <i class="bi bi-cloud-arrow-up fs-3 text-muted mb-2 d-block"></i>
-                                    <p class="mb-0 text-muted">Klik atau drag file untuk upload</p>
+                           <div class="mb-3">
+                                <label class="form-label fw-semibold d-flex align-items-center" style="gap: 6px;">
+                                    <i class="bi bi-file-earmark-arrow-up fs-5" style="color: #008080;"></i> Upload File Soal
+                                </label>
+                                <div id="fileUploadDropzone" class="dropzone border rounded p-4 text-center shadow-sm" style="min-height: 150px;">
+                                    <div class="dz-message">
+                                        <i class="bi bi-cloud-arrow-up fs-3 text-muted mb-2 d-block"></i>
+                                        <p class="mb-0 text-muted">Klik atau drag file untuk upload</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold d-flex align-items-center" style="gap: 6px;">
@@ -270,7 +313,7 @@
                             <input type="date" name="deadline" class="form-control shadow-sm">
                         </div>
 
-                        <button type="submit" class="btn btn-upload w-100 mt-3">
+                        <button type="button" id="btnSubmitForm" class="btn btn-upload w-100 mt-3">
                             <i class="bi bi-cloud-arrow-up me-2"></i> Upload Tugas
                         </button>
                     </form>
@@ -295,81 +338,99 @@
 @if(session('success'))
 <script>
     Swal.fire({
-        toast: true,
-        position: 'top-end',
         icon: 'success',
-        title: '{{ session('success') }}',
+        title: 'Berhasil',
+        text: '{{ session('success') }}',
         showConfirmButton: false,
-        timer: 3000,
+        timer: 2000,
         timerProgressBar: true
     });
 </script>
 @endif
 
-{{-- Dropzone --}}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const deleteButtons = document.querySelectorAll(".btn-confirm-delete");
+
+    deleteButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            Swal.fire({
+                title: 'Yakin?',
+                text: "Tugas akan dihapus dan tidak bisa dikembalikan.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    button.closest("form").submit();
+                }
+            });
+        });
+    });
+});
+</script>
+
+<!-- Dropzone CDN -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const deleteButtons = document.querySelectorAll('.btn-confirm-delete');
-
-        deleteButtons.forEach(function(button) {
-            button.addEventListener('click', function () {
-                const form = this.closest('form');
-
-                Swal.fire({
-                    title: 'Yakin ingin menghapus tugas?',
-                    text: "Data ini tidak dapat dikembalikan!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#008080',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, hapus',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
-    });
 Dropzone.autoDiscover = false;
 
+const myForm = document.getElementById("formUploadTugas");
+const btnSubmit = document.getElementById("btnSubmitForm");
+
 const dz = new Dropzone("#fileUploadDropzone", {
-    url: "{{ route('dosen.tugas_ujian.store', $kelas->id) }}",
+    url: myForm.action,
     autoProcessQueue: false,
     uploadMultiple: false,
     maxFiles: 1,
     maxFilesize: 5,
-    acceptedFiles: '.pdf,.doc,.docx',
-    addRemoveLinks: true,
-    headers: {
-        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-    },
-    paramName: 'file_soal',
+    acceptedFiles: ".pdf,.doc,.docx",
+    paramName: "file_soal",
+    previewsContainer: "#fileUploadDropzone",
+    headers: { 'X-CSRF-TOKEN': "{{ csrf_token() }}" },
     init: function () {
-        const myDropzone = this;
-        document.querySelector("form").addEventListener("submit", function (e) {
-            e.preventDefault();
-            let formData = new FormData(this);
-            if (myDropzone.getAcceptedFiles().length > 0) {
-                formData.append('file_soal', myDropzone.getAcceptedFiles()[0]);
-            }
+        const dzInstance = this;
 
-            fetch(this.action, {
-                method: "POST",
-                body: formData,
-            }).then(response => {
-                if (response.ok) {
-                    window.location.href = window.location.href + '?success=1';
-                } else {
-                    alert("Gagal upload!");
+        btnSubmit.addEventListener("click", function () {
+            if (dzInstance.getAcceptedFiles().length === 0) {
+                Swal.fire("Oops", "Silakan upload file terlebih dahulu!", "warning");
+            } else {
+                dzInstance.processQueue();
+            }
+        });
+
+        dzInstance.on("sending", function(file, xhr, formData) {
+            const inputs = myForm.querySelectorAll("input, textarea, select");
+            inputs.forEach(input => {
+                if (input.name && input.type !== "file") {
+                    formData.append(input.name, input.value);
                 }
             });
+        });
+
+        dzInstance.on("success", function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Tugas berhasil diupload!',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        });
+
+        dzInstance.on("error", function (file, response) {
+            Swal.fire("Gagal", response.message || "Upload gagal", "error");
         });
     }
 });
 </script>
-@endsection
+@endsection 

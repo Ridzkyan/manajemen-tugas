@@ -69,6 +69,7 @@ class LoginDosenController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('dosen.login')->with('message', 'Anda telah logout.');
+        // Ganti 'message' ke 'success' agar dibaca oleh SweetAlert2
+        return redirect()->route('dosen.login')->with('success', 'Anda telah logout.');
     }
 }

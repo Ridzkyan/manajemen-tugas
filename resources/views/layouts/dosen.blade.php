@@ -14,11 +14,13 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 
     <style>
-        body {
+        html, body {
             background-color: #fef9f4;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
+            height: 100vh;
+            overflow: hidden;
         }
 
         #app {
@@ -164,7 +166,8 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="{{ route('dosen.rekap_nilai.index') }}" class="nav-link {{ Route::is('dosen.rekap_nilai') ? 'active' : '' }}">
+                <a href="{{ route('dosen.rekap_nilai.index') }}" 
+                class="nav-link {{ Route::is('dosen.rekap_nilai.*') ? 'active' : '' }}">
                     <i class="fas fa-clipboard-list"></i> Rekap Nilai
                 </a>
             </li>

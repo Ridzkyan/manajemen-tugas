@@ -12,6 +12,7 @@ use App\Models\Kelas;
 use App\Models\Mahasiswa;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapNilaiExport;
+use App\Notifications\TugasBaruNotification;
 
 class TugasController extends Controller
 {
@@ -34,18 +35,25 @@ class TugasController extends Controller
         // Kelompokkan berdasarkan huruf awal nama_kelas
         $kelasGrouped = $kelasList->groupBy(function ($kelas) {
             return strtoupper(substr($kelas->nama_kelas, 0, 1));
-        });
+        })->sortKeys();
 
         return view('dosen.tugas_ujian.pilih_kelas', compact('kelasGrouped'));
     }
 
     public function index($kelasId)
-    {
-        $kelas = Kelas::where('dosen_id', Auth::id())->findOrFail($kelasId);
-        $tugas = Tugas::where('kelas_id', $kelasId)->get();
+{
+    $kelas = Kelas::where('dosen_id', Auth::id())->findOrFail($kelasId);
+    $tugas = Tugas::where('kelas_id', $kelasId)->get();
 
-        return view('dosen.tugas_ujian.index', compact('kelas', 'tugas'));
-    }
+    // Ambil semua kelas dosen lalu group by kategori kelas
+    $allKelas = Kelas::where('dosen_id', Auth::id())->get();
+    $kelasGrouped = $allKelas->groupBy('nama_kelas')->sortKeys(); // atau nama lain: kategori
+    $kategoriList = $allKelas->pluck('nama_kelas')->unique()->sort();
+
+    return view('dosen.tugas_ujian.index', compact('kelas', 'tugas', 'kelasGrouped', 'kategoriList'));
+}
+
+
 
     // Store Task
     public function store(Request $request, $kelasId)
@@ -70,6 +78,11 @@ class TugasController extends Controller
             'file_soal' => $filePath,
             'deadline' => $request->deadline,
         ]);
+
+        // 📦 TANGGAPI SESUAI JENIS REQUEST
+    if ($request->ajax()) {
+        return response()->json(['message' => 'Tugas berhasil ditambahkan!'], 200);
+    }
 
         // Notify students
         $kelas = Kelas::findOrFail($kelasId);

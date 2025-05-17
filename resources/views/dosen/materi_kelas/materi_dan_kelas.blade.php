@@ -29,10 +29,10 @@
         <div class="row align-items-center mb-3">
             <div class="col-md-3">
                 <select id="filter_kategori" class="form-select form-select-sm shadow-sm">
-                    <option value="">Semua Kelas</option>
-                    @foreach(range('A', 'Z') as $char)
-                        <option value="{{ $char }}">{{ $char }}</option>
-                    @endforeach
+                    <option value="all">📂 Semua Kelas</option>
+                @foreach($kelasGrouped as $kategori => $item)
+                    <option value="{{ strtolower($kategori) }}">Kelas {{ $kategori }}</option>
+                @endforeach
                 </select>
             </div>
             <div class="col-md-4">

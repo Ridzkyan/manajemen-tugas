@@ -3,7 +3,7 @@
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 <style>
-    body {
+    .container {
         font-family: 'Poppins', sans-serif;
     }
     .card-materi {
