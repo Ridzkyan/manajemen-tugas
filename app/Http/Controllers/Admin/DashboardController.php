@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-use App\Models\User;
-use App\Models\Kelas;
-use App\Models\Materi;
-use App\Models\Tugas;
+use App\Models\User\User;
+use App\Models\Kelas\Kelas;
+use App\Models\Kelas\Materi;
+use App\Models\Tugas\Tugas;
 use Carbon\Carbon;
 
 class DashboardController extends Controller

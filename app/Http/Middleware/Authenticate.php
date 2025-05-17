@@ -24,7 +24,7 @@ protected function redirectTo($request)
         }
 
         // default fallback
-        return route('dosen.login');
+        return route('mahasiswa.login');
     }
 }
 }

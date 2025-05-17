@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Materi;
-use App\Models\Tugas;
+use App\Models\Kelas\Materi;
+use App\Models\Tugas\Tugas;
 
 class KontenController extends Controller
 {
