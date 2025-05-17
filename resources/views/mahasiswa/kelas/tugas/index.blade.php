@@ -23,14 +23,13 @@
             <p><strong>Deadline:</strong> {{ \Carbon\Carbon::parse($tgs->deadline)->format('d M Y') }}</p>
 
             @if(!in_array($tgs->id, $pengumpulanTugas))
-                <button class="btn btn-sm btn-warning kerjakan-btn" 
-                    data-tugas="{{ $tgs->id }}" 
-                    data-kelas="{{ $kelas->id }}">
-                    Kerjakan
-                </button>
+                <a href="{{ route('mahasiswa.kelas.tugas.show', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}" class="btn btn-sm btn-warning">
+    Lihat Tugas
+</a>
+
             @else
-                <a href="{{ route('mahasiswa.tugas.preview', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}" class="btn btn-sm btn-info">Lihat/Download</a>
-                <form action="{{ route('mahasiswa.tugas.delete', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}"
+                <a href="{{ route('mahasiswa.kelas.tugas.preview', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}" class="btn btn-sm btn-info">Lihat/Download</a>
+                <form action="{{ route('mahasiswa.kelas.tugas.delete', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}"
                     method="POST"
                     class="d-inline"
                     onsubmit="return confirm('Yakin ingin menghapus tugas ini?')">

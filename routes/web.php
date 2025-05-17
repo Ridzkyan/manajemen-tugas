@@ -12,13 +12,10 @@ use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Auth\LoginDosenController;
 use App\Http\Controllers\Auth\LoginMahasiswaController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Dosen\MateriController;
 use App\Http\Controllers\Dosen\TugasController;
 use App\Http\Controllers\Mahasiswa\JoinKelasController;
 use App\Http\Controllers\Mahasiswa\MateriController as MahasiswaMateriController;
 use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
-use App\Http\Controllers\Auth\VerificationController;
-use App\Http\Controllers\Dosen\RekapController;
 use App\Http\Controllers\Mahasiswa\KomunikasiController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Mahasiswa\PengaturanController as MahasiswaPengaturanController;
@@ -201,11 +198,11 @@ Route::middleware(['auth:mahasiswa', 'verified'])->prefix('mahasiswa')->name('ma
 
     // Tugas
     Route::get('/kelas/{kelas}/tugas', [MahasiswaTugasController::class, 'index'])->name('kelas.tugas.index');
+    Route::get('/kelas/{kelas}/tugas/{tugas}', [MahasiswaTugasController::class, 'show'])->name('kelas.tugas.show'); 
     Route::post('/kelas/{kelas}/tugas/{tugas}/upload', [MahasiswaTugasController::class, 'upload'])->name('kelas.tugas.upload');
     Route::get('/kelas/{kelas}/tugas/{tugas}/preview', [MahasiswaTugasController::class, 'preview'])->name('kelas.tugas.preview');
     Route::delete('/kelas/{kelas}/tugas/{tugas}/delete', [MahasiswaTugasController::class, 'delete'])->name('kelas.tugas.delete');
-   
-   
+
     // Ujian (CRUD Lengkap)
     Route::prefix('/kelas/{kelas}/ujian')->name('ujian.')->group(function () {
         Route::get('/', [UjianController::class, 'index'])->name('index');
