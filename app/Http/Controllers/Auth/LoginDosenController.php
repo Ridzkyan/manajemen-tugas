@@ -43,7 +43,7 @@ class LoginDosenController extends Controller
             $user->last_login_at = now();
             $user->save();
 
-            return redirect()->intended(route('dosen.dashboard'));
+            return redirect()->route('dosen.dashboard')->with('success', 'Berhasil login!');
         }
 
         // Jika login gagal
@@ -69,6 +69,7 @@ class LoginDosenController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('dosen.login')->with('message', 'Anda telah logout.');
+        // Ganti 'message' ke 'success' agar dibaca oleh SweetAlert2
+        return redirect()->route('dosen.login')->with('success', 'Anda telah logout.');
     }
 }

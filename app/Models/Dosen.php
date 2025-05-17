@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\User;
+namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -22,7 +22,7 @@ class Dosen extends Authenticatable implements MustVerifyEmail
 
     public function kelas()
     {
-        return $this->hasMany(\App\Models\Kelas\Kelas::class, 'dosen_id');
+        return $this->hasMany(\App\Models\Kelas::class, 'dosen_id');
     }
 }
 

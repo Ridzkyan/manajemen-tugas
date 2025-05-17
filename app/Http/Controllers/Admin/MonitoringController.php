@@ -16,11 +16,14 @@ class MonitoringController extends Controller
             ->take(5)
             ->get();
     
+            
+            $kelasTugasTerbanyak = Kelas::withCount('tugas')
+            ->orderByDesc('tugas_count')
+            ->take(5)
+            ->get();
+            
         $allUsers = User::orderBy('role')->get()->groupBy('role');
-    
-        return view('admin.monitoring.index', compact(
-            'kelasTeraktif',
-            'allUsers'
-        ));
+        
+        return view('admin.monitoring.index', compact('allUsers', 'kelasTeraktif', 'kelasTugasTerbanyak'));
     }
 }

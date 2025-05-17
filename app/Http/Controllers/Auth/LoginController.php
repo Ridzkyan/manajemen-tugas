@@ -40,7 +40,7 @@ class LoginController extends Controller
     
         // Validasi tambahan untuk dosen: kode unik harus sesuai
         if ($guard === 'dosen') {
-            $user = \App\Models\User::where('email', $credentials['email'])->where('role', 'dosen')->first();
+            $user = App\Models\User::where('email', $credentials['email'])->where('role', 'dosen')->first();
     
             if (!$user || $user->kode_unik !== $request->kode_unik) {
                 return back()->withErrors([
