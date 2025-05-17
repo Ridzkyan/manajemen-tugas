@@ -99,13 +99,13 @@
 </head>
 <body>
     <div id="wrapper">
-       @php
-    $user = Auth::guard('mahasiswa')->user();
-    $foto = $user->foto ? asset($user->foto) : asset('default.png');
-    // Cek fallback jika $kelasId tidak tersedia
-    $kelasAktifId = $kelasId ?? optional($user->kelasMahasiswa()->first())->id;
-@endphp
+        @php
+            $user = Auth::guard('mahasiswa')->user();
+            $foto = $user->foto ? asset($user->foto) : asset('default.png');
 
+            // Ambil kelas aktif berdasarkan $kelasId, atau fallback kelas pertama dari relasi mahasiswa
+            $kelasAktifId = $kelasId ?? optional($user->kelasMahasiswa()->first())->id;
+        @endphp
 
         <!-- Sidebar -->
         <div class="sidebar">
@@ -125,11 +125,11 @@
                     </a>
                 </li>
 
-             {{-- Tugas --}}
+                {{-- Tugas --}}
                 <li>
                     @if($kelasAktifId)
                         <a class="nav-link {{ request()->is("mahasiswa/kelas/$kelasAktifId/tugas*") ? 'active' : '' }}"
-                        href="{{ route('mahasiswa.kelas.tugas.index', ['kelas' => $kelasAktifId]) }}">
+                            href="{{ route('mahasiswa.kelas.tugas.index', ['kelas' => $kelasAktifId]) }}">
                             <i class="fas fa-file-alt"></i> Tugas
                         </a>
                     @else
@@ -143,7 +143,7 @@
                 <li>
                     @if($kelasAktifId)
                         <a class="nav-link {{ request()->is("mahasiswa/kelas/$kelasAktifId/ujian*") ? 'active' : '' }}"
-                        href="{{ route('mahasiswa.ujian.index', ['kelas' => $kelasAktifId]) }}">
+                            href="{{ route('mahasiswa.ujian.index', ['kelas' => $kelasAktifId]) }}">
                             <i class="fas fa-file-signature"></i> Ujian
                         </a>
                     @else
@@ -152,7 +152,6 @@
                         </a>
                     @endif
                 </li>
-
 
                 {{-- Gabung Kelas --}}
                 <li>

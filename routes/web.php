@@ -77,9 +77,10 @@ Route::middleware('auth:mahasiswa')->prefix('mahasiswa/email')->name('mahasiswa.
 
     // Link verifikasi dari email
     Route::get('/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-        $request->fulfill();
-        return redirect()->route('mahasiswa.dashboard');
-    })->middleware('signed')->name('verify');
+    $request->fulfill();
+    Auth::guard('mahasiswa')->loginUsingId($request->route('id'));
+    return redirect()->route('mahasiswa.dashboard');
+})->middleware('signed')->name('verify');
 
     // Kirim ulang verifikasi
     Route::post('/verification-notification', function (Request $request) {

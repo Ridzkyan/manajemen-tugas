@@ -23,11 +23,12 @@
             <p><strong>Deadline:</strong> {{ \Carbon\Carbon::parse($tgs->deadline)->format('d M Y') }}</p>
 
             @if(!in_array($tgs->id, $pengumpulanTugas))
-                <a href="{{ route('mahasiswa.kelas.tugas.show', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}" class="btn btn-sm btn-warning">
-    Lihat Tugas
-</a>
-
+                {{-- Tombol ke halaman detail tugas --}}
+                <a href="{{ route('mahasiswa.kelas.tugas.show', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}" class="btn btn-sm btn-warning kerjakan-btn">
+                    Lihat Tugas
+                </a>
             @else
+                {{-- Tombol lihat/download file yang sudah diupload --}}
                 <a href="{{ route('mahasiswa.kelas.tugas.preview', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}" class="btn btn-sm btn-info">Lihat/Download</a>
                 <form action="{{ route('mahasiswa.kelas.tugas.delete', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}"
                     method="POST"
@@ -66,9 +67,9 @@
 </div>
 
 {{-- Dropzone --}}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-...SHA..." crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 Dropzone.autoDiscover = false;
@@ -81,8 +82,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelectorAll('.kerjakan-btn').forEach(btn => {
         btn.addEventListener('click', function () {
-            const kelasId = this.dataset.kelas;
-            const tugasId = this.dataset.tugas;
+            const kelasId = this.dataset.kelas || "{{ $kelas->id }}";
+            const tugasId = this.dataset.tugas || this.getAttribute('data-tugas');
+
             form.action = `/mahasiswa/kelas/${kelasId}/tugas/${tugasId}/upload`;
 
             dropzoneArea.innerHTML = '';
@@ -115,7 +117,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         alert("❌ Gagal mengunggah file.");
                     });
                 }
-                
             });
 
             modal.show();

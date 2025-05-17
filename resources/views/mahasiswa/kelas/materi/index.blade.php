@@ -1,8 +1,10 @@
 @extends('layouts.mahasiswa')
 
+@section('title', 'Materi Kelas')
+
 @section('content')
 <div class="container">
-    <h3>Materi Kelas: {{ $kelas->nama_kelas }}</h3>
+    <h3 class="mb-4">Materi Kelas: {{ $kelas->nama_kelas ?? $kelas->nama_matakuliah ?? 'Nama Kelas' }}</h3>
 
     @if($materis->count() > 0)
         <ul class="list-group">
@@ -10,9 +12,11 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span>{{ $materi->judul }}</span>
                     @if($materi->tipe == 'pdf')
-                        <a href="{{ asset('storage/' . $materi->file) }}" class="btn btn-sm btn-outline-primary" target="_blank">📄 Lihat PDF</a>
+                        <a href="{{ asset('storage/' . $materi->file) }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener noreferrer">📄 Lihat PDF</a>
+                    @elseif($materi->tipe == 'video' || $materi->link)
+                        <a href="{{ $materi->link }}" class="btn btn-sm btn-outline-info" target="_blank" rel="noopener noreferrer">▶️ Tonton Video</a>
                     @else
-                        <a href="{{ $materi->link }}" class="btn btn-sm btn-outline-info" target="_blank">▶️ Tonton Video</a>
+                        <span class="text-muted small">Tidak ada file atau link tersedia</span>
                     @endif
                 </li>
             @endforeach
