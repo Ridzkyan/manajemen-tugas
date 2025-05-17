@@ -7,9 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::table('materis', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending')->after('link');
-        });
+
     }
 
     public function down(): void
