@@ -10,27 +10,28 @@
 
     <style>
         html, body {
-            height: 100%;
+            height: 100vh;
             overflow: hidden;
             background-color: #fef9f4;
             font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         #wrapper {
             display: flex;
-            height: 100%;
+            height: 100vh;
+            overflow: hidden;
         }
 
         .sidebar {
             background-color: #00838f;
             color: white;
-            min-height: 100vh;
             width: 240px;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar.hide {
-            margin-left: -240px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .sidebar .logo-wrapper {
@@ -80,9 +81,10 @@
 
         .main-content {
             flex: 1;
-            transition: margin-left 0.3s ease;
-            width: 100%;
             overflow-y: auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .topbar {
@@ -132,6 +134,7 @@
 
         .content-wrapper {
             padding: 30px;
+            flex: 1;
         }
 
         .overlay {
@@ -176,12 +179,40 @@
             }
         }
     </style>
+
+    {{-- Halaman khusus tanpa scroll --}}
+    @php
+        $noScrollPages = [
+            'admin/pengaturan',
+            'admin/profil',
+            'admin/password',
+            'admin/ganti-password'
+        ];
+        $hideScroll = collect($noScrollPages)->contains(fn($route) => request()->is($route));
+    @endphp
+
+    @if($hideScroll)
+    <style>
+        html, body {
+            overflow-y: hidden !important;
+        }
+        .main-content {
+            overflow: hidden !important;
+        }
+        .content-wrapper {
+            min-height: calc(100vh - 90px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 !important;
+        }
+    </style>
+    @endif
 </head>
 <body>
 <div id="wrapper">
-    @php
-        $user = Auth::user();
-    @endphp
+    @php $user = Auth::user(); @endphp
+
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="logo-wrapper">
@@ -195,21 +226,28 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link {{ request()->routeIs('admin.dashboard.users') ? 'active' : '' }}" href="{{ route('admin.dashboard.users') }}">
-                    <i class="fas fa-users"></i> Users
+                <a href="{{ route('admin.users.index') }}"
+                   class="nav-link {{ Request::is('admin/users*') ? 'active bg-white text-warning fw-bold rounded-pill px-3' : '' }}">
+                    <i class="fas fa-users me-2"></i> Users
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="#"><i class="fas fa-folder-open"></i> Kelas/Mata Kuliah</a>
+                <a class="nav-link {{ request()->routeIs('admin.kelas.index') ? 'active' : '' }}" href="{{ route('admin.kelas.index') }}">
+                    <i class="fas fa-folder-open"></i> Kelas
+                </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="#"><i class="fas fa-file-alt"></i> Konten</a>
+                <a class="nav-link {{ request()->is('admin/konten*') ? 'active' : '' }}" href="{{ route('admin.konten.index') }}">
+                    <i class="fas fa-file-alt"></i> Konten
+                </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="#"><i class="fas fa-chart-bar"></i> Monitoring/Laporan</a>
+                <a class="nav-link {{ request()->is('admin/monitoring*') ? 'active' : '' }}" href="{{ route('admin.monitoring') }}">
+                    <i class="fas fa-chart-bar"></i> Monitoring
+                </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="/admin/pengaturan">
+                <a class="nav-link {{ request()->is('admin/pengaturan*') || request()->is('admin/profil*') || request()->is('admin/password*') || request()->is('admin/ganti-password*') ? 'active' : '' }}" href="{{ route('admin.pengaturan') }}">
                     <i class="fas fa-cog"></i> Pengaturan
                 </a>
             </li>
@@ -235,31 +273,25 @@
                 <div><strong>{{ $user->name }}</strong></div>
                 <small>{{ ucfirst($user->role) }}</small>
             </div>
-            <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content border-0 shadow">
+            <div class="avatar">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#avatarModal">
+                    <img src="{{ asset($user->foto ?? 'images/default.png') }}" class="rounded-circle" width="40" height="40" style="object-fit: cover; cursor: zoom-in;">
+                </a>
+            </div>
+        </div>
+
+        <!-- Modal Avatar -->
+        <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
                     <div class="modal-header">
                         <h5 class="modal-title" id="avatarModalLabel">Foto Profil</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                     </div>
                     <div class="modal-body text-center">
-                        @if($user->foto)
-                            <img src="{{ asset($user->foto) }}" class="img-fluid rounded shadow">
-                        @else
-                            <img src="{{ asset('images/default.png') }}" class="img-fluid rounded shadow">
-                        @endif
-                    </div>
+                        <img src="{{ asset($user->foto ?? 'images/default.png') }}" class="img-fluid rounded shadow">
                     </div>
                 </div>
-            </div>
-            <div class="avatar">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#avatarModal">
-                    @if($user->foto)
-                        <img src="{{ asset($user->foto) }}" class="rounded-circle" width="40" height="40" style="object-fit: cover; cursor: zoom-in;">
-                    @else
-                        <img src="{{ asset('images/default.png') }}" class="rounded-circle" width="40" height="40" style="object-fit: cover; cursor: zoom-in;">
-                    @endif
-                </a>
             </div>
         </div>
 
@@ -291,5 +323,22 @@
         });
     });
 </script>
+
+<!-- SweetAlert2 for Login Success -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('login_success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Login Berhasil',
+        text: '{{ session('login_success') }}',
+        showConfirmButton: false,
+        timer: 2000
+    });
+</script>
+@endif
+
+@stack('scripts')
 </body>
 </html>

@@ -16,6 +16,7 @@ class CreateMaterisTable extends Migration
             $table->string('file')->nullable();
             $table->string('link')->nullable();
             $table->timestamps();
+            $table->enum('status', ['menunggu', 'disetujui', 'ditolak'])->default('menunggu');
         });
     }
 

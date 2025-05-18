@@ -4,22 +4,48 @@ namespace App\Http\Controllers\Dosen;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Materi;
-use App\Models\Kelas;
+use App\Models\Kelas\Materi;
+use App\Models\Kelas\Kelas;
+use App\Models\User\User;
+use App\Notifications\MateriBaruNotification;
 use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Support\Facades\Auth;
 
 class MateriController extends Controller
 {
-    public function index($kelasId)
+    public function index()
     {
-        $kelas = Kelas::where('dosen_id', Auth::id())->findOrFail($kelasId);
-        $materis = Materi::where('kelas_id', $kelasId)->paginate(10); // <-- pakai PAGINATE sekarang
+        $kelasList = Kelas::with('materi')
+            ->where('dosen_id', auth()->id())
+            ->get();
 
-        return view('dosen.kelas.materi.index', compact('kelas', 'materis'));
+        // Grouping berdasarkan huruf terakhir nama_kelas (misal: A, B, C)
+        $kelasGrouped = $kelasList->groupBy(function ($kls) {
+            return strtoupper(substr($kls->nama_kelas, -1));
+        });
+
+        return view('dosen.materi_kelas.materi_dan_kelas', compact('kelasGrouped'));
+    }
+    public function materiDanKelas()
+    {
+        $kelasList = Kelas::with('materi')
+            ->where('dosen_id', Auth::id())
+            ->get();
+
+        $kelasGrouped = $kelasList->groupBy(function ($kelas) {
+            return strtoupper(substr($kelas->nama_kelas, 0, 1));
+        })->sortKeys();
+
+        return view('dosen.materi_kelas.materi_dan_kelas', compact('kelasGrouped'));
+    }
+    public function edit($id)
+    {
+        $materi = Materi::findOrFail($id);
+        return view('dosen.materi_kelas.edit', compact('materi'));
     }
 
-    public function store(Request $request, $kelasId)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'judul' => 'required|string|max:255',
@@ -28,11 +54,27 @@ class MateriController extends Controller
             'link' => 'nullable|url'
         ]);
 
-        // Validasi manual
-        if ($request->tipe === 'pdf' && !$request->hasFile('file')) {
-            return back()->with('error', 'File PDF harus diupload.');
+        $materi = Materi::findOrFail($id);
+        $materi->judul = $request->judul;
+        $materi->tipe = $request->tipe;
+
+        if ($request->tipe === 'link') {
+            $materi->link = $request->link;
+            if ($materi->file) {
+                Storage::delete('public/' . $materi->file);
+                $materi->file = null;
+            }
+        } elseif ($request->hasFile('file')) {
+            if ($materi->file) {
+                Storage::delete('public/' . $materi->file);
+            }
+            $materi->file = $request->file('file')->store('materi', 'public');
+            $materi->link = null;
         }
 
+        $materi->save();
+
+        return back()->with('success', 'Materi berhasil diperbarui.');
         if ($request->tipe === 'link' && !$request->link) {
             return back()->with('error', 'Link YouTube harus diisi.');
         }
@@ -42,45 +84,40 @@ class MateriController extends Controller
             $filePath = $request->file('file')->store('materi', 'public');
         }
 
-        Materi::create([
+        $materi = Materi::create([
             'kelas_id' => $kelasId,
             'judul' => $request->judul,
             'tipe' => $request->tipe,
             'file' => $filePath,
             'link' => $request->link,
+            'status' => 'menunggu', // Set status default ke menunggu
         ]);
 
-        return redirect()->back()->with('success', 'Materi berhasil diupload!');
+        $materi->load('kelas');
+
+        // ===== Kirim Notifikasi ke Mahasiswa =====
+        $kelas = Kelas::findOrFail($kelasId);
+        $mahasiswas = $kelas->mahasiswas; // relasi di model Kelas
+
+        foreach ($mahasiswas as $mhs) {
+            if ($mhs->hasVerifiedEmail()) {
+                $mhs->notify(new MateriBaruNotification($materi));
+            }
+        }
+
+        return redirect()->back()->with('success', 'Materi berhasil diupload dan notifikasi dikirim dan menunggu persetujuan admin.');
     }
 
     public function destroy($id)
     {
         $materi = Materi::findOrFail($id);
 
-        if ($materi->tipe == 'pdf' && $materi->file) {
-            Storage::disk('public')->delete($materi->file);
+        if ($materi->file) {
+            Storage::delete('public/' . $materi->file);
         }
 
         $materi->delete();
 
-        return redirect()->back()->with('success', 'Materi berhasil dihapus!');
-    }
-
-    public function bulkDelete(Request $request)
-    {
-        $materiIds = $request->materi_ids;
-
-        if ($materiIds) {
-            $materis = Materi::whereIn('id', $materiIds)->get();
-
-            foreach ($materis as $materi) {
-                if ($materi->tipe === 'pdf' && $materi->file) {
-                    Storage::disk('public')->delete($materi->file);
-                }
-                $materi->delete();
-            }
-        }
-
-        return redirect()->back()->with('success', 'Materi yang dipilih berhasil dihapus!');
+        return back()->with('success', 'Materi berhasil dihapus.');
     }
 }
