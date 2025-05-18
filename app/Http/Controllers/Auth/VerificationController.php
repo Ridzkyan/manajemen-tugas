@@ -64,4 +64,11 @@ class VerificationController extends Controller
 
         return back()->with('message', 'Link verifikasi telah dikirim ke email Anda.');
     }
+
+    public function show(Request $request)
+    {
+        return $request->user()->hasVerifiedEmail()
+            ? redirect()->route('mahasiswa.dashboard')
+            : view('auth.verify-email');
+    }
 }

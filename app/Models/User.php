@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -14,7 +13,7 @@ use Illuminate\Support\Facades\URL;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, Notifiable;
 
     protected $fillable = [
         'name',
@@ -38,6 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function kelasMahasiswa()
     {
+        return $this->belongsToMany(Kelas::class, 'kelas_mahasiswa', 'mahasiswa_id', 'kelas_id');
         return $this->belongsToMany(Kelas::class, 'kelas_mahasiswa', 'mahasiswa_id', 'kelas_id');
     }
 
@@ -73,3 +73,4 @@ class User extends Authenticatable implements MustVerifyEmail
         });
     }
 }
+

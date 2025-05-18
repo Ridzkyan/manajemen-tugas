@@ -7,11 +7,11 @@
 <style>
     .profil-wrapper {
         width: 100%;
-        height: 100%;
+        padding: 0 1rem;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 0;
+        animation: fadeIn 0.4s ease-in-out;
     }
 
     .card-profile {
@@ -21,7 +21,6 @@
         border-radius: 16px;
         padding: 40px 50px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-        animation: fadeIn 0.4s ease-in-out;
     }
 
     @keyframes fadeIn {
@@ -102,7 +101,7 @@
     }
 </style>
 
-<div class="profil-wrapper">
+<div class="profil-wrapper py-5">
     <div class="card-profile">
         <h4><i class="fas fa-user-edit"></i> Ubah Profil</h4>
         <form action="{{ route('admin.profil.update') }}" method="POST" enctype="multipart/form-data">

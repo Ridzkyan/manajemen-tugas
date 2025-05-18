@@ -6,17 +6,23 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Kelas\Kelas;
-use App\Models\Kelas\Materi;
+use App\Models\Kelas;
+use App\Models\Materi;
+use App\Models\Tugas;
 use App\Notifications\MateriBaruNotification;
 
 class KelasController extends Controller
 {
     public function index()
     {
-        $kelas = Kelas::where('dosen_id', Auth::id())->get();
-        return view('dosen.kelola_kelas.index', compact('kelas'));
+    $kelas = Kelas::where('dosen_id', Auth::id())->get();
+
+    $kelasGrouped = $kelas->groupBy('nama_kelas')->sortKeys();
+    $kategoriList = $kelas->pluck('nama_kelas')->unique()->sort();
+
+    return view('dosen.kelola_kelas.index', compact('kelasGrouped', 'kategoriList'));
     }
+
 
     public function create()
     {
@@ -122,9 +128,7 @@ class KelasController extends Controller
         ]);
 
         $kelas = Kelas::findOrFail($kelasId);
-        $mahasiswa = $kelas->mahasiswa;
-
-        foreach ($mahasiswa as $mhs) {
+        foreach ($kelas->mahasiswa as $mhs) {
             if ($mhs->hasVerifiedEmail()) {
                 $mhs->notify(new MateriBaruNotification($materi));
             }
@@ -135,10 +139,22 @@ class KelasController extends Controller
 
     public function materiDanKelas()
     {
-        $kelas = Kelas::where('dosen_id', Auth::id())->get();
-        $kelasPertama = $kelas->first();
+        $kelasList = Kelas::with('materi')
+            ->where('dosen_id', Auth::id())
+            ->get();
 
-        return view('dosen.materi_kelas.materi_dan_kelas', compact('kelas', 'kelasPertama'));
+        $kelasGrouped = $kelasList
+            ->sortBy(function ($kelas) {
+                return strtoupper(trim(substr($kelas->nama_kelas, -1)));
+            })
+            ->groupBy(function ($kelas) {
+                return strtoupper(trim(substr($kelas->nama_kelas, -1)));
+            });
+
+        $kelasPertama = $kelasList->first();
+        $kategoriList = $kelasGrouped->keys()->sort()->values();
+
+        return view('dosen.materi_kelas.materi_dan_kelas', compact('kelasGrouped', 'kelasPertama', 'kategoriList'));
     }
 
     public function uploadMateriGlobal(Request $request)
@@ -174,9 +190,7 @@ class KelasController extends Controller
         ]);
 
         $kelas = Kelas::findOrFail($request->kelas_id);
-        $mahasiswa = $kelas->mahasiswa;
-
-        foreach ($mahasiswa as $mhs) {
+        foreach ($kelas->mahasiswa as $mhs) {
             if ($mhs->hasVerifiedEmail()) {
                 $mhs->notify(new MateriBaruNotification($materi));
             }
@@ -185,17 +199,28 @@ class KelasController extends Controller
         return redirect()->back()->with('success', 'Materi berhasil diunggah dan notifikasi dikirim!');
     }
 
-    public function detailMateri($id)
+    public function detailMateri($id, $slug)
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->findOrFail($id);
         $materis = $kelas->materi;
 
-        return view('dosen.kelola_kelas.detail_materi', compact('kelas', 'materis'));
+        return view('dosen.materi_kelas.detail_materi', compact('kelas', 'materis'));   
     }
 
     public function komunikasi()
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->get();
-        return view('dosen.komunikasi.komunikasi', compact('kelas'));
+
+        // Map kategori manual dari nama_kelas, contoh: 'A' dari 'Kelas A'
+        $kelasGrouped = $kelas->sortBy(function ($item) {
+            // Ambil huruf terakhir dari nama_kelas, misal: "Kelas A" → "A"
+            return strtoupper(trim(substr($item->nama_kelas, -1)));
+        })->groupBy(function ($item) {
+            return strtoupper(trim(substr($item->nama_kelas, -1)));
+        });
+
+        $kategoriList = $kelasGrouped->keys()->sort()->values()->all();
+
+        return view('dosen.komunikasi.komunikasi', compact('kelasGrouped', 'kategoriList'));
     }
 }

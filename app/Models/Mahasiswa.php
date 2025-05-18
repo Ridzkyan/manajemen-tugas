@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Models\User;
+namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+<<<<<<< HEAD:app/Models/User/Mahasiswa.php
 use Illuminate\Auth\Events\Verified;
 use App\Notifications\MahasiswaVerifyEmail;
 use App\Models\Kelas\Kelas;
+=======
+use App\Models\Kelas;
+>>>>>>> 726302778c6be705a3b8a18f89c715dfb50d927d:app/Models/Mahasiswa.php
 
 class Mahasiswa extends Authenticatable implements MustVerifyEmail
 {

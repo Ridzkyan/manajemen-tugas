@@ -109,7 +109,7 @@ class UserController extends Controller
         $admin->email = $request->email;
         $admin->save();
 
-        return back()->with('success', 'Profil berhasil diperbarui.');
+        return redirect()->route('admin.pengaturan')->with('success', 'Profil berhasil diperbarui.');
     }
 
     // =====================
@@ -135,6 +135,6 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return back()->with('success', 'Password berhasil diperbarui.');
+        return redirect()->route('admin.pengaturan')->with('success', 'Password berhasil diperbarui.');
     }
 }

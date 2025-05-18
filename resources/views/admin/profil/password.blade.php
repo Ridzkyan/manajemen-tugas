@@ -6,11 +6,11 @@
 <style>
     .profil-wrapper {
         width: 100%;
-        height: 100%;
-        padding: 0;
+        padding: 0 1rem;
         display: flex;
         justify-content: center;
         align-items: center;
+        animation: fadeIn 0.4s ease-in-out;
     }
 
     .card-profile {
@@ -20,7 +20,6 @@
         background: #fff;
         border-radius: 16px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-        animation: fadeIn 0.4s ease-in-out;
     }
 
     .card-profile h4 {
@@ -65,7 +64,7 @@
     }
 </style>
 
-<div class="profil-wrapper">
+<div class="profil-wrapper py-5">
     <div class="card-profile">
         <h4><i class="fas fa-key"></i> Ganti Password</h4>
         <form id="passwordForm" action="{{ route('admin.password.update') }}" method="POST">

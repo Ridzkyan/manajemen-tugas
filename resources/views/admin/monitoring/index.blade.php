@@ -62,6 +62,16 @@
             </div>
         </div>
     </div>
+
+    {{-- GRAFIK TUGAS --}}
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="card-body">
+            <h5 class="fw-bold text-orange mb-4">Grafik Tugas Terbanyak per Kelas</h5>
+            <div class="bg-light rounded-4 p-4">
+                <canvas id="grafikTugas" height="300"></canvas>
+            </div>
+        </div>
+    </div>
 </div>
 
 {{-- Style warna dan tambahan --}}
@@ -149,5 +159,41 @@
             }
         }
     });
+
+    // GRAFIK TUGAS
+    const ctxTugas = document.getElementById('grafikTugas').getContext('2d');
+    new Chart(ctxTugas, {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode($kelasTugasTerbanyak->pluck('nama_kelas')) !!},
+            datasets: [{
+                label: 'Jumlah Tugas',
+                data: {!! json_encode($kelasTugasTerbanyak->pluck('tugas_count')) !!},
+                backgroundColor: '#f5a04e',
+                borderRadius: 6,
+                barThickness: 20
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { beginAtZero: true, ticks: { color: '#333' } },
+                y: { ticks: { color: '#333' } }
+            },
+            plugins: {
+                legend: {
+                    labels: { color: '#333', font: { weight: 'bold' } }
+                },
+                tooltip: {
+                    backgroundColor: '#008080',
+                    titleColor: '#fff',
+                    bodyColor: '#fff'
+                }
+            }
+        }
+    });
+
 </script>
 @endsection

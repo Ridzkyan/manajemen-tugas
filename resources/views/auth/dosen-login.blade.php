@@ -4,8 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Dosen - TaskFlow</title>
+  
+  <!-- Bootstrap & Font Awesome -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <style>
     body {
         margin: 0;
@@ -106,10 +112,11 @@
     <div class="left-pane">
       <div class="mt-2">TASKFLOW - MANAGEMENT</div>
     </div>
+
     <div class="right-pane">
       <div class="login-form">
 
-        {{-- ALERT AREA --}}
+        {{-- ALERT (Form Validation, Error Login) --}}
         @if(session('error'))
           <div class="alert alert-danger alert-dismissible fade show small py-2 px-3 mb-3" role="alert" style="font-size: 0.9rem;">
             {{ session('error') }}
@@ -131,22 +138,27 @@
           </div>
         @endif
 
+        {{-- FORM LOGIN --}}
         <form method="POST" action="{{ route('dosen.login') }}">
           @csrf
           <h3 class="fw-bold mb-2">Selamat Datang di <span class="text-taskflow">TaskFlow</span>!</h3>
           <p class="text-muted mb-4">Log In akun</p>
+
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input type="email" class="form-control" id="email" name="email" required placeholder="Masukkan username/email" value="{{ old('email') }}">
           </div>
+
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" id="password" name="password" required placeholder="Masukkan Password">
           </div>
+
           <div class="mb-4">
             <label for="kode_unik" class="form-label">Kode Unik</label>
             <input type="text" class="form-control" id="kode_unik" name="kode_unik" required placeholder="Masukkan Kode Unik" value="{{ old('kode_unik') }}">
           </div>
+
           <button type="submit" class="btn btn-login w-100">
               <i class="fas fa-sign-in-alt me-1"></i> Log In
           </button>
@@ -157,5 +169,18 @@
 
   {{-- Bootstrap JS --}}
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  {{-- SweetAlert2 Logout Success --}}
+  @if (session('success'))
+  <script>
+      Swal.fire({
+          icon: 'success',
+          title: 'Logout Berhasil',
+          text: '{{ session('success') }}',
+          showConfirmButton: false,
+          timer: 2000
+      });
+  </script>
+  @endif
 </body>
 </html>

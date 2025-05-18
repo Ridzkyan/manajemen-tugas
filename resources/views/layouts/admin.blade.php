@@ -10,27 +10,28 @@
 
     <style>
         html, body {
-            min-height: 100vh;
-            overflow-x: hidden;
+            height: 100vh;
+            overflow: hidden;
             background-color: #fef9f4;
             font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         #wrapper {
             display: flex;
-            height: 100%;
+            height: 100vh;
+            overflow: hidden;
         }
 
         .sidebar {
             background-color: #00838f;
             color: white;
-            min-height: 100vh;
             width: 240px;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar.hide {
-            margin-left: -240px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .sidebar .logo-wrapper {
@@ -80,9 +81,10 @@
 
         .main-content {
             flex: 1;
-            transition: margin-left 0.3s ease;
-            width: 100%;
             overflow-y: auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .topbar {
@@ -132,6 +134,7 @@
 
         .content-wrapper {
             padding: 30px;
+            flex: 1;
         }
 
         .overlay {
@@ -175,12 +178,27 @@
                 display: block;
             }
         }
+    </style>
 
-        @php
-            $isFixedPage = request()->is('admin/profil') || request()->is('admin/password') || request()->is('admin/ganti-password');
-        @endphp
+    {{-- Halaman khusus tanpa scroll --}}
+    @php
+        $noScrollPages = [
+            'admin/pengaturan',
+            'admin/profil',
+            'admin/password',
+            'admin/ganti-password'
+        ];
+        $hideScroll = collect($noScrollPages)->contains(fn($route) => request()->is($route));
+    @endphp
 
-        @if($isFixedPage)
+    @if($hideScroll)
+    <style>
+        html, body {
+            overflow-y: hidden !important;
+        }
+        .main-content {
+            overflow: hidden !important;
+        }
         .content-wrapper {
             min-height: calc(100vh - 90px);
             display: flex;
@@ -188,8 +206,8 @@
             align-items: center;
             padding: 0 !important;
         }
-        @endif
     </style>
+    @endif
 </head>
 <body>
 <div id="wrapper">
@@ -208,8 +226,9 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link {{ request()->routeIs('admin.users') || request()->routeIs('admin.users.create') || request()->routeIs('admin.edit') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
-                    <i class="fas fa-users"></i> Users
+                <a href="{{ route('admin.users.index') }}"
+                   class="nav-link {{ Request::is('admin/users*') ? 'active bg-white text-warning fw-bold rounded-pill px-3' : '' }}">
+                    <i class="fas fa-users me-2"></i> Users
                 </a>
             </li>
             <li class="nav-item mb-2">
@@ -218,7 +237,7 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link" href="{{ route('admin.konten.index') }}">
+                <a class="nav-link {{ request()->is('admin/konten*') ? 'active' : '' }}" href="{{ route('admin.konten.index') }}">
                     <i class="fas fa-file-alt"></i> Konten
                 </a>
             </li>
@@ -304,6 +323,22 @@
         });
     });
 </script>
+
+<!-- SweetAlert2 for Login Success -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('login_success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Login Berhasil',
+        text: '{{ session('login_success') }}',
+        showConfirmButton: false,
+        timer: 2000
+    });
+</script>
+@endif
+
 @stack('scripts')
 </body>
 </html>
