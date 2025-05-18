@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Kelas\Materi;
 
 class Kelas extends Model
 {
@@ -23,6 +24,11 @@ class Kelas extends Model
     public function dosen()
     {
     return $this->belongsTo(\App\Models\User::class, 'dosen_id');
+    }
+
+        public function materis()
+    {
+        return $this->hasMany(Materi::class, 'kelas_id');
     }
 
     // Kelas punya banyak Mahasiswa

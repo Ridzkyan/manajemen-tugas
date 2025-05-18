@@ -11,8 +11,8 @@ class MonitoringController extends Controller
 {
     public function index()
     {
-        $kelasTeraktif = Kelas::withCount('materi')
-            ->orderByDesc('materi_count')
+        $kelasTeraktif = Kelas::withCount('materis')
+            ->orderByDesc('materis_count')
             ->take(5)
             ->get();
     

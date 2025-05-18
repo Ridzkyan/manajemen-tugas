@@ -28,7 +28,7 @@ return [
 
         'mahasiswa' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'mahasiswas',
         ],
     ],
 
@@ -38,17 +38,17 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User\User::class, // ✅ disesuaikan
+            'model' => App\Models\User\User::class, 
         ],
 
         'dosens' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User\Dosen::class, // ✅ disesuaikan
+            'model' => App\Models\User\Dosen::class, 
         ],
 
         'mahasiswas' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User\Mahasiswa::class, // ✅ disesuaikan
+            'model' => App\Models\User\Mahasiswa::class,
         ],
     ],
 

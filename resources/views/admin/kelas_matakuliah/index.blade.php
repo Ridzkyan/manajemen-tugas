@@ -59,7 +59,7 @@
                                     <td>{{ $kelas->dosen->name ?? '-' }}</td>
                                     <td><span class="badge bg-secondary">{{ $kelas->kode_unik }}</span></td>
                                     <td>{{ $kelas->mahasiswa->count() }}</td>
-                                    <td>{{ $kelas->materi->count() }}</td>
+                                    <td>{{ $kelas->materis->count() }}</td>
                                     <td>{{ $kelas->tugas->count() }}</td>
                                     <td>
                                         @if($kelas->whatsapp_link)

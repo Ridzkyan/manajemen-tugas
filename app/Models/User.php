@@ -42,19 +42,18 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Override notifikasi verifikasi email
-     * Supaya link verifikasi pakai route dengan prefix 'mahasiswa.'
+     * 
      */
     public function sendEmailVerificationNotification()
     {
         $this->notify(new class extends VerifyEmail {
             /**
-             * Generate URL verifikasi dengan route bernama mahasiswa.verification.verify
+             * 
              */
             protected function verificationUrl($notifiable)
             {
                 return URL::temporarySignedRoute(
-                    'mahasiswa.verification.verify',
+                    'mahasiswa.email-verification.verify',
                     now()->addMinutes(60),
                     ['id' => $notifiable->getKey(), 'hash' => sha1($notifiable->getEmailForVerification())]
                 );

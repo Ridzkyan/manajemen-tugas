@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
+use App\Models\User\Mahasiswa;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,12 +21,17 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
-     *
+     *A
      * @return void
      */
     public function boot()
     {
-        Carbon::setLocale('id'); // 🟢 Aktifkan bahasa Indonesia
-        setlocale(LC_TIME, 'id_ID.UTF-8'); // 🟢 Untuk format tanggal lokal
+        Carbon::setLocale('id');
+        setlocale(LC_TIME, 'id_ID.UTF-8');
+
+        // ✅ Override binding jika Laravel ada yang salah rujuk
+        App::bind('App\Models\Mahasiswa', function () {
+            return new Mahasiswa();
+        });
     }
 }

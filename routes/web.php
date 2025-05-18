@@ -17,10 +17,10 @@ use App\Http\Controllers\Mahasiswa\JoinKelasController;
 use App\Http\Controllers\Mahasiswa\MateriController as MahasiswaMateriController;
 use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
 use App\Http\Controllers\Mahasiswa\KomunikasiController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Mahasiswa\PengaturanController as MahasiswaPengaturanController;
 use App\Http\Controllers\Mahasiswa\HomeController;
 use App\Http\Controllers\Mahasiswa\UjianController;
+use App\Http\Controllers\Auth\VerificationController;
 
 // ==============================
 // PUBLIC ROUTES
@@ -29,60 +29,37 @@ use App\Http\Controllers\Mahasiswa\UjianController;
 Route::get('/', fn () => view('welcome'))->name('welcome');
 
 Route::get('/login', function () {
-    if (Auth::guard('admin')->check()) {
-        return redirect()->route('admin.dashboard');
-    }
-
-    if (Auth::guard('dosen')->check()) {
-        return redirect()->route('dosen.dashboard');
-    }
-
+    if (Auth::guard('admin')->check()) return redirect()->route('admin.dashboard');
+    if (Auth::guard('dosen')->check()) return redirect()->route('dosen.dashboard');
     if (Auth::guard('mahasiswa')->check()) {
         $user = Auth::guard('mahasiswa')->user();
-
-        // Cek apakah email sudah diverifikasi
-        if ($user->hasVerifiedEmail()) {
-            return redirect()->route('mahasiswa.dashboard');
-        } else {
-            return redirect()->route('mahasiswa.verification.notice'); // arahin ke halaman verifikasi
-        }
+        return $user->hasVerifiedEmail()
+            ? redirect()->route('mahasiswa.dashboard')
+            : redirect()->route('mahasiswa.email-verification.notice');
     }
-
-    // Kalau belum login, arahkan ke halaman login mahasiswa
     return redirect()->route('login.mahasiswa');
 })->name('login');
-// Home fallback untuk default redirect
-Route::get('/home', function () {
-    return redirect()->route('login');
-});
+
+Route::get('/home', fn () => redirect()->route('login'));
 
 // Login & Register Mahasiswa
 Route::get('/mahasiswa/login', [LoginMahasiswaController::class, 'showLoginForm'])->name('login.mahasiswa');
 Route::post('/mahasiswa/login', [LoginMahasiswaController::class, 'login'])->name('mahasiswa.login');
 Route::post('/mahasiswa/logout', [LoginMahasiswaController::class, 'logout'])->name('mahasiswa.logout');
-
 Route::get('/mahasiswa/register', [RegisterController::class, 'showRegistrationForm'])->name('register.mahasiswa');
 Route::post('/mahasiswa/register', [RegisterController::class, 'register'])->name('mahasiswa.register');
 
-// 🔐 Verifikasi Email Mahasiswa
-Route::middleware('auth:mahasiswa')->prefix('mahasiswa/email')->name('mahasiswa.verification.')->group(function () {
-    // Notifikasi verifikasi
-    Route::get('/verify', function () {
-        return view('auth.verify-email');
-    })->name('notice');
+// Verifikasi Email Mahasiswa (HARUS di luar auth:mahasiswa)
+Route::get('/mahasiswa/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('mahasiswa.email-verification.verify');
 
-    // Link verifikasi dari email
-    Route::get('/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    Auth::guard('mahasiswa')->loginUsingId($request->route('id'));
-    return redirect()->route('mahasiswa.dashboard');
-})->middleware('signed')->name('verify');
-
-    // Kirim ulang verifikasi
-    Route::post('/verification-notification', function (Request $request) {
-        $request->user('mahasiswa')->sendEmailVerificationNotification();
-        return back()->with('message', 'Link verifikasi telah dikirim ulang.');
-    })->middleware('throttle:6,1')->name('send');
+// Halaman notifikasi & kirim ulang
+Route::middleware(['auth:mahasiswa'])->prefix('mahasiswa/email')->name('mahasiswa.email-verification.')->group(function () {
+    Route::get('/verify', [VerificationController::class, 'show'])->name('notice');
+    Route::post('/verification-notification', [VerificationController::class, 'resend'])
+        ->middleware('throttle:6,1')
+        ->name('resend');
 });
 
 // Login Dosen
@@ -99,112 +76,54 @@ Route::post('/admin/logout', [App\Http\Controllers\Auth\AdminLoginController::cl
 // PROTECTED ROUTES
 // ==============================
 
-// ---------- ADMIN ----------
+// ADMIN
 Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/pengaturan', fn () => view('admin.admin_pengaturan.pengaturan'))->name('pengaturan');
-
-    Route::get('/dashboard/users', [UserController::class, 'index'])->name('dashboard.users');
+    Route::view('/pengaturan', 'admin.admin_pengaturan.pengaturan')->name('pengaturan');
     Route::resource('/users', UserController::class)->except(['show'])->names('users');
     Route::put('/reset-password/{user}', [UserController::class, 'resetPassword'])->name('users.reset-password');
-
     Route::get('/profil', [UserController::class, 'editProfile'])->name('profil.edit');
     Route::put('/profil', [UserController::class, 'updateProfile'])->name('profil.update');
     Route::get('/ganti-password', [UserController::class, 'editPassword'])->name('password.edit');
     Route::put('/ganti-password', [UserController::class, 'updatePassword'])->name('password.update');
-
     Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
     Route::get('/konten', [KontenController::class, 'index'])->name('konten.index');
-
     Route::patch('/konten/materi/{id}/setujui', [KontenController::class, 'setujuiMateri'])->name('konten.materi.setujui');
     Route::patch('/konten/materi/{id}/tolak', [KontenController::class, 'tolakMateri'])->name('konten.materi.tolak');
     Route::patch('/konten/tugas/{id}/setujui', [KontenController::class, 'setujuiTugas'])->name('konten.tugas.setujui');
     Route::patch('/konten/tugas/{id}/tolak', [KontenController::class, 'tolakTugas'])->name('konten.tugas.tolak');
-
-    Route::get('/pengaturan/data', [PengaturanController::class, 'data'])->name('pengaturan.data');
     Route::post('/backup', [PengaturanController::class, 'backup'])->name('backup');
     Route::post('/backup-zip', [PengaturanController::class, 'backupZip'])->name('backup.zip');
     Route::post('/restore', [PengaturanController::class, 'restore'])->name('restore');
 });
 
-
-// ---------- DOSEN ----------
-Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name('dosen.')->group(function () {
-    // Dashboard → views/dosen/dashboard.blade.php
+// DOSEN
+Route::middleware(['auth:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Dosen\DashboardController::class, 'index'])->name('dashboard');
-
-    // Materi & Kelas → views/dosen/materi_kelas/materi_dan_kelas.blade.php
     Route::get('/materi-kelas', [App\Http\Controllers\Dosen\KelasController::class, 'materiDanKelas'])->name('materi_kelas.index');
     Route::post('/materi-kelas/upload', [App\Http\Controllers\Dosen\KelasController::class, 'uploadMateriGlobal'])->name('materi_kelas.upload');
     Route::get('/materi-kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'detailMateri'])->name('materi_kelas.detail');
-
-    // Kelola Kelas → views/dosen/kelola_kelas/
-    Route::get('/kelas', [App\Http\Controllers\Dosen\KelasController::class, 'index'])->name('kelola_kelas.index');
-    Route::get('/kelas/create', [App\Http\Controllers\Dosen\KelasController::class, 'create'])->name('kelola_kelas.create');
-    Route::post('/kelas', [App\Http\Controllers\Dosen\KelasController::class, 'store'])->name('kelola_kelas.store');
-    Route::get('/kelas/{id}/edit', [App\Http\Controllers\Dosen\KelasController::class, 'edit'])->name('kelola_kelas.edit');
-    Route::put('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'update'])->name('kelola_kelas.update');
-    Route::delete('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'destroy'])->name('kelola_kelas.destroy');
-    Route::get('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'show'])->name('kelola_kelas.show');
-
-    // Komunikasi → views/dosen/komunikasi/komunikasi.blade.php
-    Route::get('/komunikasi', [App\Http\Controllers\Dosen\KelasController::class, 'komunikasi'])->name('komunikasi');
-
-    // Kelola isi kelas (materi & tugas per kelas)
+    Route::resource('/kelas', App\Http\Controllers\Dosen\KelasController::class)->names('kelola_kelas');
     Route::get('/kelas/{id}/manage', [App\Http\Controllers\Dosen\KelasController::class, 'manage'])->name('kelola_kelas.manage');
     Route::post('/kelas/{id}/materi', [App\Http\Controllers\Dosen\KelasController::class, 'uploadMateri'])->name('kelola_kelas.upload_materi');
-
-    // Tugas & Ujian → views/dosen/tugas_ujian/
-   Route::get('/tugas-ujian', [TugasController::class, 'pilihKelas'])->name('tugas_ujian.pilih_kelas');
-    Route::get('/tugas-ujian/{kelas}', [TugasController::class, 'index'])->name('tugas_ujian.index');
-    Route::post('/tugas-ujian/{kelas}', [TugasController::class, 'store'])->name('tugas_ujian.store');
-    Route::get('/tugas-ujian/{kelas}/detail', [TugasController::class, 'detail'])->name('tugas_ujian.detail');
-    Route::get('/tugas-ujian/{kelas}/{tugas}/penilaian', [TugasController::class, 'penilaian'])->name('tugas_ujian.penilaian');
-    Route::post('/tugas-ujian/{kelas}/{tugas}/penilaian', [TugasController::class, 'nilaiTugas'])->name('tugas_ujian.nilai');
-    Route::get('/tugas-ujian/{kelas}/{tugas}/mahasiswa', [TugasController::class, 'penilaianPerMahasiswa'])->name('tugas_ujian.mahasiswa');
-    // Rekap Nilai → views/dosen/rekap_nilai/
-    Route::get('/rekap-nilai', [App\Http\Controllers\Dosen\TugasController::class, 'rekapNilai'])->name('rekap_nilai.index');
-    Route::get('/rekap-nilai/{kelas}', [App\Http\Controllers\Dosen\TugasController::class, 'rekapPerKelas'])->name('rekap_nilai.detail');
-    Route::get('/rekap-nilai/export/{kelasId}', [App\Http\Controllers\Dosen\TugasController::class, 'exportRekap'])->name('rekap_nilai.export');
-
-      // Pengaturan Dosen
-    Route::get('/pengaturan', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'pengaturan'])->name('pengaturan');
-
-    Route::get('/pengaturan/index', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'editProfil'])->name('pengaturan.profil');
-    Route::post('/pengaturan/index', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'updateProfil'])->name('pengaturan.profil.update');
-
-    Route::get('/pengaturan/password', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'editPassword'])->name('pengaturan.password');
-    Route::post('/pengaturan/password', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'updatePassword'])->name('pengaturan.password.update');
+    Route::get('/komunikasi', [App\Http\Controllers\Dosen\KelasController::class, 'komunikasi'])->name('komunikasi');
+    Route::resource('/tugas-ujian', TugasController::class)->parameters(['tugas-ujian' => 'kelas'])->names('tugas_ujian');
+    Route::get('/rekap-nilai', [TugasController::class, 'rekapNilai'])->name('rekap_nilai.index');
+    Route::get('/rekap-nilai/{kelas}', [TugasController::class, 'rekapPerKelas'])->name('rekap_nilai.detail');
+    Route::get('/rekap-nilai/export/{kelasId}', [TugasController::class, 'exportRekap'])->name('rekap_nilai.export');
 });
 
-
-// ---------- MAHASISWA ----------
-
+// MAHASISWA
 Route::middleware(['auth:mahasiswa', 'verified'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
-    // Dashboard
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
-
-    // Kelas
     Route::get('/kelas', [MahasiswaMateriController::class, 'daftarKelasMateri'])->name('kelas.index');
     Route::get('/kelas/{id}', [JoinKelasController::class, 'show'])->name('kelas.show');
     Route::delete('/kelas/{id}', [JoinKelasController::class, 'leave'])->name('kelas.leave');
-
-    // Join Kelas
     Route::get('/join', [JoinKelasController::class, 'index'])->name('join.index');
     Route::post('/join', [JoinKelasController::class, 'store'])->name('join.store');
-
-    // Materi
     Route::get('/kelas/{kelas}/materi', [MahasiswaMateriController::class, 'index'])->name('materi.index');
-
-    // Tugas
-    Route::get('/kelas/{kelas}/tugas', [MahasiswaTugasController::class, 'index'])->name('kelas.tugas.index');
-    Route::get('/kelas/{kelas}/tugas/{tugas}', [MahasiswaTugasController::class, 'show'])->name('kelas.tugas.show'); 
-    Route::post('/kelas/{kelas}/tugas/{tugas}/upload', [MahasiswaTugasController::class, 'upload'])->name('kelas.tugas.upload');
-    Route::get('/kelas/{kelas}/tugas/{tugas}/preview', [MahasiswaTugasController::class, 'preview'])->name('kelas.tugas.preview');
-    Route::delete('/kelas/{kelas}/tugas/{tugas}/delete', [MahasiswaTugasController::class, 'delete'])->name('kelas.tugas.delete');
-
-    // Ujian (CRUD Lengkap)
+    Route::resource('/kelas/{kelas}/tugas', MahasiswaTugasController::class)->names('kelas.tugas');
     Route::prefix('/kelas/{kelas}/ujian')->name('ujian.')->group(function () {
         Route::get('/', [UjianController::class, 'index'])->name('index');
         Route::get('/create', [UjianController::class, 'create'])->name('create');
@@ -214,11 +133,7 @@ Route::middleware(['auth:mahasiswa', 'verified'])->prefix('mahasiswa')->name('ma
         Route::put('/{id}', [UjianController::class, 'update'])->name('update');
         Route::delete('/{id}', [UjianController::class, 'destroy'])->name('destroy');
     });
-
-    // Komunikasi
     Route::get('/komunikasi', [KomunikasiController::class, 'index'])->name('komunikasi.index');
-
-    // Pengaturan & Profil
     Route::get('/pengaturan', [MahasiswaPengaturanController::class, 'index'])->name('pengaturan.index');
     Route::get('/edit-profil', [MahasiswaPengaturanController::class, 'editProfile'])->name('profile-edit.edit');
     Route::post('/edit-profil', [MahasiswaPengaturanController::class, 'updateProfile'])->name('profile-edit.update');

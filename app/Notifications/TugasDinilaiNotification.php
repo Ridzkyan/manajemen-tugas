@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
-use App\Models\Tugas;
+use App\Models\Tugas\Tugas;
 
 class TugasDinilaiNotification extends Notification
 {
@@ -17,7 +17,7 @@ class TugasDinilaiNotification extends Notification
     /**
      * Create a new notification instance.
      *
-     * @param \App\Models\Tugas $tugas
+     * @param \App\Models\Tugas\Tugas $tugas
      */
     public function __construct(Tugas $tugas)
     {

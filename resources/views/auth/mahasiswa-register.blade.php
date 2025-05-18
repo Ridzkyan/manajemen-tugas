@@ -34,6 +34,17 @@
                         @enderror
                     </div>
 
+                    {{-- Username --}}
+                    <div class="form-group mb-3">
+                        <label for="username">Username</label>
+                        <input id="username" type="text" name="username" 
+                            class="form-control @error('username') is-invalid @enderror" 
+                            value="{{ old('username') }}" required>
+                        @error('username')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    
                     {{-- Email --}}
                     <div class="form-group mb-3">
                         <label for="email">Email</label>

@@ -3,36 +3,57 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Verified;
+use App\Models\User\Mahasiswa;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 class VerificationController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:mahasiswa'); // guard sesuai kebutuhan
         $this->middleware('signed')->only('verify');
-        $this->middleware('throttle:6,1')->only('verify', 'resend');
+        $this->middleware('throttle:30,1')->only('verify', 'resend');
+        $this->middleware('auth:mahasiswa')->only('show', 'resend');
     }
 
-    public function notice()
-    {
-        return view('auth.verify');
-    }
-
+    /**
+     * Menampilkan halaman notifikasi verifikasi email.
+     */
     public function show(Request $request)
     {
-        return $request->user()->hasVerifiedEmail()
-            ? redirect()->route('mahasiswa.dashboard')
-            : view('auth.verify-email');
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->route('mahasiswa.dashboard');
+        }
+
+        return view('auth.verify-email');
     }
 
-    public function verify(EmailVerificationRequest $request)
+    /**
+     * Proses verifikasi ketika link di email diklik.
+     */
+    public function verify(Request $request)
     {
-        $request->fulfill(); // mark as verified
-        return redirect()->route('mahasiswa.dashboard');
+        $user = Mahasiswa::findOrFail($request->route('id'));
+
+        if (! hash_equals(sha1($user->getEmailForVerification()), $request->route('hash'))) {
+            abort(403, 'Link verifikasi tidak valid.');
+        }
+
+        if (! $user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+            event(new Verified($user)); // penting untuk trigger event Laravel
+        }
+
+        Auth::guard('mahasiswa')->login($user);
+
+        return redirect()->route('mahasiswa.dashboard')->with('success', 'Email berhasil diverifikasi!');
     }
 
+    /**
+     * Kirim ulang link verifikasi.
+     */
     public function resend(Request $request)
     {
         if ($request->user()->hasVerifiedEmail()) {

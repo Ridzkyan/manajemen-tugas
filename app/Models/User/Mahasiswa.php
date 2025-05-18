@@ -6,9 +6,9 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Kelas\Kelas;
 use Illuminate\Auth\Events\Verified;
 use App\Notifications\MahasiswaVerifyEmail;
+use App\Models\Kelas\Kelas;
 
 class Mahasiswa extends Authenticatable implements MustVerifyEmail
 {
@@ -18,16 +18,19 @@ class Mahasiswa extends Authenticatable implements MustVerifyEmail
     protected $guard = 'mahasiswa';
 
     // Tabel yang digunakan
-    protected $table = 'users'; // ✅ Pastikan sesuai dengan struktur database kamu
+    protected $table = 'users';
 
-    // Field yang bisa diisi
+    // Field yang dapat diisi
     protected $fillable = [
         'name',
         'email',
+        'username',
         'password',
+        'role',
         'kode_unik',
         'is_online',
         'last_login_at',
+        'email_verified_at',
     ];
 
     // Field yang disembunyikan saat serialisasi
@@ -36,15 +39,15 @@ class Mahasiswa extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
-    // Casting field
+    // Casting
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
     /**
-     * Relasi Many-to-Many ke Kelas.
+     * Relasi ke Kelas (many-to-many).
      */
-    public function kelas()
+    public function kelasMahasiswa()
     {
         return $this->belongsToMany(
             Kelas::class,
@@ -53,13 +56,6 @@ class Mahasiswa extends Authenticatable implements MustVerifyEmail
             'kelas_id'
         );
     }
-
-    public function kelasMahasiswa()
-    {
-    return $this->belongsToMany(\App\Models\Kelas\KelasMahasiswa::class, 'kelas_mahasiswa', 'mahasiswa_id', 'kelas_id');
-    }
-
-
 
     /**
      * Cek apakah email sudah diverifikasi.
@@ -70,26 +66,34 @@ class Mahasiswa extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Tandai email sebagai sudah diverifikasi.
+     * Tandai email sebagai telah diverifikasi.
      */
     public function markEmailAsVerified()
     {
         if (! $this->hasVerifiedEmail()) {
-            $this->forceFill([
-                'email_verified_at' => now(),
-            ])->save();
+            $this->email_verified_at = now();
+            $this->save();
 
-            event(new Verified($this));
+            event(new Verified($this)); // Penting untuk trigger event
+            return true; // Wajib dikembalikan agar EmailVerificationRequest->fulfill() tahu sukses
         }
 
-        return true;
+        return false;
     }
 
     /**
-     * Kirim notifikasi verifikasi email ke mahasiswa.
+     * Diperlukan oleh sistem verifikasi Laravel.
+     */
+    public function getEmailForVerification()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Kirim notifikasi verifikasi email.
      */
     public function sendEmailVerificationNotification()
     {
-        $this->notify(new MahasiswaVerifyEmail); // ✅ Menggunakan notifikasi khusus
+        $this->notify(new MahasiswaVerifyEmail);
     }
 }
