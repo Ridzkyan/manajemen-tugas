@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Kelas\Kelas;
 use App\Models\Kelas\Materi;
-use App\Models\Tugas\Tugas;use App\Notifications\MateriBaruNotification;
+use App\Models\Tugas\Tugas;
+use App\Notifications\MateriBaruNotification;
 
 class KelasController extends Controller
 {

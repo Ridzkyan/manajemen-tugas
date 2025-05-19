@@ -19,11 +19,16 @@ use App\Http\Controllers\Admin\MonitoringController;
 use App\Http\Controllers\Admin\KontenController;
 use App\Http\Controllers\Admin\PengaturanController;
 
+// Dosen
 use App\Http\Controllers\Dosen\SearchController;
 use App\Http\Controllers\Dosen\KelasController as DosenKelasController;
 use App\Http\Controllers\Dosen\MateriController;
 use App\Http\Controllers\Dosen\TugasController;
 use App\Http\Controllers\Dosen\RekapController;
+use App\Http\Controllers\Dosen\DashboardController as DosenDashboardController;
+use App\Http\Controllers\Dosen\TugasController as DosenTugasController;
+
+use App\Http\Controllers\Dosen\ProfilDosenController;
 
 // Mahasiswa
 use App\Http\Controllers\Mahasiswa\HomeController;
@@ -32,6 +37,7 @@ use App\Http\Controllers\Mahasiswa\MateriController as MahasiswaMateriController
 use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
 use App\Http\Controllers\Mahasiswa\UjianController;
 use App\Http\Controllers\Mahasiswa\KomunikasiController;
+use App\Http\Controllers\Mahasiswa\PenilaianController;
 use App\Http\Controllers\Mahasiswa\PengaturanController as MahasiswaPengaturanController;
 
 // ==============================
@@ -130,10 +136,10 @@ Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name
 
     // Materi & Kelas → views/dosen/materi_kelas/materi_dan_kelas.blade.php
     Route::get('/materi-kelas', [DosenKelasController::class, 'materiDanKelas'])->name('materi_kelas.index'); // Arham nambah
-    Route::post('/materi-kelas/upload', [KelasController::class, 'uploadMateriGlobal'])->name('materi_kelas.upload'); // Arham nambah
-    Route::get('/materi-kelas/{id}-{slug}', [KelasController::class, 'detailMateri'])->name('materi_kelas.detail'); // Arham nambah
+    Route::get('/materi-kelas/{id}-{slug}', [DosenKelasController::class, 'detailMateri'])->name('materi_kelas.detail'); // Arham nambah
     Route::delete('/materi-kelas/{id}', [MateriController::class, 'destroy'])->name('materi_kelas.destroy'); // Arham nambah
     Route::put('/materi-kelas/{id}', [MateriController::class, 'update'])->name('materi_kelas.update'); // Arham nambah
+    Route::post('/materi-kelas/upload', [DosenKelasController::class, 'uploadMateriGlobal'])->name('materi_kelas.upload');
 
     // Kelola Kelas → views/dosen/kelola_kelas/
     Route::get('/kelas', [App\Http\Controllers\Dosen\KelasController::class, 'index'])->name('kelola_kelas.index');
@@ -143,6 +149,7 @@ Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name
     Route::put('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'update'])->name('kelola_kelas.update');
     Route::delete('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'destroy'])->name('kelola_kelas.destroy');
     Route::get('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'show'])->name('kelola_kelas.show');
+    Route::get('/materi-kelas/{id}-{slug}', [DosenKelasController::class, 'detailMateri'])->name('materi_kelas.detail');
 
     // Komunikasi → views/dosen/komunikasi/komunikasi.blade.php
     Route::get('/komunikasi', [App\Http\Controllers\Dosen\KelasController::class, 'komunikasi'])->name('komunikasi');
@@ -202,6 +209,8 @@ Route::middleware(['auth:mahasiswa', 'verified'])->prefix('mahasiswa')->name('ma
     Route::post('/kelas/{kelas}/tugas/{tugas}/upload', [MahasiswaTugasController::class, 'upload'])->name('kelas.tugas.upload');
     Route::get('/kelas/{kelas}/tugas/{tugas}/preview', [MahasiswaTugasController::class, 'preview'])->name('kelas.tugas.preview');
     Route::delete('/kelas/{kelas}/tugas/{tugas}/delete', [MahasiswaTugasController::class, 'delete'])->name('kelas.tugas.delete');
+    Route::get('{kelasId}/{tugasId}/penilaian', [PenilaianController::class, 'show'])->name('penilaian');
+    Route::post('{kelasId}/{tugasId}/penilaian', [PenilaianController::class, 'update'])->name('penilaian.update');
 
     // Ujian (CRUD Lengkap)
     Route::prefix('/kelas/{kelas}/ujian')->name('ujian.')->group(function () {
@@ -212,6 +221,7 @@ Route::middleware(['auth:mahasiswa', 'verified'])->prefix('mahasiswa')->name('ma
         Route::get('/{id}/edit', [UjianController::class, 'edit'])->name('edit');
         Route::put('/{id}', [UjianController::class, 'update'])->name('update');
         Route::delete('/{id}', [UjianController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/kerjakan', [UjianController::class, 'kerjakan'])->name('kerjakan');
     });
 
     // Komunikasi

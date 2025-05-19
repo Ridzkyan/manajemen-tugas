@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Tugas;
-use App\Models\PengumpulanTugas;
+use App\Models\Tugas\Tugas;
+use App\Models\Tugas\PengumpulanTugas;
 use App\Models\Kelas;
-use App\Models\Mahasiswa;
+use App\Models\User\Mahasiswa;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapNilaiExport;
 use App\Notifications\TugasBaruNotification;
+use App\Notifications\TugasDinilaiNotification;
 
 class TugasController extends Controller
 {

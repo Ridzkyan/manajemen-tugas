@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         setlocale(LC_TIME, 'id_ID.UTF-8');
 
         // ✅ Override binding jika Laravel ada yang salah rujuk
-        App::bind('App\Models\Mahasiswa', function () {
+        App::bind('App\Models\User\Mahasiswa', function () {
             return new Mahasiswa();
         });
     }
