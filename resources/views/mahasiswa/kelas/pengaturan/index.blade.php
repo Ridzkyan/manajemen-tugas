@@ -14,7 +14,7 @@
             <a href="{{ route('mahasiswa.password-edit.index') }}">🔒 Ganti Password</a>
         </li>
         <li class="list-group-item">
-            <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('Yakin ingin logout?')">
+            <form method="POST" action="{{ route('mahasiswa.logout') }}" onsubmit="return confirm('Yakin ingin logout?')">
                 @csrf
                 <button type="submit" class="btn btn-link text-danger p-0">🚪 Logout</button>
             </form>

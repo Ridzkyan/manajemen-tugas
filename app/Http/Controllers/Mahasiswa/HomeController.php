@@ -17,7 +17,7 @@ class HomeController extends Controller
     $user = auth()->user();
 
     // Kelas yang diikuti mahasiswa
-    $kelasmahasiswa = $user->kelasMahasiswa()->with('dosen')->get()->unique('id');
+    $kelasmahasiswa = $user->kelas()->with('dosen')->get()->unique('id');
 
     // Ambil ID kelas
     $kelasIds = $kelasmahasiswa->pluck('id');

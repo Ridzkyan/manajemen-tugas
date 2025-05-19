@@ -19,7 +19,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = ['password', 'remember_token'];
     protected $casts = ['email_verified_at' => 'datetime'];
 
-    public function kelasMahasiswa()
+    public function kelas()
     {
         return $this->belongsToMany(Kelas::class, 'kelas_mahasiswa', 'mahasiswa_id', 'kelas_id');
     }

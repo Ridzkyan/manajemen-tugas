@@ -36,6 +36,11 @@ class LoginMahasiswaController extends Controller
             $user->last_login_at = now();
             $user->save();
 
+            // ✅ Tambahkan validasi verifikasi email
+            if (!$user->hasVerifiedEmail()) {
+                return redirect()->route('verification.notice');
+            }
+
             return redirect()->intended(route('mahasiswa.dashboard'));
         }
 
@@ -44,14 +49,16 @@ class LoginMahasiswaController extends Controller
         ]);
     }
 
+    protected function redirectTo()
+    {
+        return route('mahasiswa.dashboard');
+    }
+
     public function logout(Request $request)
     {
         $user = Auth::guard('mahasiswa')->user();
-
-        if ($user) {
-            $user->is_online = false;
-            $user->save();
-        }
+        $user->is_online = false;
+        $user->save();
 
         Auth::guard('mahasiswa')->logout();
 

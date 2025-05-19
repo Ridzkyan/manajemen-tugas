@@ -46,6 +46,7 @@ Route::post('/mahasiswa/logout', [LoginMahasiswaController::class, 'logout'])->n
 
 Route::get('/mahasiswa/register', [RegisterController::class, 'showRegistrationForm'])->name('register.mahasiswa');
 Route::post('/mahasiswa/register', [RegisterController::class, 'register'])->name('mahasiswa.register');
+
 Route::get('/email/verify', [VerificationController::class, 'notice'])->name('verification.notice');
 Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->middleware(['signed'])->name('verification.verify');
 Route::post('/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
@@ -165,10 +166,10 @@ Route::middleware(['auth:mahasiswa', 'mahasiswa.verified'])->prefix('mahasiswa')
     Route::get('/komunikasi', [App\Http\Controllers\Mahasiswa\KomunikasiController::class, 'index'])->name('komunikasi.index');
 
     Route::get('/pengaturan', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'index'])->name('pengaturan.index');
-    Route::get('/edit-profil', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'editProfile'])->name('profile-edit.edit');
+    Route::get('/pengaturan/edit-profil', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'editProfile']) ->name('profile-edit.index');
     Route::post('/edit-profil', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'updateProfile'])->name('profile-edit.update');
     
-    Route::get('/ganti-password', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'editPassword'])->name('password-edit.edit');
+    Route::get('/pengaturan/edit-password', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'editPassword'])->name('password-edit.index');
     Route::post('/ganti-password', [App\Http\Controllers\Mahasiswa\PengaturanController::class, 'updatePassword'])->name('password-edit.update');
 
 });
