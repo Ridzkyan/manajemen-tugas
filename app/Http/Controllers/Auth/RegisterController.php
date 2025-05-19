@@ -49,7 +49,7 @@ class RegisterController extends Controller
         return Mahasiswa::create([
             'name'     => $data['name'],
             'email'    => $data['email'],
-            'username' => $data['username'],
+            'username' => $data['name'],
             'password' => Hash::make($data['password']),
             'email_verified_at' => null, // Email belum terverifikasi
             'role'     => 'mahasiswa', // default role untuk registrasi mahasiswa
