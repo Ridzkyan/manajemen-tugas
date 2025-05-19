@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\Tugas;
-use App\Models\Materi;
+use App\Models\User\user;
+use App\Models\Tugas\Tugas;use App\Models\Kelas\Materi;
 
 class Kelas extends Model
 {
@@ -16,7 +15,7 @@ class Kelas extends Model
         'nama_kelas', 'nama_matakuliah', 'kode_unik', 'dosen_id', 'whatsapp_link',
     ];
 
-    public function materi()
+    public function materis()
     {
         return $this->hasMany(Materi::class);
     }

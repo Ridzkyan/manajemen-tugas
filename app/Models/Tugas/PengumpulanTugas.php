@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Tugas;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Tugas;
-use App\Models\Mahasiswa;
+use App\Models\Tugas\Tugas;use App\Models\User\Mahasiswa;;
 
 class PengumpulanTugas extends Model
 {
