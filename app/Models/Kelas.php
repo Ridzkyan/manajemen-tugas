@@ -4,31 +4,36 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\User\User;
+use App\Models\Tugas\Tugas;
+use App\Models\Kelas\Materi;
 
 class Kelas extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'nama_kelas',
-        'nama_matakuliah',
-        'kode_unik',
-        'dosen_id',
-        'whatsapp_link',
+        'nama_kelas', 'nama_matakuliah', 'kode_unik', 'dosen_id', 'whatsapp_link',
     ];
 
-    // Kelas dimiliki oleh 1 Dosen
-    public function dosen()
+    public function materis()
     {
-    return $this->belongsTo(\App\Models\User::class, 'dosen_id');
+        return $this->hasMany(Materi::class, 'kelas_id');
     }
 
-    // Kelas punya banyak Mahasiswa
-    public function mahasiswas()
+    public function dosen()
     {
-        return $this->belongsToMany(User::class, 'kelas_mahasiswa', 'kelas_id', 'mahasiswa_id');
+        return $this->belongsTo(\App\Models\User\Dosen::class, 'dosen_id');
     }
-    
+
+
+    public function mahasiswa()
+    {
+        return $this->belongsToMany(\App\Models\User\Mahasiswa::class, 'kelas_mahasiswa', 'kelas_id', 'mahasiswa_id');
+    }
+
+    public function tugas()
+    {
+        return $this->hasMany(Tugas::class);
+    }
 }

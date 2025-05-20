@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Kelas\Kelas;
 use App\Models\Kelas\Materi;
-use App\Models\User\Mahasiswa;
+use App\Models\User\Mahasiswa;;
 
 class DashboardController extends Controller
 {

@@ -36,7 +36,7 @@ class LoginMahasiswaController extends Controller
         // Cek verifikasi email
         if (! $user->hasVerifiedEmail()) {
             Auth::guard('mahasiswa')->logout();
-            return redirect()->route('mahasiswa.verification.notice')->with('error', 'Silakan verifikasi email terlebih dahulu.');
+            return redirect()->route('mahasiswa.email-verification.notice')->with('error', 'Silakan verifikasi email terlebih dahulu.');
         }
 
         // Update status
@@ -61,8 +61,11 @@ class LoginMahasiswaController extends Controller
     public function logout(Request $request)
     {
         $user = Auth::guard('mahasiswa')->user();
-        $user->is_online = false;
-        $user->save();
+
+        if ($user) {
+            $user->is_online = false;
+            $user->save();
+        }
 
         Auth::guard('mahasiswa')->logout();
 

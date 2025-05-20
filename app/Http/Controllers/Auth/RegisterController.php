@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
-use App\Models\User;
+use App\Models\User\Mahasiswa;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -45,10 +45,13 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        // Menyimpan data mahasiswa dengan email_verified_at NULL
+        return Mahasiswa::create([
             'name'     => $data['name'],
             'email'    => $data['email'],
+            'username' => $data['name'],
             'password' => Hash::make($data['password']),
+            'email_verified_at' => null, // Email belum terverifikasi
             'role'     => 'mahasiswa', // default role untuk registrasi mahasiswa
         ]);
     }
@@ -64,9 +67,13 @@ class RegisterController extends Controller
         // Kirim email verifikasi
         $user->sendEmailVerificationNotification();
 
+        // Redirect ke halaman login dengan pesan sukses
         return redirect()->route('login.mahasiswa')->with('success', 'Akun berhasil dibuat! Silakan cek email kamu untuk verifikasi.');
     }
 
+    /**
+     * Tampilkan form registrasi.
+     */
     public function showRegistrationForm()
     {
         return view('auth.mahasiswa-register'); // atau 'auth.mahasiswa-register'

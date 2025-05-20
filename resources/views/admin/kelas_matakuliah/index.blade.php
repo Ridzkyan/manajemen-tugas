@@ -21,7 +21,7 @@
             @endforeach
         </select>
 
-        <input type="text" class="form-control w-auto" id="searchBox" placeholder="Cari kelas..." style="display: none;">
+        <input type="text" class="form-control w-auto" id="searchBox" placeholder="Cari Mata Kuliah..." style="display: none;">
     </div>
 
     @php
@@ -29,14 +29,14 @@
     @endphp
 
     @forelse($groupedKelas as $namaKelas => $kelasList)
-        <div class="card border-0 shadow-sm rounded-4 mb-4 kelas-wrapper kelas-{{ $namaKelas }}">
-            <div class="card-header bg-white fw-semibold fs-6 d-flex justify-content-between align-items-center">
+        <div class="card kelas-wrapper kelas-{{ $namaKelas }}">
+            <div class="card-header bg-white fw-semibold fs-6 d-flex justify-content-between align-items-center kelas-header toggle-kelas-header" data-header-target="{{ $namaKelas }}" style="cursor: pointer;">
                 <span><i class="fas fa-door-open text-warning me-2"></i> Kelas {{ $namaKelas }}</span>
-                <button class="btn btn-sm btn-outline-secondary toggle-kelas" data-target="{{ $namaKelas }}">
+                <span class="toggle-kelas" data-target="{{ $namaKelas }}" style="cursor: pointer;">
                     <i class="fas fa-chevron-down rotate-icon"></i>
-                </button>
+                </span>
             </div>
-            <div class="card-body px-0 pt-0 pb-3 kelas-body kelas-body-{{ $namaKelas }}">
+            <div class="card-body kelas-body kelas-body-{{ $namaKelas }}">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
@@ -59,7 +59,7 @@
                                     <td>{{ $kelas->dosen->name ?? '-' }}</td>
                                     <td><span class="badge bg-secondary">{{ $kelas->kode_unik }}</span></td>
                                     <td>{{ $kelas->mahasiswa->count() }}</td>
-                                    <td>{{ $kelas->materi->count() }}</td>
+                                    <td>{{ $kelas->materis->count() }}</td>
                                     <td>{{ $kelas->tugas->count() }}</td>
                                     <td>
                                         @if($kelas->whatsapp_link)
@@ -82,7 +82,7 @@
     @endforelse
 </div>
 
-{{-- Tambahan style animasi --}}
+{{-- Style --}}
 <style>
     .rotate-icon {
         transition: transform 0.3s ease;
@@ -94,14 +94,49 @@
 
     .kelas-body {
         overflow: hidden;
-        transition: max-height 0.4s ease;
+        transition: all 0.4s ease;
         max-height: 0;
-        padding: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        opacity: 0;
+        visibility: hidden;
     }
 
     .kelas-body.active {
-        max-height: 800px; /* Sesuaikan dengan isi maksimum */
-        padding: 1rem 0 !important;
+        max-height: 1000px;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .card.kelas-wrapper {
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        background-color: #ffffff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .kelas-header,
+    .kelas-body .table-responsive {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .table {
+        margin-bottom: 0;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    .table thead th,
+    .table tbody td {
+        vertical-align: middle;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
 @endsection
@@ -144,13 +179,11 @@
             const toggleBtn = document.querySelector(`.toggle-kelas[data-target="${selected}"]`);
             const icon = toggleBtn?.querySelector('i');
 
-            // Buka body jika belum terbuka
             if (!body.classList.contains('active')) {
                 body.classList.add('active');
                 icon?.classList.add('rotate-up');
             }
 
-            // Filter isi tabel
             const rows = body.querySelectorAll('tbody tr');
             rows.forEach(row => {
                 const content = row.textContent.toLowerCase();
@@ -158,15 +191,30 @@
             });
         });
 
-        // Toggle tampil/sembunyi kelas
+        // Klik ikon panah
         document.querySelectorAll('.toggle-kelas').forEach(btn => {
-            btn.addEventListener('click', function () {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
                 const target = this.dataset.target;
                 const body = document.querySelector('.kelas-body-' + target);
                 const icon = this.querySelector('i');
 
                 body.classList.toggle('active');
                 icon.classList.toggle('rotate-up');
+            });
+        });
+
+        // Klik seluruh header
+        document.querySelectorAll('.toggle-kelas-header').forEach(header => {
+            header.addEventListener('click', function (e) {
+                if (e.target.closest('.toggle-kelas')) return;
+
+                const target = this.dataset.headerTarget;
+                const body = document.querySelector('.kelas-body-' + target);
+                const icon = this.querySelector('.toggle-kelas i');
+
+                body.classList.toggle('active');
+                icon?.classList.toggle('rotate-up');
             });
         });
     });

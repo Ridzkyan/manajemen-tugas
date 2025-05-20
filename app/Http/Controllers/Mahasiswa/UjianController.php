@@ -15,7 +15,7 @@ class UjianController extends Controller
                 ->where('tipe', 'ujian')
                 ->get();
 
-    return view('mahasiswa.kelas.ujian.index', compact('kelas', 'ujians'));
+    return view('mahasiswa.kelas.ujian.index', compact('kelas', 'ujians', 'kelasId'));
     }
 
 
@@ -79,5 +79,15 @@ class UjianController extends Controller
         $ujian->delete();
 
         return redirect()->route('mahasiswa.ujian.index', $kelasId)->with('success', 'Ujian berhasil dihapus.');
+    }
+
+    public function kerjakan($kelasId, $id)
+    {
+        $ujian = \App\Models\Tugas\Tugas::where('id', $id)
+            ->where('kelas_id', $kelasId)
+            ->where('tipe', 'ujian')
+            ->firstOrFail();
+
+        return view('mahasiswa.kelas.ujian.kerjakan', compact('ujian', 'kelasId'));
     }
 }

@@ -6,13 +6,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
-    html, body {
-        height: 100vh;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-
     .setting-wrapper {
         padding: 1rem 2rem 2rem;
         min-height: 85vh;
@@ -34,8 +27,8 @@
         justify-content: center;
         font-size: 2.2rem;
         font-weight: bold;
-        margin-bottom: 0.3rem; /* dikurangi dari sebelumnya */
-        margin-top: 0.8rem;     /* opsional, bisa diatur 0.6-0.8 */
+        margin-bottom: 0.3rem;
+        margin-top: 0.8rem;
     }
 
     .setting-title i {
@@ -46,7 +39,7 @@
     .setting-subtext {
         text-align: center;
         color: #666;
-        margin-bottom: 1.5rem;  /* dikurangi supaya card lebih dekat */
+        margin-bottom: 1.5rem;
     }
 
     .setting-grid-row {
@@ -102,7 +95,7 @@
     }
 </style>
 
-<div class="setting-wrapper">
+<div class="setting-wrapper py-5">
     <div class="setting-title">
         <i class="fas fa-cogs"></i> Pengaturan Admin
     </div>
@@ -162,5 +155,37 @@
         });
     }
 </script>
+
+@if(session('success'))
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    });
+</script>
+@endif
+
+@if(session('error'))
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: '{{ session('error') }}',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    });
+</script>
+@endif
 
 @endsection

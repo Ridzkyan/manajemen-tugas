@@ -4,8 +4,7 @@ namespace App\Models\Tugas;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Tugas\Tugas;
-use App\Models\User\Mahasiswa;
+use App\Models\Tugas\Tugas;use App\Models\User\Mahasiswa;;
 
 class PengumpulanTugas extends Model
 {

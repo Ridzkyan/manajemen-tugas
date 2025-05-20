@@ -33,7 +33,7 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
+                    
                     {{-- Email --}}
                     <div class="form-group mb-3">
                         <label for="email">Email</label>

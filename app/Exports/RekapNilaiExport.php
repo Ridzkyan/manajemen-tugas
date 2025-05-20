@@ -2,8 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Tugas;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use App\Models\Tugas\Tugas;use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Support\Facades\Auth;
 

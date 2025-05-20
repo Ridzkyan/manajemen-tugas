@@ -7,6 +7,8 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Auth;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -17,7 +19,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/mahasiswa/dashboard';
 
     /**
      * The controller namespace for the application.
@@ -36,6 +38,10 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->configureRateLimiting();
+
+        // ⬇ Tambahkan ini untuk paksa Laravel pakai guard 'mahasiswa' di verifikasi email
+        URL::defaults(['guard' => 'mahasiswa']);
+        Auth::shouldUse('mahasiswa');
 
         $this->routes(function () {
             Route::prefix('api')

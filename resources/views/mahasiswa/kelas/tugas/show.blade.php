@@ -2,7 +2,7 @@
 @section('title', 'Detail Tugas')
 
 @section('content')
-<h4 class="fw-bold">Detail Tugas</h4>
+<h4 class="fw-bold">Detail</h4>
 
 <div class="card mb-4">
     <div class="card-header bg-primary text-white">

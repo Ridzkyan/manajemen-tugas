@@ -9,14 +9,18 @@
 
     <!-- Bootstrap & Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 
     <style>
-        body {
+        html, body {
             background-color: #fef9f4;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
+            height: 100vh;
+            overflow: hidden;
         }
 
         #app {
@@ -31,6 +35,11 @@
             width: 240px;
             min-height: 100vh;
             padding: 20px;
+            transition: margin 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            margin-left: -240px;
         }
 
         .sidebar h5 {
@@ -55,7 +64,8 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
 
-        .sidebar .nav-link.active, .sidebar .nav-link.text-warning {
+        .sidebar .nav-link.active,
+        .sidebar .nav-link.text-warning {
             background-color: white !important;
             color: #f5a04e !important;
         }
@@ -68,6 +78,11 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
+            transition: margin 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
         }
 
         .topbar {
@@ -86,17 +101,43 @@
             font-weight: bold;
         }
 
+        .transition-rotate {
+            transition: transform 0.3s ease;
+        }
+
+        .rotate-90 {
+            transform: rotate(90deg);
+        }
+
         .content-wrapper {
             padding: 30px;
             overflow-y: auto;
             flex-grow: 1;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                z-index: 1000;
+                height: 100%;
+                left: 0;
+                top: 0;
+            }
+
+            .topbar {
+                gap: 10px;
+            }
+
+            .content-wrapper {
+                padding: 15px;
+            }
         }
     </style>
 </head>
 <body>
 <div id="app">
     {{-- Sidebar --}}
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <h5>TASKFLOW</h5>
         <ul class="nav flex-column">
             <li class="nav-item mb-2">
@@ -105,13 +146,13 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="{{ route('dosen.materi_kelas.index') }}" class="nav-link {{ Route::is('dosen.materi_kelas.index') ? 'active' : '' }}">
-                    <i class="fas fa-folder"></i> Materi & Kelas
+                <a href="{{ route('dosen.materi_kelas.index') }}" class="nav-link {{ request()->is('dosen/materi-kelas*') ? 'active' : '' }}">
+                    <i class="fas fa-folder"></i> Materi/Kelas
                 </a>
             </li>
             <li class="nav-item mb-2">
                 <a href="{{ route('dosen.tugas_ujian.pilih_kelas', $kelasPertama->id ?? 1) }}" class="nav-link {{ Route::is('dosen.tugas_ujian.*') ? 'active' : '' }}">
-                    <i class="fas fa-tasks"></i> Tugas & Ujian
+                    <i class="fas fa-tasks"></i> Tugas/Ujian
                 </a>
             </li>
             <li class="nav-item mb-2">
@@ -125,39 +166,100 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="{{ route('dosen.rekap_nilai.index') }}" class="nav-link {{ Route::is('dosen.rekap_nilai') ? 'active' : '' }}">
+                <a href="{{ route('dosen.rekap_nilai.index') }}" 
+                class="nav-link {{ Route::is('dosen.rekap_nilai.*') ? 'active' : '' }}">
                     <i class="fas fa-clipboard-list"></i> Rekap Nilai
                 </a>
             </li>
             <li class="nav-item mb-2">
-    <a href="{{ route('dosen.pengaturan') }}" class="nav-link {{ request()->is('dosen/pengaturan*') ? 'active' : '' }}">
-        <i class="fas fa-user-cog"></i> Pengaturan Profil
-    </a>
-</li>
-
-
-</ul>
-</aside>
+                <a href="{{ route('dosen.pengaturan') }}" class="nav-link {{ request()->is('dosen/pengaturan*') ? 'active' : '' }}">
+                    <i class="fas fa-user-cog"></i> Pengaturan
+                </a>
+            </li>
+        </ul>
+    </aside>
 
     {{-- Main --}}
-    <div class="main-content">
+    <div class="main-content" id="mainContent">
         {{-- Topbar --}}
         <div class="topbar">
-            <h5>Dashboard Dosen</h5>
-            <div class="text-white">
-                <strong>{{ Auth::guard('dosen')->user()->name ?? 'Nama Dosen' }}</strong><br>
+            {{-- Toggle Sidebar --}}
+            <button id="toggleSidebar" class="btn border-0 bg-transparent p-0 me-3">
+                <i id="toggleIcon" class="fas fa-bars fa-lg transition-rotate"></i>
+            </button>
+
+            {{-- Teks kiri --}}
+            <h5 class="mb-0 me-3">Dashboard Dosen</h5>
+
+            {{-- FORM SEARCH DI TENGAH --}}
+            <form action="{{ route('dosen.search') }}" method="GET" class="mx-auto d-none d-md-block" style="width: 100%; max-width: 450px;">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Cari konten..." required>
+                    <button class="btn btn-light" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+
+            {{-- Profil kanan --}}
+            <div class="text-white text-end ms-auto">
+                <strong>{{ Auth::guard('dosen')->user()->name ?? 'Dosen' }}</strong><br>
                 <small>Dosen</small>
             </div>
         </div>
 
-        {{-- Konten --}}
+        {{-- Konten Halaman --}}
         <div class="content-wrapper">
             @yield('content')
         </div>
     </div>
 </div>
 
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        toggleBtn?.addEventListener('click', function () {
+            sidebar.classList.toggle('hidden');
+            mainContent.classList.toggle('expanded');
+            toggleIcon.classList.toggle('rotate-90');
+        });
+
+        // Auto close sidebar on mobile when clicking outside
+        document.addEventListener('click', function (event) {
+            const isMobile = window.innerWidth <= 768;
+            if (
+                isMobile &&
+                sidebar &&
+                !sidebar.contains(event.target) &&
+                !toggleBtn.contains(event.target) &&
+                !sidebar.classList.contains('hidden')
+            ) {
+                sidebar.classList.add('hidden');
+                mainContent.classList.add('expanded');
+                toggleIcon?.classList.add('rotate-90');
+            }
+        });
+
+        // SweetAlert2 for login success
+        @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: @json(session('success')),
+            timer: 2500,
+            showConfirmButton: false
+        });
+        @endif
+    });
+</script>
+
 @yield('scripts')
 @stack('scripts')
 </body>
