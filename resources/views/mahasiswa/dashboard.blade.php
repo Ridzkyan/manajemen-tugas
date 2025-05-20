@@ -2,6 +2,8 @@
 @section('title', 'Dashboard')
 
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
     .rounded-20 {
         border-radius: 20px;
@@ -40,23 +42,102 @@
 
 {{-- Statistik IPS/IPK --}}
 <div class="mb-4 p-4 bg-white shadow-soft rounded-20">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="card-title-section">Statistik IPS/IPK</div>
-        <a href="#" class="btn btn-sm btn-outline-warning card-small-btn">Selengkapnya</a>
-    </div>
-    <div class="chart-placeholder d-flex justify-content-center align-items-center text-muted">
-        (Grafik IPS & IPK Placeholder)
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <canvas id="ipsIpkChart" height="100"></canvas>
+        </div>
+        <div class="col-md-4">
+            <div class="d-flex flex-column justify-content-between h-100">
+                <div>
+                    <h6 class="card-title-section mb-3">Statistik IPS/IPK</h6>
+                    <ul class="list-unstyled small">
+                        <li><span class="badge bg-primary me-2">IPS</span> Indeks Prestasi Semester</li>
+                        <li><span class="badge bg-danger me-2">IPK</span> Indeks Prestasi Kumulatif</li>
+                    </ul>
+                </div>
+                    <a href="{{ route('mahasiswa.kelas.index') }}" class="btn btn-sm btn-outline-warning bg-warning text-white shadow-soft rounded-20 card-small-btn w-">Selengkapnya</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="row">
-    {{-- Kelas / Mata Kuliah --}}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('ipsIpkChart').getContext('2d');
+
+    const ipsIpkChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['1', '2', '3', '4'], // Semester
+            datasets: [
+                {
+                    label: 'IPS',
+                    data: [3.86, 3.86, 3.94, 4.00],
+                    borderColor: 'blue',
+                    backgroundColor: 'transparent',
+                    tension: 0.3,
+                    fill: false,
+                },
+                {
+                    label: 'IPK',
+                    data: [3.86, 3.86, 3.87, 3.94],
+                    borderColor: 'red',
+                    backgroundColor: 'transparent',
+                    tension: 0.3,
+                    fill: false,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 10,
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                },
+            },
+            scales: {
+                y: {
+                    min: 3.75,
+                    max: 4.05,
+                    ticks: {
+                        stepSize: 0.05,
+                    }
+                },
+                x: {
+                    title: {
+                        display: false,
+                        text: 'Semester',
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            }
+        }
+    });
+</script>
+
+
+    <div class="row">
+       {{-- Kelas / Mata Kuliah --}}
     <div class="col-md-6 mb-4">
         <div class="card shadow-soft rounded-20 h-100">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="card-title-section">Kelas / Mata Kuliah</div>
-                    <a href="{{ route('mahasiswa.kelas.index') }}" class="btn btn-sm btn-outline-warning card-small-btn">Selengkapnya</a>
+                    <a href="{{ route('mahasiswa.kelas.index') }}" class="btn btn-sm btn-outline-warning bg-warning text-white shadow-soft rounded-20 card-small-btn">Selengkapnya</a>
                 </div>
 
                 @if($kelasmahasiswa->count())

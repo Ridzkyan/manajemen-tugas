@@ -26,6 +26,7 @@ use App\Http\Controllers\Mahasiswa\UjianController;
 // PUBLIC ROUTES
 // ==============================
 
+
 Route::get('/', fn () => view('welcome'))->name('welcome');
 
 Route::get('/login', function () {
@@ -49,12 +50,12 @@ Route::get('/login', function () {
     }
 
     // Kalau belum login, arahkan ke halaman login mahasiswa
-    return redirect()->route('login.mahasiswa');
-})->name('login');
-// Home fallback untuk default redirect
-Route::get('/home', function () {
-    return redirect()->route('login');
-});
+            return redirect()->route('login.mahasiswa');
+        })->name('login');
+        // Home fallback untuk default redirect
+    Route::get('/home', function () {
+            return redirect()->route('login');
+        });
 
 // Login & Register Mahasiswa
 Route::get('/mahasiswa/login', [LoginMahasiswaController::class, 'showLoginForm'])->name('login.mahasiswa');
@@ -64,26 +65,27 @@ Route::post('/mahasiswa/logout', [LoginMahasiswaController::class, 'logout'])->n
 Route::get('/mahasiswa/register', [RegisterController::class, 'showRegistrationForm'])->name('register.mahasiswa');
 Route::post('/mahasiswa/register', [RegisterController::class, 'register'])->name('mahasiswa.register');
 
-// 🔐 Verifikasi Email Mahasiswa
 Route::middleware('auth:mahasiswa')->prefix('mahasiswa/email')->name('mahasiswa.verification.')->group(function () {
-    // Notifikasi verifikasi
+    
+    // Notifikasi verifikasi email (halaman pemberitahuan)
     Route::get('/verify', function () {
-        return view('auth.verify-email');
+        return view('auth.verify-email'); // pastikan view ini ada
     })->name('notice');
 
-    // Link verifikasi dari email
+    // Proses verifikasi dari link email
     Route::get('/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    Auth::guard('mahasiswa')->loginUsingId($request->route('id'));
-    return redirect()->route('mahasiswa.dashboard');
-})->middleware('signed')->name('verify');
+        $request->fulfill();
+        Auth::guard('mahasiswa')->loginUsingId($request->route('id'));
+        return redirect()->route('mahasiswa.dashboard');
+    })->middleware('signed')->name('verify');
 
-    // Kirim ulang verifikasi
+    // Kirim ulang email verifikasi
     Route::post('/verification-notification', function (Request $request) {
         $request->user('mahasiswa')->sendEmailVerificationNotification();
         return back()->with('message', 'Link verifikasi telah dikirim ulang.');
     })->middleware('throttle:6,1')->name('send');
 });
+
 
 // Login Dosen
 Route::get('/dosen/login', [LoginDosenController::class, 'showLoginForm'])->name('login.dosen');
@@ -130,7 +132,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
 
 
 // ---------- DOSEN ----------
-Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name('dosen.')->group(function () {
+    Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name('dosen.')->group(function () {
     // Dashboard → views/dosen/dashboard.blade.php
     Route::get('/dashboard', [App\Http\Controllers\Dosen\DashboardController::class, 'index'])->name('dashboard');
 
@@ -156,7 +158,7 @@ Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name
     Route::post('/kelas/{id}/materi', [App\Http\Controllers\Dosen\KelasController::class, 'uploadMateri'])->name('kelola_kelas.upload_materi');
 
     // Tugas & Ujian → views/dosen/tugas_ujian/
-   Route::get('/tugas-ujian', [TugasController::class, 'pilihKelas'])->name('tugas_ujian.pilih_kelas');
+    Route::get('/tugas-ujian', [TugasController::class, 'pilihKelas'])->name('tugas_ujian.pilih_kelas');
     Route::get('/tugas-ujian/{kelas}', [TugasController::class, 'index'])->name('tugas_ujian.index');
     Route::post('/tugas-ujian/{kelas}', [TugasController::class, 'store'])->name('tugas_ujian.store');
     Route::get('/tugas-ujian/{kelas}/detail', [TugasController::class, 'detail'])->name('tugas_ujian.detail');
@@ -181,7 +183,7 @@ Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name
 
 // ---------- MAHASISWA ----------
 
-Route::middleware(['auth:mahasiswa', 'verified'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+    Route::middleware(['auth:mahasiswa', 'verified'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
@@ -217,6 +219,11 @@ Route::middleware(['auth:mahasiswa', 'verified'])->prefix('mahasiswa')->name('ma
 
     // Komunikasi
     Route::get('/komunikasi', [KomunikasiController::class, 'index'])->name('komunikasi.index');
+    Route::get('/mahasiswa/komunikasi', [KomunikasiController::class, 'index'])->name('komunikasi.index');
+    Route::post('/mahasiswa/komunikasi/post', [KomunikasiController::class, 'store'])->name('komunikasi.post');
+    Route::post('/mahasiswa/komunikasi/reply/{id}', [KomunikasiController::class, 'reply'])->name('komunikasi.reply');
+
+    
 
     // Pengaturan & Profil
     Route::get('/pengaturan', [MahasiswaPengaturanController::class, 'index'])->name('pengaturan.index');

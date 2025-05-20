@@ -18,7 +18,8 @@ class Mahasiswa extends Authenticatable implements MustVerifyEmail
     protected $guard = 'mahasiswa';
 
     // Tabel yang digunakan
-    protected $table = 'users'; // ✅ Pastikan sesuai dengan struktur database kamu
+    protected $table = 'mahasiswas'; 
+
 
     // Field yang bisa diisi
     protected $fillable = [
@@ -54,10 +55,7 @@ class Mahasiswa extends Authenticatable implements MustVerifyEmail
         );
     }
 
-    public function kelasMahasiswa()
-    {
-    return $this->belongsToMany(\App\Models\Kelas\KelasMahasiswa::class, 'kelas_mahasiswa', 'mahasiswa_id', 'kelas_id');
-    }
+   
 
 
 
@@ -90,6 +88,6 @@ class Mahasiswa extends Authenticatable implements MustVerifyEmail
      */
     public function sendEmailVerificationNotification()
     {
-        $this->notify(new MahasiswaVerifyEmail); // ✅ Menggunakan notifikasi khusus
+        $this->notify(new MahasiswaVerifyEmail); // 
     }
 }

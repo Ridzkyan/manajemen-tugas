@@ -9,6 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
+
+
+
     <style>
         html, body {
             height: 100%;
@@ -119,18 +122,29 @@
                         <i class="fas fa-th-large"></i> Dashboard
                     </a>
                 </li>
+                
+                @php
+                    $isMateriKelas = request()->is('mahasiswa/kelas') || 
+                (request()->is('mahasiswa/kelas/*') && 
+                 !request()->is("mahasiswa/kelas/*/tugas*") && 
+                 !request()->is("mahasiswa/kelas/*/ujian*"));
+
+                @endphp
                 <li>
-                    <a class="nav-link {{ request()->routeIs('mahasiswa.kelas.index') ? 'active' : '' }}" href="{{ route('mahasiswa.kelas.index') }}">
+                    <a class="nav-link {{ $isMateriKelas ? 'active' : '' }}" href="{{ route('mahasiswa.kelas.index') }}">
                         <i class="fas fa-folder-open"></i> Materi & Kelas
                     </a>
                 </li>
+
+                
+
 
                 {{-- Tugas --}}
                 <li>
                     @if($kelasAktifId)
                         <a class="nav-link {{ request()->is("mahasiswa/kelas/$kelasAktifId/tugas*") ? 'active' : '' }}"
                             href="{{ route('mahasiswa.kelas.tugas.index', ['kelas' => $kelasAktifId]) }}">
-                            <i class="fas fa-file-alt"></i> Tugas
+                            <i class="fas fa-file-alt"></i> Tugas & Ujian
                         </a>
                     @else
                         <a class="nav-link text-white-50 disabled" href="#">
@@ -139,7 +153,8 @@
                     @endif
                 </li>
 
-                {{-- Ujian --}}
+
+                 {{-- Ujian --}}
                 <li>
                     @if($kelasAktifId)
                         <a class="nav-link {{ request()->is("mahasiswa/kelas/$kelasAktifId/ujian*") ? 'active' : '' }}"
@@ -152,6 +167,7 @@
                         </a>
                     @endif
                 </li>
+
 
                 {{-- Gabung Kelas --}}
                 <li>
@@ -168,12 +184,17 @@
                 </li>
 
                 {{-- Pengaturan --}}
+                @php
+                    $isPengaturan = request()->is('mahasiswa/pengaturan*') ||
+                                    request()->is('mahasiswa/edit-profil*') ||
+                                    request()->is('mahasiswa/ganti-password*');
+                @endphp
                 <li>
-                    <a class="nav-link {{ request()->routeIs('mahasiswa.pengaturan.index') ? 'active' : '' }}" href="{{ route('mahasiswa.pengaturan.index') }}">
+                    <a class="nav-link {{ $isPengaturan ? 'active' : '' }}" href="{{ route('mahasiswa.pengaturan.index') }}">
                         <i class="fas fa-cog"></i> Pengaturan
                     </a>
                 </li>
-            </ul>
+
         </div>
 
         <!-- Main Content -->

@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container py-4">
-    <h4 class="mb-4 fw-bold">Grup WhatsApp Kelas</h4>
+    <h4 class="mb-4 fw-bold">Komunikasi Kelas</h4>
 
     <div class="row">
         @forelse($kelasmahasiswa as $kelas)
