@@ -54,8 +54,29 @@
                         <li><span class="badge bg-primary me-2">IPS</span> Indeks Prestasi Semester</li>
                         <li><span class="badge bg-danger me-2">IPK</span> Indeks Prestasi Kumulatif</li>
                     </ul>
-                </div>
-                    <a href="{{ route('mahasiswa.kelas.index') }}" class="btn btn-sm btn-outline-warning bg-warning text-white shadow-soft rounded-20 card-small-btn w-">Selengkapnya</a>
+                <div>
+                    @php
+                        $user = Auth::guard('mahasiswa')->user();
+                        $kelasAktifId = $kelasId ?? optional($user->kelasMahasiswa()->first())->id;
+                    @endphp
+
+                    @if($kelasAktifId)
+                        <a href="{{ route('mahasiswa.kelas.tugas.index', ['kelas' => $kelasAktifId]) }}" 
+                        class="btn btn-sm btn-outline-warning bg-warning text-white shadow-soft rounded-20 card-small-btn w-">
+                            Selengkapnya
+                        </a>
+                    @else
+                        <a class="nav-link text-white-50 disabled" href="#">
+                            <i class="fas fa-file-alt"></i>
+                        </a>
+
+                        <a href="#" 
+                        class="btn btn-sm btn-outline-warning bg-warning text-white shadow-soft rounded-20 card-small-btn w- disabled" 
+                        tabindex="-1" aria-disabled="true">
+                            Selengkapnya
+                        </a>
+                    @endif
+
                 </div>
             </div>
         </div>

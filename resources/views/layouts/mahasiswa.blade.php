@@ -136,9 +136,6 @@
                     </a>
                 </li>
 
-                
-
-
                 {{-- Tugas --}}
                 <li>
                     @if($kelasAktifId)
@@ -148,22 +145,7 @@
                         </a>
                     @else
                         <a class="nav-link text-white-50 disabled" href="#">
-                            <i class="fas fa-file-alt"></i> Tugas
-                        </a>
-                    @endif
-                </li>
-
-
-                 {{-- Ujian --}}
-                <li>
-                    @if($kelasAktifId)
-                        <a class="nav-link {{ request()->is("mahasiswa/kelas/$kelasAktifId/ujian*") ? 'active' : '' }}"
-                            href="{{ route('mahasiswa.ujian.index', ['kelas' => $kelasAktifId]) }}">
-                            <i class="fas fa-file-signature"></i> Ujian
-                        </a>
-                    @else
-                        <a class="nav-link text-white-50 disabled" href="#">
-                            <i class="fas fa-file-signature"></i> Ujian
+                            <i class="fas fa-file-alt"></i> Tugas & Ujian
                         </a>
                     @endif
                 </li>
