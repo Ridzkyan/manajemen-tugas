@@ -211,6 +211,7 @@ class TugasController extends Controller
 
     public function exportRekap($kelasId)
     {
-        return Excel::download(new RekapNilaiExport($kelasId), 'rekap_nilai_kelas_' . $kelasId . '.xlsx');
+        $export = new RekapNilaiExport($kelasId);
+        return Excel::download($export, 'rekap_nilai_kelas_'.$kelasId.'.xlsx');
     }
 }

@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User\user;
-use App\Models\Tugas\Tugas;use App\Models\Kelas\Materi;
+use App\Models\User\User;
+use App\Models\Tugas\Tugas;
+use App\Models\Kelas\Materi;
 
 class Kelas extends Model
 {
@@ -17,18 +18,18 @@ class Kelas extends Model
 
     public function materis()
     {
-        return $this->hasMany(Materi::class);
+        return $this->hasMany(Materi::class, 'kelas_id');
     }
 
     public function dosen()
     {
-        return $this->belongsTo(User::class, 'dosen_id');
+        return $this->belongsTo(\App\Models\User\Dosen::class, 'dosen_id');
     }
 
-    // Kelas punya banyak Mahasiswa
-    public function mahasiswas()
+
+    public function mahasiswa()
     {
-        return $this->belongsToMany(User::class, 'kelas_mahasiswa', 'kelas_id', 'mahasiswa_id');
+        return $this->belongsToMany(\App\Models\User\Mahasiswa::class, 'kelas_mahasiswa', 'kelas_id', 'mahasiswa_id');
     }
 
     public function tugas()
