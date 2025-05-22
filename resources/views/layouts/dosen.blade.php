@@ -202,10 +202,18 @@
             </form>
 
             {{-- Profil kanan --}}
-            <div class="text-white text-end ms-auto">
-                <strong>{{ Auth::guard('dosen')->user()->name ?? 'Dosen' }}</strong><br>
-                <small>Dosen</small>
+            <div class="text-white text-end ms-auto d-flex align-items-center gap-2">
+                <div>
+                    <strong>{{ Auth::guard('dosen')->user()->name ?? 'Dosen' }}</strong><br>
+                    <small>Dosen</small>
+                </div>
+                <img src="{{ asset(Auth::guard('dosen')->user()->foto ?? 'images/dosen/default.png') }}" 
+                    alt="Foto Profil" 
+                    class="rounded-circle" 
+                    width="40" height="40" 
+                    style="object-fit: cover; cursor: pointer;">
             </div>
+
         </div>
 
         {{-- Konten Halaman --}}

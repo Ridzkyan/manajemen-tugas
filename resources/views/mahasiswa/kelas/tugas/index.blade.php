@@ -1,127 +1,139 @@
 @extends('layouts.mahasiswa')
 
-@section('title', 'Tugas')
+@section('title', 'Tugas & Ujian')
 
 @section('content')
-<h4 class="fw-bold mb-4">Tugas</h4>
 
-@forelse($tugas as $tgs)
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header d-flex justify-content-between align-items-center bg-{{ $tgs->tipe == 'ujian' ? 'warning' : 'primary' }} text-white">
-            <div>{{ ucfirst($tgs->tipe) }}: {{ $tgs->judul }}</div>
-            <div>
-                @if(in_array($tgs->id, $pengumpulanTugas))
-                    <span class="badge bg-success">✅ Terkumpul</span>
-                @else
-                    <span class="badge bg-danger">❌ Belum</span>
-                @endif
-            </div>
-        </div>
-        <div class="card-body">
-            <p><strong>Kelas:</strong> {{ $kelas->nama_matakuliah }}</p>
-            <p><strong>Deskripsi:</strong> {{ $tgs->deskripsi }}</p>
-            <p><strong>Deadline:</strong> {{ \Carbon\Carbon::parse($tgs->deadline)->format('d M Y') }}</p>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            @if(!in_array($tgs->id, $pengumpulanTugas))
-                {{-- Tombol ke halaman detail tugas --}}
-                <a href="{{ route('mahasiswa.kelas.tugas.show', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}" class="btn btn-sm btn-warning kerjakan-btn">
-                    Lihat Tugas
-                </a>
-            @else
-                {{-- Tombol lihat/download file yang sudah diupload --}}
-                <a href="{{ route('mahasiswa.kelas.tugas.preview', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}" class="btn btn-sm btn-info">Lihat/Download</a>
-                <form action="{{ route('mahasiswa.kelas.tugas.delete', ['kelas' => $kelas->id, 'tugas' => $tgs->id]) }}"
-                    method="POST"
-                    class="d-inline"
-                    onsubmit="return confirm('Yakin ingin menghapus tugas ini?')">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-sm btn-danger">Hapus</button>
-                </form>
-            @endif
-        </div>
-    </div>
-@empty
-    <p class="text-muted">Belum ada tugas di kelas ini.</p>
-@endforelse
+@if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    </script>
+@endif
 
-{{-- Modal drag n drop --}}
-<div id="modal-dropzone" class="modal fade" tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <form method="POST" enctype="multipart/form-data" id="dropzone-form">
-        @csrf
-        <div class="modal-header">
-          <h5 class="modal-title">Upload Tugas</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <div class="dropzone" id="dropzone-area"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Upload</button>
-        </div>
-      </form>
-    </div>
-  </div>
+@if(session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '{{ session('error') }}',
+            showConfirmButton: true
+        });
+    </script>
+@endif
+
+<style>
+    .card-tugas {
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        padding: 20px;
+        height: 100%;
+        transition: 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .card-tugas:hover {
+        transform: scale(1.02);
+    }
+
+    .btn-lihat {
+        background-color: #f5a04e;
+        color: #fff;
+        border-radius: 20px;
+        padding: 8px 16px;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+        margin-top: 15px;
+    }
+
+    .btn-lihat:hover {
+        background-color: #d88c2f;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .tugas-header {
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 8px;
+        color: black; /* teks hitam */
+    }
+
+    .tugas-info {
+        font-size: 14px;
+        margin-bottom: 4px;
+        color: black; /* teks hitam */
+    }
+
+    .badge-status {
+        font-size: 12px;
+        padding: 5px 10px;
+        border-radius: 15px;
+        color: white;
+        font-weight: 600;
+        align-self: flex-start;
+    }
+
+    .badge-terkumpul {
+        background-color: #28a745; /* hijau */
+    }
+
+    .badge-belum {
+        background-color: #008080; /* warna sidebar */
+    }
+
+</style>
+
+<div class="container py-3">
+    <h3 class="mb-4 text-center">📋 Daftar Tugas & Ujian</h3>
+
+    <!-- konten tugas lain... -->
 </div>
 
-{{-- Dropzone --}}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-Dropzone.autoDiscover = false;
-let dropzoneInstance;
+    @if($tugas->count())
+        <div class="row">
+            @foreach($tugas as $tgs)
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card-tugas h-100">
+                        <div class="tugas-header">{{ $tgs->judul }}</div>
+                        <div class="tugas-info"><strong>Kelas:</strong> {{ $tgs->kelas->nama_matakuliah ?? '-' }}</div>
+                        <div class="tugas-info"><strong>Deskripsi:</strong> {{ $tgs->deskripsi ?? '-' }}</div>
+                        <div class="tugas-info"><strong>Deadline:</strong> {{ \Carbon\Carbon::parse($tgs->deadline)->format('d M Y') }}</div>
 
-document.addEventListener("DOMContentLoaded", function () {
-    const modal = new bootstrap.Modal(document.getElementById('modal-dropzone'));
-    const dropzoneArea = document.getElementById('dropzone-area');
-    const form = document.getElementById('dropzone-form');
+                        @if(in_array($tgs->id, $pengumpulanTugas))
+                            <span class="badge-status badge-terkumpul">Terkumpul</span>
+                        @else
+                            <span class="badge-status badge-belum">Belum</span>
+                        @endif
 
-    document.querySelectorAll('.kerjakan-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const kelasId = this.dataset.kelas || "{{ $kelas->id }}";
-            const tugasId = this.dataset.tugas || this.getAttribute('data-tugas');
+                        <a href="{{ route('mahasiswa.kelas.tugas.show', ['kelas' => $tgs->kelas_id, 'tugas' => $tgs->id]) }}" class="btn-lihat">
+                            Lihat Tugas
+                        </a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="alert alert-info">Belum ada tugas di kelas ini.</div>
+    @endif
+</div>
 
-            form.action = `/mahasiswa/kelas/${kelasId}/tugas/${tugasId}/upload`;
+{{-- Modal dan script Dropzone tetap bisa kamu gunakan dari kode sebelumnya --}}
 
-            dropzoneArea.innerHTML = '';
-            if (dropzoneInstance) dropzoneInstance.destroy();
-
-            dropzoneInstance = new Dropzone("#dropzone-area", {
-                url: form.action,
-                paramName: "file_tugas",
-                maxFiles: 1,
-                acceptedFiles: ".pdf,.doc,.docx,.zip",
-                addRemoveLinks: true,
-                autoProcessQueue: false,
-                headers: { 'X-CSRF-TOKEN': "{{ csrf_token() }}" },
-                init: function () {
-                    let dz = this;
-                    form.addEventListener('submit', function (e) {
-                        e.preventDefault();
-                        if (dz.getAcceptedFiles().length === 0) {
-                            alert("Silakan unggah file terlebih dahulu.");
-                        } else {
-                            dz.processQueue();
-                        }
-                    });
-                    dz.on("success", function () {
-                        alert("✅ Tugas berhasil diunggah!");
-                        modal.hide();
-                        location.reload();
-                    });
-                    dz.on("error", function () {
-                        alert("❌ Gagal mengunggah file.");
-                    });
-                }
-            });
-
-            modal.show();
-        });
-    });
-});
-</script>
 @endsection
+
+

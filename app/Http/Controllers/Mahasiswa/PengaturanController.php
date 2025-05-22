@@ -32,27 +32,45 @@ class PengaturanController extends Controller
      */
     public function updateProfile(Request $request)
     {
-        $mahasiswa = Auth::guard('mahasiswa')->user();
+        $user = auth()->user(); // User yang sedang login
 
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $mahasiswa->id,
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
+        $user->name = $request->name;
+        $user->email = $request->email;
+
         if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($user->foto && file_exists(public_path($user->foto))) {
+                unlink(public_path($user->foto));
+            }
+
             $file = $request->file('foto');
-            $namaFile = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/foto'), $namaFile);
-            $mahasiswa->foto = 'uploads/foto/' . $namaFile;
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Folder berdasarkan role
+            $folder = 'images/' . $user->role;
+
+            // Buat folder jika belum ada
+            if (!file_exists(public_path($folder))) {
+                mkdir(public_path($folder), 0755, true);
+            }
+
+            $file->move(public_path($folder), $filename);
+
+            // Simpan path relatif di DB
+            $user->foto = $folder . '/' . $filename;
         }
 
-        $mahasiswa->nama = $request->nama;
-        $mahasiswa->email = $request->email;
-        $mahasiswa->save();
+        $user->save();
 
         return back()->with('success', 'Profil berhasil diperbarui.');
     }
+
 
     /**
      * Form ganti password
@@ -70,12 +88,17 @@ class PengaturanController extends Controller
         $request->validate([
             'current_password' => 'required',
             'password' => 'required|confirmed|min:6',
+        ], [
+            'current_password.required' => 'Password lama wajib diisi.',
+            'password.required' => 'Password baru wajib diisi.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min' => 'Password minimal 6 karakter.',
         ]);
 
         $mahasiswa = Auth::guard('mahasiswa')->user();
 
         if (!Hash::check($request->current_password, $mahasiswa->password)) {
-            return back()->withErrors(['current_password' => 'Password lama salah']);
+            return back()->withErrors(['current_password' => 'Password lama tidak sesuai.']);
         }
 
         $mahasiswa->update([

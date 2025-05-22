@@ -62,7 +62,10 @@ class TugasController extends Controller
                 ['file' => $path]
             );
 
-            return response()->json(['message' => 'Berhasil mengunggah file.']);
+            return redirect()->route('mahasiswa.kelas.tugas.index', $kelasId)
+    ->with('success', 'Tugas berhasil dikumpulkan!');
+
+
         } catch (\Exception $e) {
             return response()->json(['message' => 'Terjadi kesalahan saat mengunggah file.'], 500);
         }

@@ -14,7 +14,10 @@ class AddFotoToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('foto')->nullable();
+            // Tambah kolom foto setelah email
+            if (!Schema::hasColumn('users', 'foto')) {
+                $table->string('foto')->nullable()->after('role');
+            }
         });
     }
 
@@ -26,7 +29,9 @@ class AddFotoToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            if (Schema::hasColumn('users', 'foto')) {
+                $table->dropColumn('foto');
+            }
         });
     }
 }

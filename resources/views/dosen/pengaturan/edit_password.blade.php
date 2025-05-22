@@ -3,6 +3,32 @@
 @section('title', 'Ubah Password')
 
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    </script>
+@endif
+
+@if($errors->any())
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: '{{ $errors->first() }}',
+            confirmButtonColor: '#008080'
+        });
+    </script>
+@endif
+
+
 <div style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
     <style>
         .password-card {

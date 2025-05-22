@@ -21,6 +21,11 @@ class Kelas extends Model
         return $this->hasMany(Materi::class, 'kelas_id');
     }
 
+    public function materis()
+    {
+        return $this->hasMany(Materi::class, 'kelas_id');
+    }
+
     public function dosen()
     {
         return $this->belongsTo(\App\Models\User\Dosen::class, 'dosen_id');

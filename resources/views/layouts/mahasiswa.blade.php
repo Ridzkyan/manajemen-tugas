@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Mahasiswa')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
 
     <!-- Bootstrap & Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
 
 
     <style>
@@ -59,25 +60,50 @@
         }
 
         .topbar {
-            background-color: #f5a04e;
-            padding: 10px 30px;
+            position: relative;  /* supaya anak dengan posisi absolute relatif ke sini */
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center; /* supaya konten utama center */
+            gap: 10px;
+            background-color: #f5a04e;
+            padding: 15px 30px;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        .topbar .search-box input {
+        .topbar > button, /* tombol toggle */
+        .topbar > h5,     /* judul */
+        .topbar > .profile-info {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .topbar > button {
+            left: 30px; /* sesuaikan jarak dari kiri */
+        }
+
+        .topbar > h5 {
+            left: 80px; /* agak ke kanan dari tombol */
+            font-weight: bold;
+            color: white;
+            margin: 0;
+        }
+                .topbar .search-box input {
             border: none;
             border-radius: 20px;
             padding: 6px 15px;
             width: 250px;
         }
 
-        .topbar .profile-info {
+       .topbar > .profile-info {
+            right: 30px; /* jarak dari kanan */
+            color: white;
             display: flex;
             align-items: center;
-            color: white;
-        }
+            gap: 10px;
+       }
+
 
         .topbar .profile-info img {
             border-radius: 50%;
@@ -97,7 +123,16 @@
             flex: 1;
             padding: 30px;
             overflow-y: auto;
+
+        .topbar {
+                gap: 10px;
+            }
+
+            .content-wrapper {
+                padding: 15px;
+            }
         }
+
     </style>
 </head>
 <body>
@@ -176,32 +211,46 @@
                         <i class="fas fa-cog"></i> Pengaturan
                     </a>
                 </li>
-
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="topbar">
-                <div class="d-flex align-items-center gap-3">
-                    <button class="btn btn-light d-md-none"><i class="fas fa-bars"></i></button>
-                    <h5 class="mb-0 text-white">@yield('title')</h5>
-                </div>
+      
+           {{-- Main --}}
+    <div class="main-content" id="mainContent">
+        {{-- Topbar --}}
+        <div class="topbar">
+            {{-- Toggle Sidebar --}}
+            <button id="toggleSidebar" class="btn border-0 bg-transparent p-0 me-3">
+                <i id="toggleIcon" class="fas fa-bars fa-lg transition-rotate"></i>
+            </button>
 
-                <div class="d-flex align-items-center">
-                    <div class="search-box me-4">
-                        <input type="text" class="form-control" placeholder="Cari...">
-                    </div>
-                    <div class="profile-info">
-                        <span>{{ $user->nama }}</span>
-                        <img src="{{ $foto }}" alt="Foto Profil">
-                    </div>
-                </div>
-            </div>
+            {{-- Teks kiri --}}
+            <h5 class="mb-0 me-3">Dashboard Mahasiswa</h5>
 
-            <div class="content-wrapper">
-                @yield('content')
+            {{-- FORM SEARCH DI TENGAH --}}
+           <form action="{{ route('dosen.search') }}" method="GET" class="mx-auto d-none d-md-block" style="width: 100%; max-width: 450px;">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Cari konten..." required>
+                    <button class="btn btn-light" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+
+            {{-- Profil kanan --}}
+            <div class="profile-info">
+                <span>{{ $user->name ?? 'Nama User' }}</span>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#avatarModal">
+                    <img src="{{ asset($user->foto ?? 'images/default.png') }}" class="rounded-circle" width="40" height="40" style="object-fit: cover; cursor: zoom-in;">
+                </a>
             </div>
+        </div>
+        
+        {{-- Konten Halaman --}}
+        <div class="content-wrapper">
+            @yield('content')
         </div>
     </div>
+</div>
+@yield('scripts')
 </body>
 </html>

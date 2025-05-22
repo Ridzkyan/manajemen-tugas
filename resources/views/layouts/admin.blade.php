@@ -273,6 +273,7 @@
                 <div><strong>{{ $user->name }}</strong></div>
                 <small>{{ ucfirst($user->role) }}</small>
             </div>
+            
             <div class="avatar">
                 <a href="#" data-bs-toggle="modal" data-bs-target="#avatarModal">
                     <img src="{{ asset($user->foto ?? 'images/default.png') }}" class="rounded-circle" width="40" height="40" style="object-fit: cover; cursor: zoom-in;">

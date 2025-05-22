@@ -2,6 +2,20 @@
 @section('title', 'Dashboard')
 
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil Login!',
+        text: '{{ session('success') }}',
+        showConfirmButton: false,
+        timer: 2000
+    });
+</script>
+@endif
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -184,7 +198,10 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="card-title-section">Daftar Tugas Aktif</div>
                 @if($tugasAktif->count() && $tugasAktif->pluck('kelas_id')->unique()->count() === 1)
-                    <a href="{{ route('mahasiswa.kelas.tugas.index', ['kelas' => $tugasAktif->first()->kelas_id]) }}" class="btn btn-sm btn-outline-warning card-small-btn">Selengkapnya</a>
+                    <a href="{{ route('mahasiswa.kelas.tugas.index', ['kelas' => $kelasAktifId]) }}" 
+                        class="btn btn-sm btn-outline-warning bg-warning text-white shadow-soft rounded-20 card-small-btn w-">
+                            Selengkapnya
+                        </a>
                 @else
                     <span class="text-muted small">Pilih kelas untuk melihat detail</span>
                 @endif

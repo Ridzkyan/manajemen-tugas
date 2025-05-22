@@ -177,8 +177,8 @@ Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name
       // 🔧 Pengaturan Dosen
     Route::get('/pengaturan', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'pengaturan'])->name('pengaturan');
 
-    Route::get('/pengaturan/index', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'editProfil'])->name('pengaturan.profil');
-    Route::post('/pengaturan/index', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'updateProfil'])->name('pengaturan.profil.update');
+    Route::get('/pengaturan/profil', [ProfilDosenController::class, 'editProfil'])->name('pengaturan.profil');
+    Route::post('/pengaturan/profil', [ProfilDosenController::class, 'updateProfile'])->name('pengaturan.profil.update');
 
     Route::get('/pengaturan/password', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'editPassword'])->name('pengaturan.password');
     Route::post('/pengaturan/password', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'updatePassword'])->name('pengaturan.password.update');

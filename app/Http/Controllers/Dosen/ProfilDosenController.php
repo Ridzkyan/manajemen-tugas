@@ -60,4 +60,45 @@ class ProfilDosenController extends Controller
         return redirect()->route('dosen.pengaturan')
                          ->with('success', 'Password berhasil diperbarui!');
     }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::guard('dosen')->user();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($user->foto && file_exists(public_path($user->foto))) {
+                unlink(public_path($user->foto));
+            }
+
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Folder berdasarkan role
+            $folder = 'images/' . $user->role;
+
+            // Buat folder jika belum ada
+            if (!file_exists(public_path($folder))) {
+                mkdir(public_path($folder), 0755, true);
+            }
+
+            $file->move(public_path($folder), $filename);
+
+            // Simpan path relatif di DB
+            $user->foto = $folder . '/' . $filename;
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Profil berhasil diperbarui.');
+    }
 }
