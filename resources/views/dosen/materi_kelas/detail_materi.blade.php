@@ -2,29 +2,7 @@
 
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-<style>
-    .container {
-        font-family: 'Poppins', sans-serif;
-    }
-    .card-materi {
-        background-color: #fff;
-        border-radius: 12px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        border: none;
-        opacity: 0;
-        transform: translateY(20px);
-        animation: fadeInUp 0.6s ease forwards;
-    }
-    .card-materi h5 {
-        color: #000;
-    }
-    @keyframes fadeInUp {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-</style>
+<link href="{{ asset('css/backsite/dosen/detail_materi.css') }}" rel="stylesheet">
 
 <div class="container py-4">
     {{-- Header --}}

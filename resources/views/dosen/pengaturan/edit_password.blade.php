@@ -3,6 +3,7 @@
 @section('title', 'Ubah Password')
 
 @section('content')
+<link href="{{ asset('css/backsite/dosen/edit_pass.css') }}" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @if(session('success'))
@@ -27,60 +28,6 @@
         });
     </script>
 @endif
-
-
-<div style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
-    <style>
-        .password-card {
-            width: 100%;
-            max-width: 700px;
-            border-radius: 20px;
-            border: none;
-            background-color: #ffffff;
-            padding: 40px 48px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        }
-
-        .password-title {
-            color: #000000;
-            font-weight: bold;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .input-custom {
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-size: 16px;
-            border: 1px solid #ced4da;
-        }
-
-        .btn-simpan {
-            background-color: #00838f;
-            color: white;
-            font-weight: 600;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 28px;
-            transition: 0.3s ease;
-        }
-
-        .btn-simpan:hover {
-            background-color: #f5a04e;
-        }
-
-        .label-primary {
-            color: #000000;
-            font-weight: 600;
-        }
-
-        .icon-orange {
-            color: #f5a04e;
-            margin-right: 6px;
-        }
-    </style>
 
     <div class="card password-card">
         <div class="card-body">

@@ -1,0 +1,171 @@
+/* public/css/backsite/dosen/tugas_ujian.css */
+
+html, body {
+    height: 100%;
+}
+
+#toggleFormBtn {
+    background-color: #f5a04e;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+#toggleFormBtn:hover {
+    background-color: #008080;
+    color: white;
+}
+
+/* Penilaian Button */
+.btn-penilaian {
+    background-color: #008080;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-penilaian:hover {
+    background-color: #f5a04e;
+    text-decoration: none;
+}
+
+/* Edit & Delete Icon Buttons */
+.btn-icon, .btn-delete {
+    background-color: #f0f0f0;
+    border: none;
+    font-size: 1.1rem;
+    border-radius: 6px;
+    padding: 6px 10px;
+    transition: all 0.2s ease;
+}
+
+.btn-icon {
+    color: #008080;
+}
+
+.btn-icon:hover {
+    background-color: #f5a04e;
+    color: white;
+    transform: scale(1.1);
+}
+
+.btn-delete {
+    color: #dc3545;
+}
+
+.btn-delete:hover {
+    background-color: #f5a04e;
+    color: white;
+    transform: scale(1.1);
+}
+
+.btn-upload {
+    background-color: #008080;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 10px rgba(0, 128, 128, 0.2);
+}
+
+.btn-upload:hover {
+    background-color: #f5a04e;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(245, 160, 78, 0.3);
+}
+
+.btn-lihat-file {
+    background-color: #008080;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-lihat-file:hover {
+    background-color: #f5a04e;
+    color: white;
+    text-decoration: none;
+}
+
+.badge-taskflow {
+    background-color: #008080;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    padding: 0.35em 0.6em;
+    border-radius: 0.4rem;
+}
+
+.page-wrapper {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    min-height: calc(100vh - 100px);
+    transition: all 0.3s ease;
+}
+
+.card-column {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+
+.form-column {
+    width: 100%;
+    max-width: 600px;
+    transition: all 0.3s ease;
+}
+
+.card {
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.hide {
+    display: none !important;
+}

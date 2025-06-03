@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Kelas;
+use App\Models\Kelas\Kelas;
 use App\Models\KelasMahasiswa;
 use App\Models\Komunikasi;
 use Illuminate\Http\Request;
 use App\Models\KelasMahasiswa as KelasMahasiswaModel;
-use App\Models\Kelas as KelasModel;
+use App\Models\Kelas\Kelas as KelasModel;
 
 class KomunikasiController extends Controller
 {

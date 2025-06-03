@@ -1,6 +1,9 @@
 @extends('layouts.dosen')
 
 @section('content')
+
+<link href="{{ asset('css/backsite/dosen/komunikasi.css') }}" rel="stylesheet">
+
 <div class="container">
     <div class="judul-whatsapp">
         <i class="bi bi-chat-dots-fill me-2 icon-teal"></i>
@@ -54,44 +57,6 @@
         </div>
 </div>
 @endsection
-
-<style>
-    .judul-whatsapp {
-        text-align: center;
-        margin-bottom: 5.5rem;
-    }
-
-    .judul-whatsapp .icon-teal {
-        color: #f5a04e;
-        font-size: 1.8rem;
-        vertical-align: middle;
-    }
-
-    .judul-whatsapp .teks-orange {
-        color: #000000;
-        font-weight: 700;
-        font-size: 2rem;
-        vertical-align: middle;
-    }
-
-    .text-teal {
-        color: #008080;
-    }
-
-    .list-group-item {
-        border-left: 4px solid #00808020;
-        margin-bottom: 8px;
-    }
-
-    .btn-success {
-        background-color: #25D366;
-        border: none;
-    }
-
-    .btn-success:hover {
-        background-color: #20b257;
-    }
-</style>
 
 @push('scripts')
 <script>

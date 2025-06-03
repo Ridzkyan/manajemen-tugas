@@ -7,21 +7,25 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Models\Tugas\Tugas;
+use App\Models\Tugas\PengumpulanTugas;
 
 class TugasDinilaiNotification extends Notification
 {
     use Queueable;
 
     protected $tugas;
+    protected $pengumpulan;
 
     /**
      * Create a new notification instance.
      *
      * @param \App\Models\Tugas\Tugas $tugas
+     * @param \App\Models\Tugas\PengumpulanTugas $pengumpulan
      */
-    public function __construct(Tugas $tugas)
+    public function __construct(Tugas $tugas, PengumpulanTugas $pengumpulan)
     {
         $this->tugas = $tugas;
+        $this->pengumpulan = $pengumpulan;
     }
 
     /**
@@ -47,14 +51,14 @@ class TugasDinilaiNotification extends Notification
             ->subject('Tugas Kamu Telah Dinilai')
             ->greeting('Halo, ' . $notifiable->name)
             ->line('Tugas "' . $this->tugas->judul . '" telah dinilai oleh dosen.')
-            ->line('📝 Nilai: ' . $this->tugas->nilai)
-            ->line('💬 Feedback: ' . ($this->tugas->feedback ?? 'Tidak ada'))
+            ->line('📝 Nilai: ' . ($this->pengumpulan->nilai ?? '-'))
+            ->line('💬 Feedback: ' . ($this->pengumpulan->feedback ?? 'Tidak ada'))
             ->action('Lihat Tugas', url('/mahasiswa/dashboard'))
             ->line('Terima kasih atas partisipasimu!');
     }
 
     /**
-     * Get the array representation of the notification (opsional).
+     * Get the array representation of the notification (optional).
      *
      * @param  mixed  $notifiable
      * @return array
@@ -63,8 +67,8 @@ class TugasDinilaiNotification extends Notification
     {
         return [
             'judul' => $this->tugas->judul,
-            'nilai' => $this->tugas->nilai,
-            'feedback' => $this->tugas->feedback,
+            'nilai' => $this->pengumpulan->nilai,
+            'feedback' => $this->pengumpulan->feedback,
         ];
     }
 }

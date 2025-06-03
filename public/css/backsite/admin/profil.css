@@ -1,0 +1,94 @@
+.profil-wrapper {
+    width: 100%;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-profile {
+    width: 100%;
+    max-width: 900px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px 50px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.card-profile h4 {
+    font-weight: bold;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.card-profile h4 i {
+    margin-right: 10px;
+    color: #f5a04e;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+    text-align: left;
+}
+
+.form-control {
+    font-size: 15px;
+}
+
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    margin-bottom: 12px;
+}
+
+#foto {
+    display: none;
+}
+
+#foto + label {
+    cursor: pointer;
+    padding: 8px 18px;
+    border-radius: 8px;
+    background-color: #008080;
+    color: white;
+    display: inline-block;
+    font-weight: 500;
+    transition: 0.3s ease;
+    font-size: 14px;
+}
+
+#foto + label i {
+    margin-right: 6px;
+}
+
+#foto + label:hover,
+#saveBtn:hover {
+    background-color: #f5a04e !important;
+    color: #fff !important;
+    border-color: #f5a04e !important;
+}
+
+#saveBtn {
+    width: 100%;
+    margin-top: 20px;
+    font-weight: 600;
+    padding: 12px;
+    background-color: #008080;
+    border: 1px solid #008080;
+    color: white;
+    font-size: 15px;
+}

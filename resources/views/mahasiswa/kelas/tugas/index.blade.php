@@ -69,13 +69,13 @@
         font-weight: 700;
         font-size: 18px;
         margin-bottom: 8px;
-        color: black; /* teks hitam */
+        color: black;
     }
 
     .tugas-info {
         font-size: 14px;
         margin-bottom: 4px;
-        color: black; /* teks hitam */
+        color: black;
     }
 
     .badge-status {
@@ -88,21 +88,20 @@
     }
 
     .badge-terkumpul {
-        background-color: #28a745; /* hijau */
+        background-color: #28a745;
     }
 
     .badge-belum {
-        background-color: #008080; /* warna sidebar */
+        background-color: #008080;
     }
-
 </style>
 
 <div class="container py-3">
     <h3 class="mb-4 text-center">📋 Daftar Tugas & Ujian</h3>
 
-    <!-- konten tugas lain... -->
-</div>
-
+    @php
+        $pengumpulanTugasIds = $pengumpulanTugas->pluck('tugas_id')->toArray();
+    @endphp
 
     @if($tugas->count())
         <div class="row">
@@ -112,9 +111,12 @@
                         <div class="tugas-header">{{ $tgs->judul }}</div>
                         <div class="tugas-info"><strong>Kelas:</strong> {{ $tgs->kelas->nama_matakuliah ?? '-' }}</div>
                         <div class="tugas-info"><strong>Deskripsi:</strong> {{ $tgs->deskripsi ?? '-' }}</div>
-                        <div class="tugas-info"><strong>Deadline:</strong> {{ \Carbon\Carbon::parse($tgs->deadline)->format('d M Y') }}</div>
+                        <div class="tugas-info">
+                            <strong>Deadline:</strong> 
+                            {{ \Carbon\Carbon::parse($tgs->deadline)->format('d M Y - H:i') }}
+                        </div>
 
-                        @if(in_array($tgs->id, $pengumpulanTugas))
+                        @if(in_array($tgs->id, $pengumpulanTugasIds))
                             <span class="badge-status badge-terkumpul">Terkumpul</span>
                         @else
                             <span class="badge-status badge-belum">Belum</span>
@@ -132,8 +134,4 @@
     @endif
 </div>
 
-{{-- Modal dan script Dropzone tetap bisa kamu gunakan dari kode sebelumnya --}}
-
 @endsection
-
-

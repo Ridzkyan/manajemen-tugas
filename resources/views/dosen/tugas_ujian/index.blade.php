@@ -1,200 +1,7 @@
 @extends('layouts.dosen')
 
 @section('content')
-<style>
-    html, body {
-        height: 100%;
-    }
-
-    #toggleFormBtn {
-        background-color: #f5a04e;
-        color: white;
-        border: none;
-        padding: 6px 14px;
-        font-size: 0.9rem;
-        border-radius: 6px;
-        transition: all 0.3s ease;
-    }
-
-    #toggleFormBtn:hover {
-        background-color: #008080;
-        color: white;
-    }
-
-    /* Penilaian Button */
-    .btn-penilaian {
-        background-color: #008080;
-        color: white;
-        border: none;
-        padding: 6px 14px;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
-
-    .btn-penilaian:hover {
-        background-color: #f5a04e;
-        text-decoration: none;
-    }
-
-    /* Edit & Delete Icon Buttons */
-    .btn-icon, .btn-delete {
-        background-color: #f0f0f0;
-        border: none;
-        font-size: 1.1rem;
-        border-radius: 6px;
-        padding: 6px 10px;
-        transition: all 0.2s ease;
-    }
-
-    .btn-icon {
-        color: #008080;
-    }
-
-    .btn-icon:hover {
-        background-color: #f5a04e;
-        color: white;
-        transform: scale(1.1);
-    }
-
-    .btn-delete {
-        color: #dc3545;
-    }
-
-    .btn-delete:hover {
-        background-color: #f5a04e;
-        color: white;
-        transform: scale(1.1);
-    }
-
-    .btn-upload {
-        background-color: #008080;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        font-size: 1rem;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        box-shadow: 0 4px 10px rgba(0, 128, 128, 0.2);
-    }
-
-    .btn-upload:hover {
-        background-color: #f5a04e;
-        color: white;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 12px rgba(245, 160, 78, 0.3);
-    }
-
-    .btn-upload {
-        background-color: #008080;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        font-size: 1rem;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        box-shadow: 0 4px 10px rgba(0, 128, 128, 0.2);
-    }
-
-    .btn-upload:hover {
-        background-color: #f5a04e;
-        color: white;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 12px rgba(245, 160, 78, 0.3);
-    }
-
-    .btn-lihat-file {
-        background-color: #008080;
-        color: white;
-        border: none;
-        padding: 6px 14px;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        transition: all 0.3s ease;
-        text-decoration: none;
-    }
-
-    .btn-lihat-file:hover {
-        background-color: #f5a04e;
-        color: white;
-        text-decoration: none;
-    }
-
-    .badge-taskflow {
-        background-color: #008080;
-        color: white;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        padding: 0.35em 0.6em;
-        border-radius: 0.4rem;
-    }
-
-    .page-wrapper {
-        display: flex;
-        gap: 24px;
-        align-items: flex-start;
-        min-height: calc(100vh - 100px);
-        transition: all 0.3s ease;
-    }
-
-    .card-column {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        transition: all 0.3s ease;
-    }
-
-    .form-column {
-        width: 100%;
-        max-width: 600px;
-        transition: all 0.3s ease;
-    }
-
-    .card {
-        border-radius: 12px;
-        background-color: #fff;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-body {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 1rem;
-    }
-
-    .card-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-    }
-
-    .card-actions {
-        display: flex;
-        justify-content: flex-start;
-        gap: 12px;
-        margin-top: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .hide {
-        display: none !important;
-    }
-</style>
+<link href="{{ asset('css/backsite/dosen/tugas_ujian.css') }}" rel="stylesheet">
 
 <div class="container py-4">
     {{-- Judul dan tombol --}}
@@ -226,7 +33,7 @@
                             @if($tgs->deadline)
                                 <p class="text-muted mb-2">
                                     <i class="bi bi-calendar-event me-1"></i>
-                                    Deadline: {{ \Carbon\Carbon::parse($tgs->deadline)->translatedFormat('d F Y') }}
+                                    Deadline: {{ \Carbon\Carbon::parse($tgs->deadline)->translatedFormat('d F Y H:i') }}
                                 </p>
                             @endif
                         </div>
@@ -239,7 +46,7 @@
                             <form action="{{ route('dosen.tugas_ujian.destroy', [$kelas->id, $tgs->id]) }}" method="POST" class="form-delete d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="btn btn-delete btn-confirm-delete" data-form-id="form-delete-{{ $tgs->id }}">
+                                <button type="button" class="btn btn-delete btn-confirm-delete">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
@@ -268,7 +75,7 @@
                     <i class="bi bi-upload fs-5" style="color: #008080;"></i> Upload Tugas / Ujian
                 </div>
                 <div class="card-body">
-                    <form method="POST" id = "formUploadTugas" action="{{ route('dosen.tugas_ujian.store', $kelas->id) }}" enctype="multipart/form-data">
+                    <form method="POST" id="formUploadTugas" action="{{ route('dosen.tugas_ujian.store', $kelas->id) }}" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
                             <label class="form-label fw-semibold d-flex align-items-center" style="gap: 6px;">
@@ -294,23 +101,23 @@
                             <textarea name="deskripsi" class="form-control shadow-sm" rows="3" placeholder="Tulis deskripsi tugas di sini..."></textarea>
                         </div>
 
-                           <div class="mb-3">
-                                <label class="form-label fw-semibold d-flex align-items-center" style="gap: 6px;">
-                                    <i class="bi bi-file-earmark-arrow-up fs-5" style="color: #008080;"></i> Upload File Soal
-                                </label>
-                                <div id="fileUploadDropzone" class="dropzone border rounded p-4 text-center shadow-sm" style="min-height: 150px;">
-                                    <div class="dz-message">
-                                        <i class="bi bi-cloud-arrow-up fs-3 text-muted mb-2 d-block"></i>
-                                        <p class="mb-0 text-muted">Klik atau drag file untuk upload</p>
-                                    </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold d-flex align-items-center" style="gap: 6px;">
+                                <i class="bi bi-file-earmark-arrow-up fs-5" style="color: #008080;"></i> Upload File Soal
+                            </label>
+                            <div id="fileUploadDropzone" class="dropzone border rounded p-4 text-center shadow-sm" style="min-height: 150px;">
+                                <div class="dz-message">
+                                    <i class="bi bi-cloud-arrow-up fs-3 text-muted mb-2 d-block"></i>
+                                    <p class="mb-0 text-muted">Klik atau drag file untuk upload</p>
                                 </div>
                             </div>
+                        </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold d-flex align-items-center" style="gap: 6px;">
                                 <i class="bi bi-calendar3 fs-5" style="color: #008080;"></i> Deadline
                             </label>
-                            <input type="date" name="deadline" class="form-control shadow-sm">
+                            <input type="datetime-local" name="deadline" class="form-control shadow-sm">
                         </div>
 
                         <button type="button" id="btnSubmitForm" class="btn btn-upload w-100 mt-3">
@@ -322,6 +129,7 @@
         </div>
     </div>
 </div>
+
 
 {{-- Toggle Script --}}
 <script>

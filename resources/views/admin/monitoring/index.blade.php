@@ -3,6 +3,8 @@
 @section('title', 'Monitoring')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/backsite/admin/monitoring.css') }}">
+
 <div class="container">
     <h4 class="fw-bold mb-4 text-teal">Monitoring Aktivitas</h4>
 
@@ -74,24 +76,6 @@
     </div>
 </div>
 
-{{-- Style warna dan tambahan --}}
-<style>
-    .text-teal {
-        color: #008080;
-    }
-    .text-orange {
-        color: #f5a04e;
-    }
-    .card .user-name {
-        font-weight: 600;
-        color: #333;
-    }
-    .card .user-email {
-        font-size: 0.875rem;
-    }
-</style>
-
-{{-- Script: Filter, Search, Chart --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const roleFilter = document.getElementById('roleFilter');
@@ -125,9 +109,8 @@
     searchInput.addEventListener('input', filterUsers);
     document.addEventListener('DOMContentLoaded', filterUsers);
 
-    // CHART
-    const ctx = document.getElementById('grafikKelas').getContext('2d');
-    new Chart(ctx, {
+    // CHART MATERI
+    new Chart(document.getElementById('grafikKelas').getContext('2d'), {
         type: 'bar',
         data: {
             labels: {!! json_encode($kelasTeraktif->pluck('nama_kelas')) !!},
@@ -148,9 +131,7 @@
                 y: { ticks: { color: '#333' } }
             },
             plugins: {
-                legend: {
-                    labels: { color: '#333', font: { weight: 'bold' } }
-                },
+                legend: { labels: { color: '#333', font: { weight: 'bold' } } },
                 tooltip: {
                     backgroundColor: '#f5a04e',
                     titleColor: '#fff',
@@ -160,9 +141,8 @@
         }
     });
 
-    // GRAFIK TUGAS
-    const ctxTugas = document.getElementById('grafikTugas').getContext('2d');
-    new Chart(ctxTugas, {
+    // CHART TUGAS
+    new Chart(document.getElementById('grafikTugas').getContext('2d'), {
         type: 'bar',
         data: {
             labels: {!! json_encode($kelasTugasTerbanyak->pluck('nama_kelas')) !!},
@@ -183,9 +163,7 @@
                 y: { ticks: { color: '#333' } }
             },
             plugins: {
-                legend: {
-                    labels: { color: '#333', font: { weight: 'bold' } }
-                },
+                legend: { labels: { color: '#333', font: { weight: 'bold' } } },
                 tooltip: {
                     backgroundColor: '#008080',
                     titleColor: '#fff',
@@ -194,6 +172,5 @@
             }
         }
     });
-
 </script>
 @endsection

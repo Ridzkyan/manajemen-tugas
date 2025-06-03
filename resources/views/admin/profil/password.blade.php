@@ -1,68 +1,8 @@
 @extends('layouts.admin')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/backsite/admin/profil.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<style>
-    .profil-wrapper {
-        width: 100%;
-        padding: 0 1rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        animation: fadeIn 0.4s ease-in-out;
-    }
-
-    .card-profile {
-        width: 100%;
-        max-width: 900px;
-        padding: 50px;
-        background: #fff;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-    }
-
-    .card-profile h4 {
-        font-weight: bold;
-        font-size: 1.6rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 30px;
-    }
-
-    .card-profile h4 i {
-        margin-right: 10px;
-        color: #f5a04e;
-    }
-
-    .form-group label {
-        font-weight: 600;
-        margin-bottom: 6px;
-        display: block;
-    }
-
-    .form-control {
-        font-size: 15px;
-    }
-
-    #saveBtn {
-        width: 100%;
-        margin-top: 20px;
-        font-weight: 600;
-        padding: 12px;
-        background-color: #008080;
-        border: 1px solid #008080;
-        color: white;
-        font-size: 15px;
-    }
-
-    #saveBtn:hover {
-        background-color: #f5a04e !important;
-        color: #fff !important;
-        border-color: #f5a04e !important;
-    }
-</style>
 
 <div class="profil-wrapper py-5">
     <div class="card-profile">
@@ -93,7 +33,6 @@
     </div>
 </div>
 
-{{-- Alert berhasil --}}
 @if(session('success'))
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -110,7 +49,6 @@
 </script>
 @endif
 
-{{-- Alert gagal --}}
 @if(session('error'))
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -127,7 +65,6 @@
 </script>
 @endif
 
-{{-- Konfirmasi sebelum ganti password --}}
 <script>
     document.getElementById('saveBtn').addEventListener('click', function () {
         Swal.fire({

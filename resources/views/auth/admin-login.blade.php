@@ -10,67 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <!-- Custom Styles -->
-    <style>
-        html, body {
-            height: 100vh;
-            overflow: hidden;
-            margin: 0;
-            padding: 0;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        body {
-            background: url('{{ asset("images/Background.png") }}') center/cover no-repeat fixed;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .login-card {
-            background-color: #008080;
-            color: white;
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 450px;
-        }
-
-        .logo-img {
-            width: 100px;
-            margin-bottom: 20px;
-        }
-
-        .welcome-title {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .welcome-subtitle {
-            font-size: 1rem;
-            margin-bottom: 30px;
-        }
-
-        .btn-custom {
-            background-color: #FFB347;
-            color: #000;
-            font-weight: bold;
-            border-radius: 30px;
-            padding: 10px 20px;
-            transition: 0.3s;
-        }
-
-        .btn-custom:hover {
-            background: #ffffff;
-            color: #008080;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-    </style>
+    <link href="{{ asset('css/frontsite/admin/admin_login.css') }}" rel="stylesheet">
 </head>
 
 <body>
@@ -104,11 +44,8 @@
 
     <!-- Bootstrap + FontAwesome JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- SweetAlert Triggers -->
     @if(session('logout_success'))
     <script>
         Swal.fire({

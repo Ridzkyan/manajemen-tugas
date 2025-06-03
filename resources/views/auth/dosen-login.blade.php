@@ -1,186 +1,230 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Dosen - TaskFlow</title>
-  
-  <!-- Bootstrap & Font Awesome -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login Dosen - TaskFlow</title>
 
-  <!-- SweetAlert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Bootstrap & Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
-  <style>
-    body {
-        margin: 0;
-        font-family: 'Segoe UI', sans-serif;
-        background-color: #fff9f4;
-        overflow: hidden;
-        height: 100vh;
-    }
-    .login-container {
-      display: flex;
-      min-height: 100vh;
-    }
-    .text-taskflow {
-      color: #008080;
-      font-weight: bold;
-    }
-    .left-pane {
-      flex: 1;
-      background: url('{{ asset('images/Logo.png') }}') center/cover no-repeat;
-      padding: 2rem;
-      color: white;
-      font-weight: bold;
-      position: relative;
-    }
-    .right-pane {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 6rem 2rem 4rem;
-      background: linear-gradient(to bottom right, #fff9f4, #fefefe);
-    }
-    .login-form {
-      width: 100%;
-      max-width: 460px;
-      margin-top: 20px;
-    }
-    .login-form h3 {
-      font-weight: bold;
-    }
-    .form-control:focus {
-      box-shadow: 0 0 0 0.1rem rgba(0,128,128,.25);
-      border-color: #008080;
-    }
-    .btn-login {
-      background-color: #008080;
-      color: white;
-      border-radius: 30px;
-      padding: 10px 20px;
-      font-weight: bold;
-      border: none;
-    }
-    .btn-login:hover {
-      background-color: #f5a04e;
-    }
-    .social-icons i {
-      font-size: 20px;
-      margin: 0 10px;
-      cursor: pointer;
-      color: #555;
-    }
-    .top-right-button {
-      position: absolute;
-      top: 20px;
-      right: 40px;
-    }
-    @media (max-width: 768px) {
-      .login-container {
-        flex-direction: column;
-      }
+    <style>
+        html, body {
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+        }
 
-      .left-pane {
-        display: none;
-      }
+        body {
+            background: url('{{ asset('images/Background.png') }}') center/cover no-repeat fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-      .right-pane {
-        padding: 2rem;
-        align-items: center;
-        text-align: center;
-      }
+        .welcome-card {
+            background: transparent;
+            color: white;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+        }
 
-      .login-form {
-        max-width: 100%;
-      }
+        .logo-img {
+            width: 80px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.6));
+        }
 
-      .login-form input {
-        font-size: 16px;
-      }
+        .welcome-title {
+            font-size: 1.7rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+        }
 
-      .login-form button {
-        width: 100%;
-      }
-    }
-  </style>
+        .welcome-subtitle {
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.25);
+            border: none;
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 0 1px rgba(0,0,0,0.7);
+        }
+        .form-control::placeholder {
+            color: #e0e0e0;
+            font-weight: 400;
+            text-shadow: none;
+        }
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 0.15rem rgba(255, 179, 71, 0.4);
+            border-color: #ffb347;
+            color: #000;
+            outline: none;
+            text-shadow: none;
+        }
+
+        .btn-custom {
+            background-color: #FFB347;
+            color: #000;
+            font-weight: bold;
+            border-radius: 30px;
+            padding: 10px;
+            font-size: 1rem;
+            height: 48px;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 8px rgba(255,179,71,0.6);
+        }
+
+        .btn-custom:hover {
+            background-color: #ffffff;
+            color: #008080;
+            box-shadow: 0 6px 12px rgba(0,128,128,0.8);
+        }
+
+        .alert {
+            font-size: 0.9rem;
+            padding: 8px 12px;
+        }
+
+        @media (max-width: 768px) {
+            html, body {
+                height: auto;
+                overflow-y: auto;
+            }
+
+            body {
+                align-items: flex-start;
+                padding: 40px 10px;
+            }
+
+            .welcome-card {
+                padding: 2rem 1.5rem;
+                max-width: 100%;
+                border-radius: 10px;
+                background: transparent;
+                box-shadow: none;
+            }
+
+            .logo-img {
+                width: 60px;
+                margin-bottom: 15px;
+                filter: none;
+            }
+
+            .welcome-title {
+                font-size: 1.4rem;
+            }
+
+            .btn-custom {
+                height: 45px;
+                font-size: 0.95rem;
+            }
+
+            .form-control {
+                background-color: rgba(255, 255, 255, 0.25);
+                color: white;
+                font-weight: 600;
+                text-shadow: 0 0 1px rgba(0,0,0,0.7);
+            }
+
+            .form-control::placeholder {
+                color: #e0e0e0;
+                text-shadow: none;
+            }
+
+            .form-control:focus {
+                background-color: rgba(255, 255, 255, 0.4);
+                color: #000;
+                text-shadow: none;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="left-pane">
-      <div class="mt-2">TASKFLOW - MANAGEMENT</div>
-    </div>
 
-    <div class="right-pane">
-      <div class="login-form">
+    <div class="welcome-card">
 
-        {{-- ALERT (Form Validation, Error Login) --}}
+       
+        {{-- Title & Subtitle --}}
+        <div class="welcome-title">Login Dosen</div>
+        <div class="welcome-subtitle">Masuk untuk mengelola kelas & materi</div>
+
+        {{-- ALERT --}}
         @if(session('error'))
-          <div class="alert alert-danger alert-dismissible fade show small py-2 px-3 mb-3" role="alert" style="font-size: 0.9rem;">
-            {{ session('error') }}
-            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        @endif
-
-        @if(session('message'))
-          <div class="alert alert-success alert-dismissible fade show small py-2 px-3 mb-3" role="alert" style="font-size: 0.9rem;">
-            {{ session('message') }}
-            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         @endif
 
         @if($errors->any())
-          <div class="alert alert-danger alert-dismissible fade show small py-2 px-3 mb-3" role="alert" style="font-size: 0.9rem;">
-            {{ $errors->first() }}
-            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ $errors->first() }}
+                <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         @endif
 
-        {{-- FORM LOGIN --}}
+        {{-- FORM --}}
         <form method="POST" action="{{ route('dosen.login') }}">
-          @csrf
-          <h3 class="fw-bold mb-2">Selamat Datang di <span class="text-taskflow">TaskFlow</span>!</h3>
-          <p class="text-muted mb-4">Log In akun</p>
+            @csrf
+            <div class="mb-3 text-start">
+                <label for="email" class="form-label">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="form-control"
+                    required
+                    placeholder="Masukkan email"
+                    value="{{ old('email') }}"
+                />
+            </div>
 
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" required placeholder="Masukkan username/email" value="{{ old('email') }}">
-          </div>
+            <div class="mb-3 text-start">
+                <label for="password" class="form-label">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="form-control"
+                    required
+                    placeholder="Masukkan password"
+                />
+            </div>
 
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required placeholder="Masukkan Password">
-          </div>
+            <div class="mb-4 text-start">
+                <label for="kode_unik" class="form-label">Kode Unik</label>
+                <input
+                    type="text"
+                    id="kode_unik"
+                    name="kode_unik"
+                    class="form-control"
+                    required
+                    placeholder="Masukkan kode kelas"
+                    value="{{ old('kode_unik') }}"
+                />
+            </div>
 
-          <div class="mb-4">
-            <label for="kode_unik" class="form-label">Kode Unik</label>
-            <input type="text" class="form-control" id="kode_unik" name="kode_unik" required placeholder="Masukkan Kode Unik" value="{{ old('kode_unik') }}">
-          </div>
-
-          <button type="submit" class="btn btn-login w-100">
-              <i class="fas fa-sign-in-alt me-1"></i> Log In
-          </button>
+            <button type="submit" class="btn btn-custom w-100">
+                <i class="fas fa-sign-in-alt me-2"></i> Masuk
+            </button>
         </form>
-      </div>
     </div>
-  </div>
 
-  {{-- Bootstrap JS --}}
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  {{-- SweetAlert2 Logout Success --}}
-  @if (session('success'))
-  <script>
-      Swal.fire({
-          icon: 'success',
-          title: 'Logout Berhasil',
-          text: '{{ session('success') }}',
-          showConfirmButton: false,
-          timer: 2000
-      });
-  </script>
-  @endif
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

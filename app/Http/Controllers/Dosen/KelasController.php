@@ -137,25 +137,26 @@ class KelasController extends Controller
         return redirect()->back()->with('success', 'Materi berhasil diupload dan notifikasi dikirim!');
     }
 
-    public function materiDanKelas()
-    {
-        $kelasList = Kelas::with('materi')
-            ->where('dosen_id', Auth::id())
-            ->get();
+   public function materiDanKelas()
+{
+    $kelasList = Kelas::with(['materi'])->withCount('mahasiswa')
+        ->where('dosen_id', Auth::id())
+        ->get();
 
-        $kelasGrouped = $kelasList
-            ->sortBy(function ($kelas) {
-                return strtoupper(trim(substr($kelas->nama_kelas, -1)));
-            })
-            ->groupBy(function ($kelas) {
-                return strtoupper(trim(substr($kelas->nama_kelas, -1)));
-            });
+    $kelasGrouped = $kelasList
+        ->sortBy(function ($kelas) {
+            return strtoupper(trim(substr($kelas->nama_kelas, -1)));
+        })
+        ->groupBy(function ($kelas) {
+            return strtoupper(trim(substr($kelas->nama_kelas, -1)));
+        });
 
-        $kelasPertama = $kelasList->first();
-        $kategoriList = $kelasGrouped->keys()->sort()->values();
+    $kelasPertama = $kelasList->first();
+    $kategoriList = $kelasGrouped->keys()->sort()->values();
 
-        return view('dosen.materi_kelas.materi_dan_kelas', compact('kelasGrouped', 'kelasPertama', 'kategoriList'));
-    }
+    return view('dosen.materi_kelas.materi_dan_kelas', compact('kelasGrouped', 'kelasPertama', 'kategoriList'));
+}
+
 
     public function uploadMateriGlobal(Request $request)
     {
@@ -211,9 +212,9 @@ class KelasController extends Controller
     {
         $kelas = Kelas::where('dosen_id', Auth::id())->get();
 
-        // Map kategori manual dari nama_kelas, contoh: 'A' dari 'Kelas A'
+        
         $kelasGrouped = $kelas->sortBy(function ($item) {
-            // Ambil huruf terakhir dari nama_kelas, misal: "Kelas A" → "A"
+            
             return strtoupper(trim(substr($item->nama_kelas, -1)));
         })->groupBy(function ($item) {
             return strtoupper(trim(substr($item->nama_kelas, -1)));

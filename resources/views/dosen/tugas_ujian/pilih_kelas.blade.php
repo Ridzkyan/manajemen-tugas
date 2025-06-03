@@ -1,57 +1,8 @@
 @extends('layouts.dosen')
 
 @section('content')
-<style>
-    .form-select:focus, .form-control:focus {
-        border-color: #f5a04e;
-        box-shadow: 0 0 0 0.2rem rgba(245, 160, 78, 0.25);
-    }
 
-    .form-select option:checked {
-        background-color: #f5a04e !important;
-        color: white;
-    }
-
-    .btn-orange {
-        background-color: #f5a04e;
-        color: white;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn-orange:hover {
-        background-color: #e18d35;
-        color: white;
-    }
-
-    .card-title {
-        font-weight: 600;
-        font-size: 1.1rem;
-    }
-
-    .badge {
-        font-size: 0.8rem;
-        padding: 0.4em 0.7em;
-        border-radius: 8px;
-    }
-
-    .kelas-item .card {
-        border-radius: 12px;
-    }
-
-    .kelas-item .card-body {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100%;
-    }
-
-    @media (max-width: 576px) {
-        #filterKategori, #searchInput {
-            width: 100% !important;
-        }
-    }
-</style>
-
+<link href="{{ asset('css/backsite/dosen/pilih_kelas.css') }}" rel="stylesheet">
 <div class="container py-4">
     {{-- Judul Tengah --}}
     <div class="text-center mb-5">

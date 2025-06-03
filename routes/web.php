@@ -213,7 +213,7 @@ Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name
     Route::get('{kelasId}/{tugasId}/penilaian', [PenilaianController::class, 'show'])->name('penilaian');
     Route::post('{kelasId}/{tugasId}/penilaian', [PenilaianController::class, 'update'])->name('penilaian.update');
 
-    // Ujian (CRUD Lengkap)
+    // Ujian
     Route::prefix('/kelas/{kelas}/ujian')->name('ujian.')->group(function () {
         Route::get('/', [UjianController::class, 'index'])->name('index');
         Route::get('/create', [UjianController::class, 'create'])->name('create');

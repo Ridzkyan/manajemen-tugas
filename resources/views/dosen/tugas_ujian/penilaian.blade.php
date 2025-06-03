@@ -3,40 +3,8 @@
 @section('title', 'Penilaian Tugas')
 
 @section('content')
-<style>
-    .table th {
-        background-color: #008080;
-        color: white;
-        vertical-align: middle;
-    }
 
-    .table td {
-        vertical-align: middle;
-    }
-
-    .btn-simpan {
-        background-color: #008080;
-        color: white;
-        transition: 0.3s ease;
-    }
-
-    .btn-simpan:hover {
-        background-color: #f5a04e;
-        color: white;
-    }
-
-    a:hover {
-        color: #f5a04e;
-        text-decoration: underline;
-    }
-
-    .alert-info {
-        background-color: #d1f3ff;
-        color: #004f5f;
-        border-left: 4px solid #008080;
-    }
-</style>
-
+<link href="{{ asset('css/backsite/dosen/penilaian.css') }}" rel="stylesheet">
 <div class="container mt-4">
     <h4 class="mb-4 fw-bold d-flex align-items-center gap-2">
         <i class="fas fa-check-circle text-success"></i>

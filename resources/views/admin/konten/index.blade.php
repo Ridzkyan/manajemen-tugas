@@ -3,112 +3,7 @@
 @section('title', 'Konten Terbaru')
 
 @section('content')
-<style>
-    .filter-bar {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        margin-bottom: 1rem;
-    }
-
-    .filter-bar input,
-    .filter-bar select {
-        padding: 8px 12px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-    }
-
-    .konten-card {
-        background-color: #fff;
-        border-radius: 12px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        margin-bottom: 16px;
-    }
-
-    .konten-header {
-        padding: 12px 20px;
-        cursor: pointer;
-        font-weight: bold;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #eee;
-    }
-
-    .konten-header:hover {
-        background-color: #f8f8f8;
-    }
-
-    .konten-body {
-        display: none;
-        padding: 10px 20px 20px;
-    }
-
-    .konten-section {
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        padding: 12px;
-        margin-bottom: 12px;
-    }
-
-    .konten-section.tugas {
-        background-color: #fef6f2;
-    }
-
-    .konten-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 1rem;
-        table-layout: fixed;
-    }
-
-    .konten-table th,
-    .konten-table td {
-        padding: 10px 14px;
-        border-bottom: 1px solid #eee;
-        font-size: 14px;
-        vertical-align: middle;
-        text-align: left;
-        white-space: nowrap;
-    }
-
-    .konten-table th {
-        background-color: #f8f8f8;
-        font-weight: bold;
-    }
-
-    .btn-download {
-        padding: 5px 10px;
-        font-size: 12px;
-        border-radius: 20px;
-        color: white;
-        background-color: #28a745;
-        border: none;
-        text-decoration: none;
-    }
-
-    .btn-download:hover {
-        background-color: #218838;
-    }
-
-    .text-muted {
-        color: #999;
-    }
-
-    .section-title {
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        color: #f5a04e;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .section-title i {
-        font-size: 20px;
-    }
-</style>
+<link rel="stylesheet" href="{{ asset('css/backsite/admin/konten.css') }}">
 
 <div class="container py-4">
     <div class="section-title">
@@ -225,6 +120,7 @@
                 }
             }
         };
+
         const kategori = '{{ request('kategori') }}';
         const matkul = '{{ request('matkul') }}';
 
@@ -233,7 +129,6 @@
             const body = card.querySelector('.konten-body');
             const icon = card.querySelector('.konten-header i');
 
-            // Reset semua
             body.style.display = 'none';
             icon.classList.remove('fa-chevron-up');
             icon.classList.add('fa-chevron-down');

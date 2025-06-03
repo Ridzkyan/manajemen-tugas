@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'TaskFlow') }}</title>
+     <title>@yield('title', 'Dashboard Dosen')</title>
+    
+    <link href="{{ asset('css/backsite/layouts/style.css') }}" rel="stylesheet">
 
     <!-- Bootstrap & Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,126 +15,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
 
-    <style>
-        html, body {
-            background-color: #fef9f4;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        #app {
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .sidebar {
-            background-color: #00838f;
-            color: white;
-            width: 240px;
-            min-height: 100vh;
-            padding: 20px;
-            transition: margin 0.3s ease;
-        }
-
-        .sidebar.hidden {
-            margin-left: -240px;
-        }
-
-        .sidebar h5 {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .sidebar .nav-link {
-            color: white;
-            font-weight: 600;
-            border-radius: 30px;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            transition: background 0.3s ease;
-            font-size: 15px;
-        }
-
-        .sidebar .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar .nav-link.active,
-        .sidebar .nav-link.text-warning {
-            background-color: white !important;
-            color: #f5a04e !important;
-        }
-
-        .sidebar .nav-link i {
-            margin-right: 10px;
-        }
-
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            transition: margin 0.3s ease;
-        }
-
-        .main-content.expanded {
-            margin-left: 0;
-        }
-
-        .topbar {
-            background-color: #f5a04e;
-            padding: 15px 30px;
-            border-radius: 0 0 12px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .topbar h5 {
-            margin: 0;
-            color: white;
-            font-weight: bold;
-        }
-
-        .transition-rotate {
-            transition: transform 0.3s ease;
-        }
-
-        .rotate-90 {
-            transform: rotate(90deg);
-        }
-
-        .content-wrapper {
-            padding: 30px;
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                position: absolute;
-                z-index: 1000;
-                height: 100%;
-                left: 0;
-                top: 0;
-            }
-
-            .topbar {
-                gap: 10px;
-            }
-
-            .content-wrapper {
-                padding: 15px;
-            }
-        }
-    </style>
+    
 </head>
 <body>
 <div id="app">

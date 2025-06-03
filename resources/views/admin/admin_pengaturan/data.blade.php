@@ -3,13 +3,14 @@
 @section('title', 'Backup & Restore Data')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/backsite/admin/pengaturan.css') }}">
+
 <div class="container py-5">
     <h3 class="mb-5 text-center">
         <i class="fas fa-database me-2 text-primary"></i>Backup & Restore Database
     </h3>
 
     <div class="row justify-content-center g-4">
-
         <!-- Baris 1 -->
         <div class="col-md-6">
             <div class="card shadow-sm p-4 text-center h-100">
@@ -76,7 +77,6 @@
                 </form>
             </div>
         </div>
-
     </div>
 </div>
 @endsection

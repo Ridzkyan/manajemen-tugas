@@ -3,109 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<style>
-    .card-info {
-        background-color: #f5a04e;
-        color: white;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        height: 130px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        text-decoration: none;
-        transition: transform 0.3s;
-    }
-
-    .card-info:hover {
-        transform: translateY(-5px);
-    }
-
-    .card-left {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .stat-number {
-        font-size: 22px;
-        font-weight: bold;
-    }
-
-    .stat-label {
-        font-size: 14px;
-        margin-top: 2px;
-    }
-
-    .card-icon {
-        font-size: 28px;
-        opacity: 0.9;
-    }
-
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-
-    .dashboard-card {
-        background-color: #fff;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        height: 300px;
-        overflow: hidden;
-    }
-
-    .dashboard-card h5 {
-        font-weight: bold;
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .dashboard-card .btn {
-        font-size: 0.75rem;
-        background-color: #f5a04e;
-        border-radius: 50px;
-        color: white;
-        padding: 3px 12px;
-    }
-
-    .dashboard-card ul {
-        padding-left: 1rem;
-        font-size: 14px;
-    }
-
-    .dashboard-card .chart-wrapper {
-        position: relative;
-        flex-grow: 1;
-    }
-
-    .dashboard-card canvas {
-        position: absolute;
-        width: 100% !important;
-        height: 100% !important;
-    }
-
-    @media (max-width: 768px) {
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-        }
-        .card-info {
-            flex-direction: column;
-            height: auto;
-            text-align: center;
-        }
-        .card-icon {
-            margin-top: 10px;
-        }
-    }
-</style>
+<link rel="stylesheet" href="{{ asset('css/backsite/admin/dashboard.css') }}">
 
 <div class="row mb-4">
     <div class="col-md-3 col-sm-6 mb-3">
@@ -156,12 +54,12 @@
     <div class="dashboard-card">
         <h5>Kelas/Mata kuliah <a href="{{ route('admin.kelas.index') }}" class="btn">Selengkapnya</a></h5>
         <ul>
-        @foreach($daftarKelas as $kelas)
-            <li>
-                <b>{{ $kelas->nama_kelas }} - {{ $kelas->nama_matakuliah }}</b><br>
-                {{ $kelas->kode_unik }} - {{ $kelas->dosen->name ?? 'Dosen Tidak Ada' }}
-            </li>
-        @endforeach
+            @foreach($daftarKelas as $kelas)
+                <li>
+                    <b>{{ $kelas->nama_kelas }} - {{ $kelas->nama_matakuliah }}</b><br>
+                    {{ $kelas->kode_unik }} - {{ $kelas->dosen->name ?? 'Dosen Tidak Ada' }}
+                </li>
+            @endforeach
         </ul>
     </div>
     <div class="dashboard-card">
@@ -173,12 +71,12 @@
     <div class="dashboard-card">
         <h5>Konten Terbaru <a href="{{ route('admin.konten.index') }}" class="btn">Selengkapnya</a></h5>
         <ul>
-        @foreach($materiTerbaru as $materi)
-            <li>
-                <b>{{ $materi->judul }}</b><br>
-                {{ $materi->kelas->nama_matakuliah ?? 'Mata kuliah tidak tersedia' }} - {{ $materi->kelas->kode_unik ?? 'Kode kosong' }}
-            </li>
-        @endforeach
+            @foreach($materiTerbaru as $materi)
+                <li>
+                    <b>{{ $materi->judul }}</b><br>
+                    {{ $materi->kelas->nama_matakuliah ?? 'Mata kuliah tidak tersedia' }} - {{ $materi->kelas->kode_unik ?? 'Kode kosong' }}
+                </li>
+            @endforeach
         </ul>
     </div>
 </div>
@@ -186,6 +84,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script>
+    window.chartData = {
+        pie: {
+            dosen: {{ $jumlahDosen }},
+            mahasiswa: {{ $jumlahMahasiswa }},
+            admin: {{ $jumlahAdmin }}
+        },
+        bar: {
+            labels: {!! json_encode($kelasTeraktif->pluck('label')) !!},
+            data: {!! json_encode($kelasTeraktif->pluck('materi_count')) !!}
+        }
+    };
+
     Chart.register(ChartDataLabels);
 
     const pieChart = new Chart(document.getElementById('pieChart'), {
@@ -193,7 +103,11 @@
         data: {
             labels: ['Dosen', 'Mahasiswa', 'Admin'],
             datasets: [{
-                data: [{{ $jumlahDosen }}, {{ $jumlahMahasiswa }}, {{ $jumlahAdmin }}],
+                data: [
+                    window.chartData.pie.dosen,
+                    window.chartData.pie.mahasiswa,
+                    window.chartData.pie.admin
+                ],
                 backgroundColor: ['#007bff', '#dc3545', '#ffc107'],
             }]
         },
@@ -222,10 +136,10 @@
     new Chart(document.getElementById('barChart'), {
         type: 'bar',
         data: {
-            labels: {!! json_encode($kelasTeraktif->pluck('label')) !!},
+            labels: window.chartData.bar.labels,
             datasets: [{
                 label: 'Jumlah Materi',
-                data: {!! json_encode($kelasTeraktif->pluck('materi_count')) !!},
+                data: window.chartData.bar.data,
                 backgroundColor: '#17a2b8'
             }]
         },
@@ -249,5 +163,26 @@
         }
     });
 
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        if (toggleBtn && sidebar && overlay) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                sidebar.classList.toggle('hide');
+                toggleBtn.classList.toggle('active');
+                overlay.classList.toggle('show');
+            });
+
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                sidebar.classList.add('hide');
+                toggleBtn.classList.remove('active');
+                overlay.classList.remove('show');
+            });
+        }
+    });
 </script>
 @endsection

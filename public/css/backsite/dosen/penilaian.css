@@ -1,0 +1,31 @@
+.table th {
+        background-color: #008080;
+        color: white;
+        vertical-align: middle;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .btn-simpan {
+        background-color: #008080;
+        color: white;
+        transition: 0.3s ease;
+    }
+
+    .btn-simpan:hover {
+        background-color: #f5a04e;
+        color: white;
+    }
+
+    a:hover {
+        color: #f5a04e;
+        text-decoration: underline;
+    }
+
+    .alert-info {
+        background-color: #d1f3ff;
+        color: #004f5f;
+        border-left: 4px solid #008080;
+    }

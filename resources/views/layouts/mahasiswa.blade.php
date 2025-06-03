@@ -1,256 +1,150 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>@yield('title', 'Mahasiswa')</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@yield('title', 'Dashboard Mahasiswa')</title>
 
-    <!-- Bootstrap & Font Awesome -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="{{ asset('css/backsite/layouts/style.css') }}" rel="stylesheet">
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            background-color: #fef9f4;
-            font-family: 'Arial', sans-serif;
-        }
-
-        #wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background-color: #008080;
+        #toggleIcon {
             color: white;
-            width: 240px;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
         }
-
-        .sidebar .nav-link {
-            color: white;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 30px;
-            margin: 5px 10px;
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar .nav-link.active {
-            background-color: white;
-            color: #f5a04e !important;
-        }
-
-        .sidebar .nav-link.disabled {
-            pointer-events: none;
-            opacity: 0.6;
-        }
-
-        .sidebar .nav-link i {
-            margin-right: 10px;
-        }
-
-        .topbar {
-            position: relative;  /* supaya anak dengan posisi absolute relatif ke sini */
-            display: flex;
-            align-items: center;
-            justify-content: center; /* supaya konten utama center */
-            gap: 10px;
-            background-color: #f5a04e;
-            padding: 15px 30px;
-            border-radius: 0 0 12px 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .topbar > button, /* tombol toggle */
-        .topbar > h5,     /* judul */
-        .topbar > .profile-info {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .topbar > button {
-            left: 30px; /* sesuaikan jarak dari kiri */
-        }
-
-        .topbar > h5 {
-            left: 80px; /* agak ke kanan dari tombol */
-            font-weight: bold;
-            color: white;
-            margin: 0;
-        }
-                .topbar .search-box input {
-            border: none;
-            border-radius: 20px;
-            padding: 6px 15px;
-            width: 250px;
-        }
-
-       .topbar > .profile-info {
-            right: 30px; /* jarak dari kanan */
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-       }
-
-
-        .topbar .profile-info img {
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            object-fit: cover;
-            margin-left: 15px;
-        }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .content-wrapper {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-
-        .topbar {
-                gap: 10px;
-            }
-
-            .content-wrapper {
-                padding: 15px;
-            }
-        }
-
     </style>
 </head>
 <body>
-    <div id="wrapper">
-        @php
-            $user = Auth::guard('mahasiswa')->user();
-            $foto = $user->foto ? asset($user->foto) : asset('default.png');
+<div id="app">
+    @php
+        $user = Auth::guard('mahasiswa')->user();
+        $foto = $user->foto ? asset($user->foto) : asset('images/default.png');
+        $kelasAktifId = $kelasId ?? optional($user->kelasMahasiswa()->first())->id;
+    @endphp
 
-            // Ambil kelas aktif berdasarkan $kelasId, atau fallback kelas pertama dari relasi mahasiswa
-            $kelasAktifId = $kelasId ?? optional($user->kelasMahasiswa()->first())->id;
-        @endphp
-
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="text-center py-4">
-                <img src="{{ asset('images/LogoWelcome.png') }}" width="60" alt="Logo">
-                <h5 class="mt-2">TASKFLOW</h5>
-            </div>
-            <ul class="nav flex-column mt-2">
-                <li>
-                    <a class="nav-link {{ request()->routeIs('mahasiswa.dashboard') ? 'active' : '' }}" href="{{ route('mahasiswa.dashboard') }}">
-                        <i class="fas fa-th-large"></i> Dashboard
+    <aside class="sidebar" id="sidebar">
+        <h5>TASKFLOW</h5>
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+                <a href="{{ route('mahasiswa.dashboard') }}" class="nav-link {{ Route::is('mahasiswa.dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="{{ route('mahasiswa.kelas.index') }}" class="nav-link {{ request()->is('mahasiswa/kelas') || request()->is('mahasiswa/kelas/*') && !request()->is('mahasiswa/kelas/*/tugas*') ? 'active' : '' }}">
+                    <i class="fas fa-folder-open"></i> Materi & Kelas
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                @if($kelasAktifId)
+                    <a href="{{ route('mahasiswa.kelas.tugas.index', ['kelas' => $kelasAktifId]) }}" class="nav-link {{ request()->is("mahasiswa/kelas/$kelasAktifId/tugas*") ? 'active' : '' }}">
+                        <i class="fas fa-file-alt"></i> Tugas & Ujian
                     </a>
-                </li>
-                
-                @php
-                    $isMateriKelas = request()->is('mahasiswa/kelas') || 
-                (request()->is('mahasiswa/kelas/*') && 
-                 !request()->is("mahasiswa/kelas/*/tugas*") && 
-                 !request()->is("mahasiswa/kelas/*/ujian*"));
-
-                @endphp
-                <li>
-                    <a class="nav-link {{ $isMateriKelas ? 'active' : '' }}" href="{{ route('mahasiswa.kelas.index') }}">
-                        <i class="fas fa-folder-open"></i> Materi & Kelas
+                @else
+                    <a class="nav-link disabled text-white-50" href="#">
+                        <i class="fas fa-file-alt"></i> Tugas & Ujian
                     </a>
-                </li>
+                @endif
+            </li>
+            <li class="nav-item mb-2">
+                <a href="{{ route('mahasiswa.join.index') }}" class="nav-link {{ Route::is('mahasiswa.join.index') ? 'active' : '' }}">
+                    <i class="fas fa-plus-circle"></i> Gabung Kelas
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="{{ route('mahasiswa.komunikasi.index') }}" class="nav-link {{ Route::is('mahasiswa.komunikasi.index') ? 'active' : '' }}">
+                    <i class="fas fa-comments"></i> Komunikasi
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="{{ route('mahasiswa.pengaturan.index') }}" class="nav-link {{ request()->is('mahasiswa/pengaturan*') ? 'active' : '' }}">
+                    <i class="fas fa-cog"></i> Pengaturan
+                </a>
+            </li>
+        </ul>
+    </aside>
 
-                {{-- Tugas --}}
-                <li>
-                    @if($kelasAktifId)
-                        <a class="nav-link {{ request()->is("mahasiswa/kelas/$kelasAktifId/tugas*") ? 'active' : '' }}"
-                            href="{{ route('mahasiswa.kelas.tugas.index', ['kelas' => $kelasAktifId]) }}">
-                            <i class="fas fa-file-alt"></i> Tugas & Ujian
-                        </a>
-                    @else
-                        <a class="nav-link text-white-50 disabled" href="#">
-                            <i class="fas fa-file-alt"></i> Tugas & Ujian
-                        </a>
-                    @endif
-                </li>
-
-
-                {{-- Gabung Kelas --}}
-                <li>
-                    <a class="nav-link {{ request()->routeIs('mahasiswa.join.index') ? 'active' : '' }}" href="{{ route('mahasiswa.join.index') }}">
-                        <i class="fas fa-plus-circle"></i> Gabung Kelas
-                    </a>
-                </li>
-
-                {{-- Komunikasi --}}
-                <li>
-                    <a class="nav-link {{ request()->routeIs('mahasiswa.komunikasi.index') ? 'active' : '' }}" href="{{ route('mahasiswa.komunikasi.index') }}">
-                        <i class="fas fa-comments"></i> Komunikasi
-                    </a>
-                </li>
-
-                {{-- Pengaturan --}}
-                @php
-                    $isPengaturan = request()->is('mahasiswa/pengaturan*') ||
-                                    request()->is('mahasiswa/edit-profil*') ||
-                                    request()->is('mahasiswa/ganti-password*');
-                @endphp
-                <li>
-                    <a class="nav-link {{ $isPengaturan ? 'active' : '' }}" href="{{ route('mahasiswa.pengaturan.index') }}">
-                        <i class="fas fa-cog"></i> Pengaturan
-                    </a>
-                </li>
-        </div>
-
-      
-           {{-- Main --}}
     <div class="main-content" id="mainContent">
-        {{-- Topbar --}}
         <div class="topbar">
-            {{-- Toggle Sidebar --}}
             <button id="toggleSidebar" class="btn border-0 bg-transparent p-0 me-3">
                 <i id="toggleIcon" class="fas fa-bars fa-lg transition-rotate"></i>
             </button>
-
-            {{-- Teks kiri --}}
             <h5 class="mb-0 me-3">Dashboard Mahasiswa</h5>
-
-            {{-- FORM SEARCH DI TENGAH --}}
-           <form action="{{ route('dosen.search') }}" method="GET" class="mx-auto d-none d-md-block" style="width: 100%; max-width: 450px;">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Cari konten..." required>
-                    <button class="btn btn-light" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
+            <div class="text-white text-end ms-auto d-flex align-items-center gap-2">
+                <div>
+                    <strong>{{ $user->name }}</strong><br>
+                    <small>Mahasiswa</small>
                 </div>
-            </form>
-
-            {{-- Profil kanan --}}
-            <div class="profile-info">
-                <span>{{ $user->name ?? 'Nama User' }}</span>
                 <a href="#" data-bs-toggle="modal" data-bs-target="#avatarModal">
-                    <img src="{{ asset($user->foto ?? 'images/default.png') }}" class="rounded-circle" width="40" height="40" style="object-fit: cover; cursor: zoom-in;">
+                    <img src="{{ $foto }}" onerror="this.onerror=null;this.src='{{ asset('images/default.png') }}';" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
                 </a>
             </div>
         </div>
-        
-        {{-- Konten Halaman --}}
-        <div class="content-wrapper">
+
+        <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="avatarModalLabel">Foto Profil</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="{{ $foto }}" class="img-fluid rounded shadow" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-wrapper container-fluid py-4">
+            @if (auth()->guard('mahasiswa')->check() && !auth()->guard('mahasiswa')->user()->hasVerifiedEmail())
+                <div class="alert alert-warning text-center mb-4" role="alert">
+                    <strong>Email kamu belum terverifikasi.</strong> Silakan cek inbox atau klik <a href="{{ route('mahasiswa.email-verification.notice') }}" class="alert-link">verifikasi ulang</a>.
+                </div>
+            @endif
+
             @yield('content')
         </div>
     </div>
 </div>
-@yield('scripts')
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        toggleBtn?.addEventListener('click', function () {
+            sidebar.classList.toggle('hidden');
+            mainContent.classList.toggle('expanded');
+            toggleIcon.classList.toggle('rotate-90');
+        });
+
+        document.addEventListener('click', function (event) {
+            const isMobile = window.innerWidth <= 768;
+            if (
+                isMobile &&
+                sidebar &&
+                !sidebar.contains(event.target) &&
+                !toggleBtn.contains(event.target) &&
+                !sidebar.classList.contains('hidden')
+            ) {
+                sidebar.classList.add('hidden');
+                mainContent.classList.add('expanded');
+                toggleIcon?.classList.add('rotate-90');
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('hidden');
+                mainContent.classList.remove('expanded');
+                toggleIcon?.classList.remove('rotate-90');
+            }
+        });
+    });
+</script>
+@stack('scripts')
 </body>
 </html>

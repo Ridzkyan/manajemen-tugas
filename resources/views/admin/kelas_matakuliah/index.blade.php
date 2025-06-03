@@ -81,64 +81,6 @@
         <div class="text-center text-muted py-4">Belum ada kelas yang terdaftar.</div>
     @endforelse
 </div>
-
-{{-- Style --}}
-<style>
-    .rotate-icon {
-        transition: transform 0.3s ease;
-    }
-
-    .rotate-up {
-        transform: rotate(180deg);
-    }
-
-    .kelas-body {
-        overflow: hidden;
-        transition: all 0.4s ease;
-        max-height: 0;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    .kelas-body.active {
-        max-height: 1000px;
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .card.kelas-wrapper {
-        border: 1px solid #e0e0e0;
-        border-radius: 12px;
-        margin-bottom: 1.5rem;
-        overflow: hidden;
-        background-color: #ffffff;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
-    }
-
-    .kelas-header,
-    .kelas-body .table-responsive {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-    }
-
-    .table {
-        margin-bottom: 0;
-        border-collapse: collapse;
-        table-layout: fixed;
-    }
-
-    .table thead th,
-    .table tbody td {
-        vertical-align: middle;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-</style>
 @endsection
 
 @push('scripts')

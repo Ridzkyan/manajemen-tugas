@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Kelas;
+use App\Models\Kelas\Kelas;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Tugas\Tugas; 
 use App\Models\Kelas\KelasMahasiswa;

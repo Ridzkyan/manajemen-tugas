@@ -96,9 +96,9 @@
 
 <div class="pengaturan-wrapper">
     <h2 class="pengaturan-title">
-        <i class="bi bi-gear-fill text-warning me-2"></i> Pengaturan Mahasiswa
+        <i class="bi bi-gear-fill text-warning me-2"></i> Pengaturan Akun
     </h2>
-    <p class="pengaturan-subtitle">Kelola pengaturan akun Mahasiswa di bawah ini.</p>
+    <p class="pengaturan-subtitle">Kelola pengaturan akun</p>
 
     <div class="row g-4 justify-content-center">
         {{-- Ubah Profil --}}

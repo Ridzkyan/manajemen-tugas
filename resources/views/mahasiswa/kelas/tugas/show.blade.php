@@ -4,7 +4,7 @@
 @section('content')
 <style>
     .detail-wrapper {
-        max-width: 800px;
+        max-width: 900px;
         margin: 0 auto;
     }
 
@@ -17,7 +17,7 @@
     }
 
     .card-detail-header {
-        background-color: #008080; /* Toska */
+        background-color: #008080;
         color: white;
         font-weight: 600;
         font-size: 1.2rem;
@@ -59,10 +59,20 @@
         color: #28a745;
         margin-top: 10px;
     }
-</style>
 
-<div class="container py-3">
-    <h3 class="mb-4 text-center">Detail Tugas</h3>
+    .status-terlambat {
+        font-weight: bold;
+        color: #dc3545;
+        margin-top: 10px;
+    }
+
+    iframe {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-top: 10px;
+        height: 650px;
+    }
+</style>
 
 <div class="detail-wrapper">
     <div class="card card-detail mb-4">
@@ -72,15 +82,45 @@
         <div class="card-detail-body">
             <p><strong>Kelas:</strong> {{ $kelas->nama_matakuliah }}</p>
             <p><strong>Deskripsi:</strong> {{ $tugas->deskripsi }}</p>
-            <p><strong>Deadline:</strong> {{ \Carbon\Carbon::parse($tugas->deadline)->format('d M Y') }}</p>
+            <p><strong>Deadline:</strong> {{ \Carbon\Carbon::parse($tugas->deadline)->format('d M Y H:i') }}</p>
+
+            @php
+                $deadline = \Carbon\Carbon::parse($tugas->deadline);
+                $now = \Carbon\Carbon::now();
+                $isDeadlineOver = $now->gt($deadline);
+            @endphp
+
+            @if($tugas->file_soal)
+                <p><strong>File Soal:</strong></p>
+                <iframe src="{{ asset('storage/' . $tugas->file_soal) }}" width="100%"></iframe>
+                <a href="{{ asset('storage/' . $tugas->file_soal) }}" class="btn btn-sm btn-primary mt-2" target="_blank">
+                    <i class="fas fa-download"></i> Download Soal
+                </a>
+            @else
+                <p class="text-muted">Tidak ada file soal.</p>
+            @endif
+
+            <hr>
 
             @if($sudahDikumpulkan)
                 <p class="status-sukses">✅ Tugas sudah dikumpulkan</p>
+
+                @if($pengumpulan && $pengumpulan->file)
+                    <p><strong>File Jawaban:</strong></p>
+                    <iframe src="{{ asset('storage/' . $pengumpulan->file) }}" width="100%"></iframe>
+                    <a href="{{ asset('storage/' . $pengumpulan->file) }}" class="btn btn-sm btn-success mt-2" target="_blank">
+                        <i class="fas fa-download"></i> Download Jawaban
+                    </a>
+                @else
+                    <p class="text-danger">File jawaban tidak ditemukan.</p>
+                @endif
+            @elseif($isDeadlineOver)
+                <p class="status-terlambat">❌ Deadline sudah lewat. Anda tidak bisa mengumpulkan tugas ini.</p>
             @else
                 <form action="{{ route('mahasiswa.kelas.tugas.upload', ['kelas' => $kelas->id, 'tugas' => $tugas->id]) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
-                        <label for="file_tugas" class="upload-label">Upload File Tugas</label>
+                        <label for="file_tugas" class="upload-label">Upload File Jawaban</label>
                         <input type="file" name="file_tugas" id="file_tugas" class="form-control" required>
                     </div>
                     <button type="submit" class="btn btn-kumpul">
@@ -91,6 +131,4 @@
         </div>
     </div>
 </div>
-
-
 @endsection

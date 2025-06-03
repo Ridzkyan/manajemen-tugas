@@ -1,81 +1,8 @@
 @extends('layouts.dosen')
 
 @section('content')
-<style>
-    .page-wrapper {
-        height: 100%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #FFF9F3;
-    }
+<link href="{{ asset('css/backsite/dosen/crud.css') }}" rel="stylesheet">
 
-    .card-modern {
-        background: #ffffff;
-        border: none;
-        border-radius: 16px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        padding: 80px;
-        width: 100%;
-        max-width: 1200px;
-        animation: fadeIn 0.5s ease-in-out;
-    }
-
-    .form-title {
-        text-align: center;
-        font-weight: 600;
-        color: #008080;
-        margin-bottom: 24px;
-    }
-
-    .form-control {
-        padding: 12px 16px;
-        font-size: 16px;
-        border-radius: 8px;
-    }
-
-    .btn-custom {
-        background-color: #008080;
-        color: #fff;
-        padding: 10px 24px;
-        border: none;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn-custom:hover {
-        background-color: #F9A825;
-        color: #fff;
-    }
-
-    .btn-secondary-custom {
-        background-color: #6c757d;
-        color: #fff;
-        padding: 10px 24px;
-        border: none;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn-secondary-custom:hover {
-        background-color: #F9A825;
-        color: #fff;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-</style>
 
 <div class="page-wrapper">
     <div class="card-modern">

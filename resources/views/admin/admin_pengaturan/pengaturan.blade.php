@@ -1,99 +1,14 @@
 @extends('layouts.admin')
 
+@section('title', 'Pengaturan Admin')
+
 @section('content')
+
+<!-- Link ke file CSS eksternal -->
+<link rel="stylesheet" href="{{ asset('css/backsite/admin/pengaturan.css') }}">
 
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<style>
-    .setting-wrapper {
-        padding: 1rem 2rem 2rem;
-        min-height: 85vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        animation: fadeSlideUp 0.6s ease;
-    }
-
-    @keyframes fadeSlideUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .setting-title {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.2rem;
-        font-weight: bold;
-        margin-bottom: 0.3rem;
-        margin-top: 0.8rem;
-    }
-
-    .setting-title i {
-        color: #f5a04e;
-        margin-right: 0.6rem;
-    }
-
-    .setting-subtext {
-        text-align: center;
-        color: #666;
-        margin-bottom: 1.5rem;
-    }
-
-    .setting-grid-row {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .setting-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
-        padding: 3.5rem 2.5rem;
-        text-align: center;
-        position: relative;
-        transition: transform 0.2s ease;
-        width: 280px;
-        height: 280px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .setting-card:hover {
-        transform: translateY(-6px);
-    }
-
-    .setting-card i {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        transition: transform 0.2s ease;
-    }
-
-    .setting-card:hover i {
-        transform: scale(1.1);
-    }
-
-    .setting-card .badge {
-        position: absolute;
-        top: 12px;
-        right: 16px;
-        font-size: 0.7rem;
-        padding: 0.3em 0.6em;
-    }
-
-    @media (max-width: 768px) {
-        .setting-grid-row {
-            flex-direction: column;
-            align-items: center;
-        }
-    }
-</style>
 
 <div class="setting-wrapper py-5">
     <div class="setting-title">
