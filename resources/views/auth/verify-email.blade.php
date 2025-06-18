@@ -1,34 +1,10 @@
 @extends('layouts.mahasiswa')
 
+@section('title', 'Verifikasi Email')
+
 @section('content')
-<style>
-    body {
-        background: linear-gradient(to right, #ffb347, #44d9f7);
-        font-family: 'Poppins', sans-serif;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .verify-card {
-        background-color: white;
-        padding: 3rem 2rem;
-        border-radius: 1rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        max-width: 500px;
-        text-align: center;
-    }
-
-    .verify-card h4 {
-        color: #008080;
-    }
-
-    .btn-primary {
-        background-color: #008080;
-        border: none;
-    }
-</style>
+<link href="{{ asset('css/auth/variable.css') }}" rel="stylesheet">
+<link href="{{ asset('css/auth/mahasiswa/verify.css') }}" rel="stylesheet">
 
 <div class="verify-card">
     <h4>Verifikasi Email Kamu</h4>

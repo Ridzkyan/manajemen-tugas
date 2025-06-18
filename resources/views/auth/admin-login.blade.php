@@ -10,14 +10,15 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <!-- Custom Styles -->
-    <link href="{{ asset('css/frontsite/admin/admin_login.css') }}" rel="stylesheet">
+     <link href="{{ asset('css/auth/variable.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/auth/admin/login.css') }}" rel="stylesheet">
 </head>
 
 <body>
     <div class="login-card">
         <img src="{{ asset('images/LogoWelcome.png') }}" alt="TaskFlow Logo" class="logo-img">
         <div class="welcome-title">Login Admin TaskFlow</div>
-        <p class="text-muted mb-4">Masukkan email dan password untuk login ke dashboard admin.</p>
+    
         
         <form action="{{ route('admin.login') }}" method="POST">
             @csrf

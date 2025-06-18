@@ -1,0 +1,58 @@
+.icon-f5a04e {
+    color: var(--accent) !important;
+}
+.detail-kelas-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+.detail-header {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 25px;
+    text-align: center;
+    color: var(--gray);
+}
+.card-detail {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    background-color: var(--white);
+    padding: 30px;
+}
+.card-detail h5 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+.info-item {
+    margin-bottom: 12px;
+    font-size: 1rem;
+}
+.info-item strong {
+    width: 140px;
+    display: inline-block;
+    color: var(--gray-light);
+}
+.btn-action {
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    box-shadow: var(--shadow);
+}
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+    color: var(--white);
+}
+.btn-primary:hover {
+    background-color: #006666; /* Atau tambahkan --primary-dark di variable.css */
+}
+.btn-secondary {
+    background-color: var(--border);
+    color: var(--gray);
+    border: none;
+}
+.btn-secondary:hover {
+    background-color: #c6c6c6;
+}

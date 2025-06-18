@@ -36,49 +36,29 @@ class JoinKelasController extends Controller
 
 
 
-    /**
-     * Proses join ke kelas dengan kode unik.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'kode_unik' => 'required|exists:kelas,kode_unik',
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'kode_unik' => 'required|exists:kelas,kode_unik',
+    ]);
 
-        $kelas = Kelas::where('kode_unik', $request->kode_unik)->first();
+    $kelas = Kelas::where('kode_unik', $request->kode_unik)->first();
 
-        // Cek apakah mahasiswa sudah tergabung
-        $sudahGabung = KelasMahasiswa::where('kelas_id', $kelas->id)
-            ->where('mahasiswa_id', Auth::id())
-            ->exists();
+    // Cek apakah mahasiswa sudah tergabung
+    $sudahGabung = KelasMahasiswa::where('kelas_id', $kelas->id)
+        ->where('mahasiswa_id', Auth::id())
+        ->exists();
 
-        if ($sudahGabung) {
-            return redirect()->back()->with('error', 'Kamu sudah bergabung ke kelas ini!');
-        }
-
-        // Tambahkan ke pivot table kelas_mahasiswa
-        KelasMahasiswa::create([
-            'kelas_id' => $kelas->id,
-            'mahasiswa_id' => Auth::id(),
-        ]);
-
-        return redirect()->route('mahasiswa.dashboard')->with('success', 'Berhasil bergabung ke kelas!');
+    if ($sudahGabung) {
+        return redirect()->back()->with('kelas_error', 'Kamu sudah bergabung ke kelas ini!');
     }
 
-    /**
-     * Proses keluar dari kelas (hapus relasi di pivot).
-     */
-    public function leave($id)
-    {
-        $relasi = KelasMahasiswa::where('kelas_id', $id)
-            ->where('mahasiswa_id', Auth::id())
-            ->first();
+    // Tambahkan ke pivot table kelas_mahasiswa
+    KelasMahasiswa::create([
+        'kelas_id' => $kelas->id,
+        'mahasiswa_id' => Auth::id(),
+    ]);
 
-        if ($relasi) {
-            $relasi->delete();
-            return redirect()->route('mahasiswa.dashboard')->with('success', 'Berhasil keluar dari kelas!');
-        }
-
-        return redirect()->route('mahasiswa.dashboard')->with('error', 'Gagal keluar dari kelas!');
-    }
-}
+    // Update route name agar konsisten dengan template
+    return redirect()->route('mahasiswa.join.index')->with('kelas_success', 'Berhasil bergabung ke kelas!');
+}}

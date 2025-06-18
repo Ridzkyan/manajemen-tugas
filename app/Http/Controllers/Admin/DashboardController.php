@@ -38,7 +38,7 @@ class DashboardController extends Controller
         $materiTerbaru = Materi::with('kelas')->latest()->take(5)->get();
 
         // Ambil kelas teraktif berdasarkan jumlah materi
-        $kelasTeraktif = Kelas::withCount('materis')
+        $kelasTeraktif = Kelas::withCount('materi')
             ->get()
             ->map(function ($item) {
                 $item->label = $item->nama_kelas . ' - ' . $item->nama_matakuliah;

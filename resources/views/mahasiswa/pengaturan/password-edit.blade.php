@@ -3,6 +3,7 @@
 @section('title', 'Ganti Password')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/backsite/mahasiswa/password_edit.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @if(session('success'))
@@ -27,60 +28,9 @@
         });
     </script>
 @endif
+
 <div style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
-    <style>
-        .password-card {
-            width: 100%;
-            max-width: 700px;
-            border-radius: 20px;
-            border: none;
-            background-color: #ffffff;
-            padding: 40px 48px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        }
-
-        .password-title {
-            color: #000000;
-            font-weight: bold;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .input-custom {
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-size: 16px;
-            border: 1px solid #ced4da;
-        }
-
-        .btn-simpan {
-            background-color: #00838f;
-            color: white;
-            font-weight: 600;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 28px;
-            transition: 0.3s ease;
-        }
-
-        .btn-simpan:hover {
-            background-color: #f5a04e;
-        }
-
-        .label-primary {
-            color: #000000;
-            font-weight: 600;
-        }
-
-        .icon-orange {
-            color: #f5a04e;
-            margin-right: 6px;
-        }
-    </style>
-
-     <div class="card password-card">
+    <div class="card password-card">
         <div class="card-body">
             @if (session('success'))
                 <div id="swal-success" data-message="{{ session('success') }}"></div>
@@ -94,39 +44,39 @@
                 </script>
             @endif
 
-<div class="container">
-    <h4 class="mb-4">🔒 Ganti Password</h4>
+            <div class="container">
+                <h4 class="mb-4">Ganti Password</h4>
+                <form id="passwordForm" action="{{ route('mahasiswa.pengaturan.password.edit') }}" method="POST">
+                    @csrf
 
-        <form id="passwordForm" action="{{ route('mahasiswa.password-edit.update') }}" method="POST">
-                @csrf
+                    <div class="mb-3">
+                        <label class="form-label label-primary">
+                            <i class="fas fa-key icon-orange"></i> Password Lama
+                        </label>
+                        <input type="password" name="current_password" class="form-control input-custom" required>
+                    </div>
 
-        <div class="mb-3">
-                    <label class="form-label label-primary">
-                        <i class="fas fa-key icon-orange"></i> Password Lama
-                    </label>
-                    <input type="password" name="current_password" class="form-control input-custom" required>
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label label-primary">
+                            <i class="fas fa-lock icon-orange"></i> Password Baru
+                        </label>
+                        <input type="password" name="password" class="form-control input-custom" required>
+                    </div>
 
+                    <div class="mb-3">
+                        <label class="form-label label-primary">
+                            <i class="fas fa-lock icon-orange"></i> Konfirmasi Password Baru
+                        </label>
+                        <input type="password" name="password_confirmation" class="form-control input-custom" required>
+                    </div>
 
-        <div class="mb-3">
-                    <label class="form-label label-primary">
-                        <i class="fas fa-lock icon-orange"></i> Password Baru
-                    </label>
-                    <input type="password" name="password" class="form-control input-custom" required>
-
-        <div class="mb-3">
-                    <label class="form-label label-primary">
-                        <i class="fas fa-lock icon-orange"></i> Konfirmasi Password Baru
-                    </label>
-                    <input type="password" name="password_confirmation" class="form-control input-custom" required>
-                </div>
-
-         <div class="mt-4">
-                    <button type="button" class="btn btn-simpan" onclick="confirmSubmit()">
-                        <i class="fas fa-save me-1"></i> Simpan Perubahan
-                    </button>
-                </div>
-            </form>
+                    <div class="mt-4">
+                        <button type="button" class="btn btn-simpan" onclick="confirmSubmit()">
+                            <i class="fas fa-save me-1"></i> Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

@@ -63,7 +63,7 @@
         </ul>
     </div>
     <div class="dashboard-card">
-        <h5>Aktivitas pengguna teratas <a href="{{ route('admin.monitoring') }}" class="btn">Selengkapnya</a></h5>
+        <h5>Aktivitas kelas teratas <a href="{{ route('admin.monitoring') }}" class="btn">Selengkapnya</a></h5>
         <div class="chart-wrapper">
             <canvas id="barChart"></canvas>
         </div>

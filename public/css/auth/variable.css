@@ -1,0 +1,31 @@
+:root {
+  /* WARNA */
+  --primary: #008080;
+  --accent: #FFB347;
+  --white: #fff;
+  --black: #000;
+  --placeholder: #e0e0e0;
+  --bg-glass: rgba(255, 255, 255, 0.15);
+  --bg-glass-hover: rgba(255, 255, 255, 0.3);
+  --shadow-dark: rgba(0, 0, 0, 0.7);
+  --shadow-light: rgba(255, 179, 71, 0.4);
+  --shadow-btn: rgba(255, 179, 71, 0.6);
+  --shadow-hover: rgba(0, 128, 128, 0.8);
+  --text-muted: rgba(255, 255, 255, 0.8);
+
+  /* FONT */
+  --font-main: 'Nunito', sans-serif;
+  --fs-title: 1.7rem;
+  --fs-subtitle: 0.95rem;
+  --fs-btn: 1rem;
+  --fs-alert: 0.9rem;
+  --fs-small: 0.875rem;
+
+  /* STYLE */
+  --radius: 20px;
+  --radius-sm: 10px;
+  --radius-pill: 30px;
+  --shadow-box: 0 8px 20px rgba(0, 0, 0, 0.3);
+  --shadow-btn-main: 0 4px 8px var(--shadow-btn);
+  --shadow-btn-hover: 0 6px 12px var(--shadow-hover);
+}

@@ -1,3 +1,6 @@
+/* ==============================
+   WRAPPER UTAMA PROFIL
+   ============================== */
 .profil-wrapper {
     width: 100%;
     padding: 0 1rem;
@@ -12,13 +15,16 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* ==============================
+    PROFIL CARD
+   ============================== */
 .card-profile {
     width: 100%;
     max-width: 900px;
-    background: #fff;
-    border-radius: 16px;
+    background: var(--white);
+    border-radius: var(--radius);
     padding: 40px 50px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-kuat);
 }
 
 .card-profile h4 {
@@ -32,9 +38,12 @@
 
 .card-profile h4 i {
     margin-right: 10px;
-    color: #f5a04e;
+    color: var(--accent);
 }
 
+/* ==============================
+   FORM GROUP & LABEL
+   ============================== */
 .form-group label {
     font-weight: 600;
     margin-bottom: 6px;
@@ -46,15 +55,21 @@
     font-size: 15px;
 }
 
+/* ==============================
+   FOTO PROFIL
+   ============================== */
 .profile-pic {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border);
     margin-bottom: 12px;
 }
 
+/* ==============================
+   INPUT FOTO & LABEL CUSTOM UPLOAD
+   ============================== */
 #foto {
     display: none;
 }
@@ -62,9 +77,9 @@
 #foto + label {
     cursor: pointer;
     padding: 8px 18px;
-    border-radius: 8px;
-    background-color: #008080;
-    color: white;
+    border-radius: var(--radius-kecil);
+    background-color: var(--primary);
+    color: var(--white);
     display: inline-block;
     font-weight: 500;
     transition: 0.3s ease;
@@ -75,20 +90,26 @@
     margin-right: 6px;
 }
 
+/* ==============================
+   HOVER LABEL UPLOAD & SAVE BUTTON
+   ============================== */
 #foto + label:hover,
 #saveBtn:hover {
-    background-color: #f5a04e !important;
-    color: #fff !important;
-    border-color: #f5a04e !important;
+    background-color: var(--accent) !important;
+    color: var(--white) !important;
+    border-color: var(--accent) !important;
 }
 
+/* ==============================
+   SAVE BUTTON
+   ============================== */
 #saveBtn {
     width: 100%;
     margin-top: 20px;
     font-weight: 600;
     padding: 12px;
-    background-color: #008080;
-    border: 1px solid #008080;
-    color: white;
+    background-color: var(--primary);
+    border: 1px solid var(--primary);
+    color: var(--white);
     font-size: 15px;
 }

@@ -16,15 +16,17 @@ class Authenticate extends Middleware
 protected function redirectTo($request)
 {
     if (! $request->expectsJson()) {
-        // contoh: redirect berdasarkan guard
-        if (Auth::guard('dosen')->check()) {
-            return route('dosen.login');
-        } elseif (Auth::guard('mahasiswa')->check()) {
-            return route('mahasiswa.login');
+        if ($request->is('admin') || $request->is('admin/*')) {
+            return route('admin.login');
+        } elseif ($request->is('dosen') || $request->is('dosen/*')) {
+            return route('login.dosen');
+        } elseif ($request->is('mahasiswa') || $request->is('mahasiswa/*')) {
+            return route('login.mahasiswa');
         }
 
-        // default fallback
-        return route('mahasiswa.login');
+        // fallback ke halaman utama
+        return route('welcome');
     }
 }
+
 }

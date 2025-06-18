@@ -1,0 +1,93 @@
+/* mahasiswa/tugas_kelas.css */
+
+/* Warna ikon custom */
+.icon-f5a04e {
+    color: var(--accent) !important;
+}
+
+/* TAB FILTER */
+.filter-tab {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-bottom: 32px;
+}
+.filter-tab a {
+    padding: 10px 28px;
+    border-radius: 20px;
+    background: var(--border);
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background 0.2s, color 0.2s;
+}
+.filter-tab a.active,
+.filter-tab a:hover {
+    background: var(--primary);
+    color: var(--white);
+}
+
+/* Card Tugas */
+.card-tugas {
+    border-radius: var(--radius);
+    background: var(--white);
+    box-shadow: var(--shadow-md);
+    padding: 20px;
+    height: 100%;
+    transition: 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.card-tugas:hover {
+    transform: scale(1.02);
+}
+
+/* Tombol lihat tugas/ujian */
+.btn-lihat {
+    background-color: var(--accent);
+    color: var(--white);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+.btn-lihat:hover {
+    background-color: #d88c2f; /* Atau tambahkan --accent-dark di variable */
+    color: var(--white);
+    text-decoration: none;
+}
+
+/* Header dan info tugas */
+.tugas-header {
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: var(--black);
+}
+.tugas-info {
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: var(--black);
+}
+
+/* Badge status */
+.badge-status {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    color: var(--white);
+    font-weight: 600;
+    align-self: flex-start;
+}
+.badge-terkumpul {
+    background-color: var(--success);
+}
+.badge-belum {
+    background-color: var(--primary);
+}

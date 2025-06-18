@@ -11,7 +11,7 @@ class Tugas extends Model
     use HasFactory;
 
     protected $fillable = [
-        'kelas_id', 'judul', 'tipe', 'deskripsi', 'file_soal', 'deadline', 'nilai', 'feedback', 'mahasiswa_id',
+        'kelas_id', 'judul', 'tipe', 'deskripsi', 'file_soal', 'deadline', 'nilai' => 'float', 'feedback', 'mahasiswa_id',
     ];
 
     public function kelas()

@@ -10,8 +10,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    
     <link href="{{ asset('css/backsite/layouts/style.css') }}" rel="stylesheet">
+
+    <!-- Anti Flicker Sidebar Admin -->
+    <script>
+    (function(){
+        var key = 'adminSidebarOpen';
+        if (localStorage.getItem(key) === 'false') {
+            document.documentElement.classList.add('sidebar-collapsed');
+        }
+    })();
+    </script>
 </head>
 <body>
 <div id="app">
@@ -81,33 +90,68 @@
 <!-- Script -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggleBtn = document.getElementById('toggleSidebar');
-        const toggleIcon = document.getElementById('toggleIcon');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent');
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const toggleIcon = document.getElementById('toggleIcon');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const SIDEBAR_KEY = 'adminSidebarOpen';
 
-        toggleBtn?.addEventListener('click', function () {
-            sidebar.classList.toggle('hidden');
-            mainContent.classList.toggle('expanded');
-            toggleIcon?.classList.toggle('rotate-90');
-        });
+    function setSidebarStatus(status) {
+        if(status === 'false') {
+            sidebar.classList.add('hidden');
+            mainContent.classList.add('expanded');
+            toggleIcon?.classList.add('rotate-90');
+            document.documentElement.classList.add('sidebar-collapsed');
+        } else {
+            sidebar.classList.remove('hidden');
+            mainContent.classList.remove('expanded');
+            toggleIcon?.classList.remove('rotate-90');
+            document.documentElement.classList.remove('sidebar-collapsed');
+        }
+    }
+    setSidebarStatus(localStorage.getItem(SIDEBAR_KEY) ?? 'true');
 
-        document.addEventListener('click', function (e) {
-            const isMobile = window.innerWidth <= 768;
-            if (
-                isMobile &&
-                sidebar &&
-                !sidebar.contains(e.target) &&
-                !toggleBtn.contains(e.target) &&
-                !sidebar.classList.contains('hidden')
-            ) {
-                sidebar.classList.add('hidden');
-                mainContent.classList.add('expanded');
-                toggleIcon?.classList.add('rotate-90');
-            }
-        });
+    toggleBtn?.addEventListener('click', function () {
+        const isHidden = sidebar.classList.toggle('hidden');
+        mainContent.classList.toggle('expanded');
+        toggleIcon.classList.toggle('rotate-90');
+        const sidebarOpen = (!isHidden).toString();
+        localStorage.setItem(SIDEBAR_KEY, sidebarOpen);
+        if (sidebarOpen === 'false') {
+            document.documentElement.classList.add('sidebar-collapsed');
+        } else {
+            document.documentElement.classList.remove('sidebar-collapsed');
+        }
     });
+
+    document.addEventListener('click', function (event) {
+        const isMobile = window.innerWidth <= 768;
+        if (
+            isMobile &&
+            sidebar &&
+            !sidebar.contains(event.target) &&
+            !toggleBtn.contains(event.target) &&
+            !sidebar.classList.contains('hidden')
+        ) {
+            sidebar.classList.add('hidden');
+            mainContent.classList.add('expanded');
+            toggleIcon?.classList.add('rotate-90');
+            localStorage.setItem(SIDEBAR_KEY, 'false');
+            document.documentElement.classList.add('sidebar-collapsed');
+        }
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('hidden');
+            mainContent.classList.remove('expanded');
+            toggleIcon?.classList.remove('rotate-90');
+            localStorage.setItem(SIDEBAR_KEY, 'true');
+            document.documentElement.classList.remove('sidebar-collapsed');
+        }
+    });
+});
 </script>
 
 @stack('scripts')

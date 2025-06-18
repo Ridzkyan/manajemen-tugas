@@ -1,0 +1,63 @@
+.icon-f5a04e {
+    color: var(--accent) !important;
+}
+.card-kelas {
+    border-radius: var(--radius);
+    background: var(--white);
+    box-shadow: var(--shadow-md);
+    padding: 20px;
+    height: 100%;
+    transition: 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.card-kelas:hover {
+    transform: scale(1.01);
+}
+.btn-masuk,
+.btn-keluar {
+    height: 44px;
+    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    width: 100%;
+}
+.btn-masuk {
+    background-color: var(--accent);
+    color: var(--white);
+}
+.btn-masuk:hover {
+    background-color: #d88c2f; /* Tambahkan --accent-dark jika ingin 100% variable */
+}
+.btn-keluar {
+    background-color: var(--primary);
+    color: var(--white);
+    border: none;
+}
+.btn-keluar:hover {
+    background-color: #006666; /* Atau tambahkan --primary-dark di variable.css */
+}
+.kelas-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--black);
+}
+.kelas-sub {
+    margin-bottom: 8px;
+    color: var(--gray);
+    font-size: 14px;
+}
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}

@@ -1,0 +1,28 @@
+@import url('../variable.css');
+
+body {
+    background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+    font-family: var(--font-main);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.verify-card {
+    background-color: var(--white);
+    padding: 3rem 2rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    max-width: 500px;
+    text-align: center;
+}
+
+.verify-card h4 {
+    color: var(--primary);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+}

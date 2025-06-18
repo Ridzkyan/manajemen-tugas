@@ -1,35 +1,34 @@
-    .judul-whatsapp {
-        text-align: center;
-        margin-bottom: 5.5rem;
-    }
+.judul-whatsapp {
+    text-align: center;
+    margin-bottom: 5.5rem;
+}
 
-    .judul-whatsapp .icon-teal {
-        color: #f5a04e;
-        font-size: 1.8rem;
-        vertical-align: middle;
-    }
+.judul-whatsapp .icon-teal {
+    color: var(--accent);
+    font-size: 1.8rem;
+    vertical-align: middle;
+}
 
-    .judul-whatsapp .teks-orange {
-        color: #000000;
-        font-weight: 700;
-        font-size: 2rem;
-        vertical-align: middle;
-    }
+.judul-whatsapp .teks-orange {
+    color: var(--black);
+    font-weight: 700;
+    font-size: 2rem;
+    vertical-align: middle;
+}
 
-    .text-teal {
-        color: #008080;
-    }
+.text-teal {
+    color: var(--primary);
+}
 
-    .list-group-item {
-        border-left: 4px solid #00808020;
-        margin-bottom: 8px;
-    }
+.list-group-item {
+    border-left: 4px solid rgba(0,128,128,0.125); 
+    margin-bottom: 8px;
+}
 
-    .btn-success {
-        background-color: #25D366;
-        border: none;
-    }
-
-    .btn-success:hover {
-        background-color: #20b257;
-    }
+.btn-success {
+    background-color: var(--primary); /* Whatsapp green, bisa bikin var --whatsapp-green jika sering pakai */
+    border: none;
+}
+.btn-success:hover {
+    background-color: var(--success);
+}

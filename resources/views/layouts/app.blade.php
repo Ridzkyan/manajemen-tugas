@@ -46,7 +46,6 @@
                                 </li>
                             @endif
                         @else
-                            {{-- Versi Otomatis Deteksi Guard Aktif --}}
                             @php
                                 $guard = Auth::guard('mahasiswa')->check() ? 'mahasiswa' :
                                          (Auth::guard('dosen')->check() ? 'dosen' :

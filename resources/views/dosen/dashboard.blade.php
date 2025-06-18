@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid py-4" style="background: #FFF6ED; min-height: 100vh;">
 
-    {{-- Welcome Alert (session success) --}}
+    {{-- Welcome Alert --}}
     @if (session('success'))
     <div id="welcomeAlert" class="alert d-flex justify-content-between align-items-center mb-4 rounded shadow-sm px-4 py-3"
          style="background-color: #008080; color: white;">
@@ -21,12 +21,14 @@
     {{-- Statistik Box --}}
     <div class="row mb-4">
         <div class="col-md-4 mb-3">
-            <a href="{{ route('dosen.pengaturan') }}" class="text-decoration-none">
-                <div class="text-center p-4 rounded shadow-sm text-white" style="background-color: #f5a04e;">
-                    <h3 class="fw-bold mb-1">{{ $userCount ?? 0 }}</h3>
-                    <p class="mb-0">Users</p>
-                </div>
-            </a>
+            @if ($kelas->isNotEmpty())
+                <a href="{{ route('dosen.kelola_kelas.show', $kelas->first()->id) }}" class="text-decoration-none">
+                    <div class="text-center p-4 rounded shadow-sm text-white" style="background-color: #f5a04e;">
+                        <h3 class="fw-bold mb-1">{{ $userCount ?? 0 }}</h3>
+                        <p class="mb-0">Users</p>
+                    </div>
+                </a>
+            @endif
         </div>
         <div class="col-md-4 mb-3">
             <a href="{{ route('dosen.materi_kelas.index') }}" class="text-decoration-none">
@@ -46,25 +48,29 @@
         </div>
     </div>
 
-    {{-- Statistik Chart dan Kelas --}}
+    {{-- Statistik dan Kelas --}}
     <div class="row">
+        {{-- Grafik Nilai --}}
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm rounded h-100 border-0">
-                <div class="card-body">
+                <div class="card-body d-flex flex-column justify-content-between">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="fw-bold mb-0">Statistik Rata-rata Nilai</h6>
-                        <a href="rekap-nilai" class="btn btn-sm text-white" style="background-color: #f5a04e;">
+                        <a href="{{ route('dosen.rekap_nilai.index') }}" class="btn btn-sm text-white" style="background-color: #f5a04e;">
                             Selengkapnya
                         </a>
                     </div>
-                    <canvas id="nilaiChart" height="230"></canvas>
+                    <div class="chart-wrapper" style="height: 300px;">
+                        <canvas id="nilaiChart" style="width: 100%; height: 100%;"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
 
+        {{-- Kelas --}}
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm rounded h-100 border-0">
-                <div class="card-body">
+                <div class="card-body d-flex flex-column justify-content-between">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="fw-bold mb-0">Kelas / Mata Kuliah</h6>
                         <a href="{{ route('dosen.kelola_kelas.index', $kelas->first()->id ?? 1) }}" class="btn btn-sm text-white" style="background-color: #f5a04e;">
@@ -93,15 +99,41 @@
 </div>
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const alertBox = document.getElementById('welcomeAlert');
-        if (alertBox) {
-            setTimeout(() => {
-                alertBox.style.transition = 'opacity 0.5s ease';
-                alertBox.style.opacity = '0';
-                setTimeout(() => alertBox.remove(), 500);
-            }, 4000);
+    const ctx = document.getElementById('nilaiChart').getContext('2d');
+    const nilaiChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode($statistikNilai->pluck('judul')) !!},
+            datasets: [{
+                label: 'Rata-rata Nilai',
+                data: {!! json_encode($statistikNilai->pluck('rata')) !!},
+                backgroundColor: '#f5a04e'
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ctx.parsed.x + ' / 100'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: { display: true, text: 'Nilai' }
+                },
+                y: {
+                    ticks: { autoSkip: false }
+                }
+            }
         }
     });
 </script>

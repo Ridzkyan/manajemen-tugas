@@ -1,28 +1,31 @@
-/* public/css/backsite/dosen/tugas_ujian.css */
+/* ============================
+   TUGAS UJIAN DOSEN (CSS UTAMA)
+   ============================ */
 
+/* ===== Global & Body ===== */
 html, body {
     height: 100%;
 }
 
+/* ===== Tombol Tampilkan Form ===== */
 #toggleFormBtn {
-    background-color: #f5a04e;
-    color: white;
+    background-color: var(--accent);
+    color: var(--white);
     border: none;
     padding: 6px 14px;
     font-size: 0.9rem;
     border-radius: 6px;
     transition: all 0.3s ease;
 }
-
 #toggleFormBtn:hover {
-    background-color: #008080;
-    color: white;
+    background-color: var(--primary);
+    color: var(--white);
 }
 
-/* Penilaian Button */
+/* ===== Button Penilaian ===== */
 .btn-penilaian {
-    background-color: #008080;
-    color: white;
+    background-color: var(--primary);
+    color: var(--white);
     border: none;
     padding: 6px 14px;
     border-radius: 6px;
@@ -30,13 +33,12 @@ html, body {
     text-decoration: none;
     transition: all 0.3s ease;
 }
-
 .btn-penilaian:hover {
-    background-color: #f5a04e;
+    background-color: var(--accent);
     text-decoration: none;
 }
 
-/* Edit & Delete Icon Buttons */
+/* ===== Icon Edit & Delete ===== */
 .btn-icon, .btn-delete {
     background-color: #f0f0f0;
     border: none;
@@ -45,30 +47,27 @@ html, body {
     padding: 6px 10px;
     transition: all 0.2s ease;
 }
-
 .btn-icon {
-    color: #008080;
+    color: var(--primary);
 }
-
 .btn-icon:hover {
-    background-color: #f5a04e;
-    color: white;
+    background-color: var(--accent);
+    color: var(--white);
     transform: scale(1.1);
 }
-
 .btn-delete {
-    color: #dc3545;
+    color: var(--danger);
 }
-
 .btn-delete:hover {
-    background-color: #f5a04e;
-    color: white;
+    background-color: var(--accent);
+    color: var(--white);
     transform: scale(1.1);
 }
 
+/* ===== Button Upload File ===== */
 .btn-upload {
-    background-color: #008080;
-    color: white;
+    background-color: var(--primary);
+    color: var(--white);
     border: none;
     padding: 10px 20px;
     font-size: 1rem;
@@ -81,17 +80,17 @@ html, body {
     gap: 8px;
     box-shadow: 0 4px 10px rgba(0, 128, 128, 0.2);
 }
-
 .btn-upload:hover {
-    background-color: #f5a04e;
-    color: white;
+    background-color: var(--accent);
+    color: var(--white);
     transform: translateY(-1px);
     box-shadow: 0 6px 12px rgba(245, 160, 78, 0.3);
 }
 
+/* ===== Button Lihat File ===== */
 .btn-lihat-file {
-    background-color: #008080;
-    color: white;
+    background-color: var(--primary);
+    color: var(--white);
     border: none;
     padding: 6px 14px;
     border-radius: 6px;
@@ -102,22 +101,23 @@ html, body {
     transition: all 0.3s ease;
     text-decoration: none;
 }
-
 .btn-lihat-file:hover {
-    background-color: #f5a04e;
-    color: white;
+    background-color: var(--accent);
+    color: var(--white);
     text-decoration: none;
 }
 
+/* ===== Badge TaskFlow ===== */
 .badge-taskflow {
-    background-color: #008080;
-    color: white;
+    background-color: var(--primary);
+    color: var(--white);
     text-transform: uppercase;
     font-size: 0.75rem;
     padding: 0.35em 0.6em;
     border-radius: 0.4rem;
 }
 
+/* ===== Layout Wrapper ===== */
 .page-wrapper {
     display: flex;
     gap: 24px;
@@ -125,7 +125,6 @@ html, body {
     min-height: calc(100vh - 100px);
     transition: all 0.3s ease;
 }
-
 .card-column {
     flex-grow: 1;
     display: flex;
@@ -133,31 +132,28 @@ html, body {
     gap: 20px;
     transition: all 0.3s ease;
 }
-
 .form-column {
     width: 100%;
     max-width: 600px;
     transition: all 0.3s ease;
 }
 
+/* ===== Kartu (Card) ===== */
 .card {
-    border-radius: 12px;
-    background-color: #fff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius);
+    background-color: var(--white);
+    box-shadow: var(--shadow-lg, 0 4px 10px rgba(0, 0, 0, 0.1));
 }
-
 .card-body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 1rem;
 }
-
 .card-title {
     font-size: 1.1rem;
     font-weight: 600;
 }
-
 .card-actions {
     display: flex;
     justify-content: flex-start;
@@ -166,6 +162,7 @@ html, body {
     flex-wrap: wrap;
 }
 
+/* ===== Utility ===== */
 .hide {
     display: none !important;
 }

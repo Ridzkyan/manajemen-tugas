@@ -27,14 +27,6 @@
             <div class="badge bg-danger text-white">Keamanan</div>
             <div class="fw-bold mt-2">Ganti Password</div>
         </a>
-    </div>
-
-    <div class="setting-grid-row">
-        <div class="setting-card">
-            <i class="fas fa-bell text-info"></i>
-            <div class="badge bg-secondary text-white">Soon</div>
-            <div class="fw-bold mt-2">Notifikasi</div>
-        </div>
         <a href="{{ route('admin.pengaturan.data') }}" class="setting-card text-decoration-none text-dark">
             <i class="fas fa-sliders-h text-success"></i>
             <div class="badge bg-success text-white">Aktif</div>

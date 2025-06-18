@@ -1,15 +1,21 @@
+body {
+    background-color: var(--bg-alt); /* dari --bg-alt: #fef9f4 */
+    margin: 0;
+    padding: 0;
+}
+
 .password-card {
     width: 100%;
     max-width: 700px;
-    border-radius: 20px;
+    border-radius: var(--radius);
     border: none;
-    background-color: #ffffff;
+    background-color: var(--white);
     padding: 40px 48px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-lg);
 }
 
 .password-title {
-    color: #000000;
+    color: var(--black);
     font-weight: bold;
     font-size: 1.8rem;
     display: flex;
@@ -18,38 +24,31 @@
 }
 
 .input-custom {
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     padding: 12px 16px;
     font-size: 16px;
-    border: 1px solid #ced4da;
+    border: 1px solid var(--border);
 }
 
 .btn-simpan {
-    background-color: #00838f;
-    color: white;
+    background-color: var(--primary);
+    color: var(--white);
     font-weight: 600;
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     padding: 12px 28px;
     transition: 0.3s ease;
 }
-
 .btn-simpan:hover {
-    background-color: #f5a04e;
+    background-color: var(--accent);
 }
 
 .label-primary {
-    color: #000000;
+    color: var(--black);
     font-weight: 600;
 }
 
 .icon-orange {
-    color: #f5a04e;
+    color: var(--accent);
     margin-right: 6px;
-}
-
-body {
-    background-color: #FFF9F3;
-    margin: 0;
-    padding: 0;
 }

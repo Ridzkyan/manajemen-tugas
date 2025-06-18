@@ -4,73 +4,10 @@
 
 @section('content')
 
+{{-- Import CSS khusus halaman komunikasi mahasiswa --}}
+<link rel="stylesheet" href="{{ asset('css/backsite/mahasiswa/komunikasi.css') }}">
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<style>
-    .pengaturan-wrapper {
-        max-width: 1100px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 40px 20px 60px;
-    }
-
-    .pengaturan-title {
-        font-size: 2.3rem;
-        font-weight: 700;
-        color: #333;
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .card-komunikasi {
-        border-radius: 16px;
-        background-color: #fff;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-        transition: 0.3s ease;
-        padding: 24px;
-    }
-
-    .card-komunikasi:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-komunikasi h5 {
-        color: #008080;
-        font-weight: 700;
-    }
-
-    .card-komunikasi p {
-        margin-bottom: 16px;
-        font-size: 14px;
-        color: #555;
-    }
-
-    .btn-wa {
-        background-color: #25D366;
-        border: none;
-        font-weight: 600;
-        padding: 10px 20px;
-        border-radius: 12px;
-        color: white;
-        transition: 0.3s ease;
-    }
-
-    .btn-wa:hover {
-        background-color: #1cb255;
-        color: white;
-    }
-
-    .btn-disabled {
-        background-color: #adb5bd;
-        cursor: not-allowed;
-        padding: 10px 20px;
-        border-radius: 12px;
-        font-weight: 600;
-        color: white;
-        border: none;
-    }
-</style>
 
 {{-- SweetAlert --}}
 @if(session('success'))

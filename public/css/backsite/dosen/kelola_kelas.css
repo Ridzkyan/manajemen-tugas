@@ -11,18 +11,18 @@
 
 .icon-judul {
     font-size: 2.6rem;
-    color: #f5a04e;
+    color: var(--accent);
 }
 
 .btn-tambah-kelas {
-    background-color: #008080;
-    color: white;
+    background-color: var(--primary);
+    color: var(--white);
     font-weight: 600;
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     padding: 10px 18px;
     font-size: 0.95rem;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     transition: all 0.3s ease;
     text-decoration: none;
     display: inline-flex;
@@ -34,13 +34,13 @@
 }
 
 .btn-tambah-kelas:hover {
-    background-color: #f5a04e;
-    color: white;
+    background-color: var(--accent);
+    color: var(--white);
 }
 
 .kelas-header {
-    background-color: #ffffff;
-    border-left: 5px solid #008080;
+    background-color: var(--white);
+    border-left: 5px solid var(--primary);
     border-radius: 0.35rem 0.35rem 0 0;
     cursor: pointer;
     padding: 1rem 1.25rem;
@@ -51,12 +51,12 @@
 }
 
 .kelas-header:hover {
-    background-color: #f1f1f1;
+    background-color: var(--white);
 }
 
 .icon-folder {
     font-size: 1.2rem;
-    color: #008080;
+    color: var(--primary);
 }
 
 .arrow-icon {
@@ -67,12 +67,12 @@
 .card.kategori-card {
     border: none;
     border-radius: 0.35rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
 }
 
 .card-body {
-    background-color: #ffffff;
-    border-top: 1px solid #eee;
+    background-color: var(--white);
+    border-top: 1px solid var(--border);
 }
 
 .btn-taskflow {
@@ -82,13 +82,13 @@
     width: 40px;
     height: 40px;
     font-size: 1.2rem;
-    border-radius: 10px;
-    background-color: #6c757d !important;
-    color: white !important;
+    border-radius: var(--radius-sm);
+    background-color: var(gray) !important; 
+    color: var(--white) !important;
     border: none !important;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-taskflow i {
@@ -100,18 +100,16 @@
     opacity: 0.9;
 }
 
+
 .btn-mahasiswa {
     background: linear-gradient(135deg, #00bfa6, #008080) !important;
 }
-
 .btn-edit {
     background: linear-gradient(135deg, #f9b54c, #f39c12) !important;
 }
-
 .btn-hapus {
     background: linear-gradient(135deg, #f27065, #e74c3c) !important;
 }
-
 .btn-copy {
     background: linear-gradient(135deg, #95a5a6, #7f8c8d) !important;
 }

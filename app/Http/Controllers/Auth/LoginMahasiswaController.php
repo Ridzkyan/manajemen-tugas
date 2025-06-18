@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
 class LoginMahasiswaController extends Controller
 {
@@ -21,37 +20,35 @@ class LoginMahasiswaController extends Controller
 
     public function login(Request $request)
     {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required|string'
-    ]);
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string'
+        ]);
 
-    $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email', 'password');
 
-    if (Auth::guard('mahasiswa')->attempt($credentials, $request->filled('remember'))) {
-        $request->session()->regenerate();
+        if (Auth::guard('mahasiswa')->attempt($credentials, $request->filled('remember'))) {
+            $request->session()->regenerate();
 
-        $user = Auth::guard('mahasiswa')->user();
+            $user = Auth::guard('mahasiswa')->user();
 
-        // Cek verifikasi email
-        if (! $user->hasVerifiedEmail()) {
-            Auth::guard('mahasiswa')->logout();
-            return redirect()->route('mahasiswa.email-verification.notice')->with('error', 'Silakan verifikasi email terlebih dahulu.');
+            if (! $user->hasVerifiedEmail()) {
+                Auth::guard('mahasiswa')->logout();
+                return redirect()->route('mahasiswa.email-verification.notice')->with('error', 'Silakan verifikasi email terlebih dahulu.');
+            }
+
+            $user->is_online = true;
+            $user->last_login_at = now();
+            $user->save();
+
+            
+            return redirect()->intended(route('mahasiswa.dashboard'))->with('login_success', 'Berhasil login!');
         }
 
-        // Update status
-        $user->is_online = true;
-        $user->last_login_at = now();
-        $user->save();
-
-        return redirect()->intended(route('mahasiswa.dashboard'));
+        return back()->withInput()->withErrors([
+            'email' => 'Email atau password salah.',
+        ]);
     }
-
-    return back()->withInput()->withErrors([
-        'email' => 'Email atau password salah.',
-    ]);
-    }
-
 
     protected function redirectTo()
     {
@@ -68,7 +65,6 @@ class LoginMahasiswaController extends Controller
         }
 
         Auth::guard('mahasiswa')->logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

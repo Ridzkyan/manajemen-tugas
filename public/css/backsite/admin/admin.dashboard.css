@@ -1,6 +1,9 @@
+@import url('../variables.css');
+
+
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: var(--font-main);
 }
 
 .dashboard-wrapper {
@@ -10,8 +13,8 @@ body {
 
 .sidebar {
     width: 220px;
-    background: #028090;
-    color: white;
+    background: var(--primary);
+    color: var(--white);
     padding: 20px;
 }
 
@@ -31,16 +34,16 @@ body {
 }
 
 .menu li.active {
-    background: #fff;
-    color: #028090;
+    background: var(--white);
+    color: var(--primary);
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: var(--radius-sm);
 }
 
 .main-content {
     flex-grow: 1;
     padding: 20px;
-    background: #f6f6f6;
+    background: var(--bg);
 }
 
 .topbar {
@@ -56,11 +59,11 @@ body {
 }
 
 .stat {
-    background: #f4a261;
+    background: var(--accent);
     padding: 20px;
     flex: 1;
     text-align: center;
-    border-radius: 10px;
+    border-radius: var(--radius);
     font-weight: bold;
 }
 
@@ -70,10 +73,10 @@ body {
 }
 
 .chart-container {
-    background: white;
+    background: var(--white);
     padding: 20px;
     flex: 1;
-    border-radius: 10px;
+    border-radius: var(--radius);
 }
 
 .bottom-lists {
@@ -83,8 +86,8 @@ body {
 }
 
 .list-box {
-    background: white;
+    background: var(--white);
     flex: 1;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: var(--radius);
 }

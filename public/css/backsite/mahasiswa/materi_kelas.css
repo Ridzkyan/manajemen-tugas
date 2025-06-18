@@ -1,0 +1,77 @@
+
+
+.materi-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+.materi-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 25px;
+    text-align: center;
+    color: var(--gray);
+}
+
+.materi-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    background-color: var(--white);
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.materi-judul {
+    font-weight: 500;
+    color: var(--gray);
+}
+
+/* Tombol materi (lihat PDF/video) */
+.btn-materi {
+    border-radius: var(--radius-sm);
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Efek hover untuk outline button */
+.btn-outline-primary:hover,
+.btn-outline-info:hover {
+    opacity: 0.9;
+}
+
+/* Teks jika tidak ada materi */
+.no-materi {
+    font-style: italic;
+    color: var(--gray-light);
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Gaya tombol materi */
+.btn-materi {
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+
+/* Ikon buku (judul atas) */
+.icon-buku {
+    color: var( --accent);
+}
+
+/* Ikon play video */
+.icon-video {
+    color: var( --accent);
+}
+
+.btn-materi:hover .icon-video {
+    color: var(--accent-dark);
+}

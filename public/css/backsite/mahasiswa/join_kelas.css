@@ -1,0 +1,92 @@
+/* mahasiswa/join_kelas.css */
+
+/* Wrapper utama pengaturan */
+.pengaturan-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 50px 30px;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Judul halaman pengaturan */
+.pengaturan-title {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--gray);
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #444; /* Belum ada di variable, bisa diganti ke var(--gray-light) jika ingin konsisten */
+}
+
+/* Subtitle/Deskripsi bawah judul */
+.pengaturan-subtitle {
+    text-align: center;
+    color: var(--gray-light);
+    margin-bottom: 40px;
+}
+
+/* Kartu pengaturan */
+.pengaturan-card {
+    border-radius: var(--radius-lg);
+    transition: 0.3s ease;
+    padding: 40px 25px;
+    text-align: center;
+    background-color: var(--white);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    height: 100%;
+}
+
+.pengaturan-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Icon di kartu pengaturan */
+.pengaturan-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+/* Badge custom */
+.badge-custom {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: var(--radius);
+}
+
+/* Tombol primary khusus halaman join */
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: var(--radius);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark); /* Atau buat --primary-dark di variable */
+    transform: translateY(-1px);
+    color: var(--white);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pengaturan-title {
+        font-size: 1.8rem;
+    }
+    .pengaturan-card {
+        padding: 30px 20px;
+    }
+    .pengaturan-icon {
+        font-size: 2.4rem;
+    }
+}

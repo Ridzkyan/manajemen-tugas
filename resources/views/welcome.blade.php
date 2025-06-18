@@ -10,7 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <!-- External CSS -->
-    <link href="{{ asset('css/frontsite/welcome.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/auth/welcome.css') }}" rel="stylesheet">
 </head>
 
 <body>

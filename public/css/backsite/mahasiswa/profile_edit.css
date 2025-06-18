@@ -1,0 +1,68 @@
+.profil-card {
+    width: 100%;
+    max-width: 600px;
+    border-radius: var(--radius-lg);
+    background-color: var(--white);
+    padding: 40px 30px;
+    box-shadow: var(--shadow-lg);
+}
+.profil-title {
+    color: var(--black);
+    font-weight: bold;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+.input-custom {
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 15px;
+    border: 1px solid #ced4da;
+}
+input[type="file"] {
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+}
+.btn-simpan {
+    background-color: var(--primary);
+    color: var(--white);
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px 28px;
+    transition: 0.3s ease;
+}
+.btn-simpan:hover {
+    background-color: var(--accent);
+}
+.btn-kembali {
+    background-color: var(--border);
+    color: var(--gray);
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px 28px;
+    transition: 0.3s ease;
+}
+.btn-kembali:hover {
+    background-color: var(--accent);
+    color: var(--white);
+}
+.label-primary {
+    color: var(--black);
+    font-weight: 600;
+}
+.icon-orange {
+    color: var(--accent);
+    margin-right: 6px;
+}
+#foto-preview {
+    max-width: 150px;
+    max-height: 150px;
+    margin-top: 15px;
+    border-radius: var(--radius);
+    object-fit: cover;
+    box-shadow: var(--shadow);
+}

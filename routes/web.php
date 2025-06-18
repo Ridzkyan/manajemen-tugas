@@ -27,7 +27,6 @@ use App\Http\Controllers\Dosen\TugasController;
 use App\Http\Controllers\Dosen\RekapController;
 use App\Http\Controllers\Dosen\DashboardController as DosenDashboardController;
 use App\Http\Controllers\Dosen\TugasController as DosenTugasController;
-
 use App\Http\Controllers\Dosen\ProfilDosenController;
 
 // Mahasiswa
@@ -35,7 +34,6 @@ use App\Http\Controllers\Mahasiswa\HomeController;
 use App\Http\Controllers\Mahasiswa\JoinKelasController;
 use App\Http\Controllers\Mahasiswa\MateriController as MahasiswaMateriController;
 use App\Http\Controllers\Mahasiswa\TugasController as MahasiswaTugasController;
-use App\Http\Controllers\Mahasiswa\UjianController;
 use App\Http\Controllers\Mahasiswa\KomunikasiController;
 use App\Http\Controllers\Mahasiswa\PenilaianController;
 use App\Http\Controllers\Mahasiswa\PengaturanController as MahasiswaPengaturanController;
@@ -43,7 +41,6 @@ use App\Http\Controllers\Mahasiswa\PengaturanController as MahasiswaPengaturanCo
 // ==============================
 // PUBLIC ROUTES
 // ==============================
-
 
 Route::get('/', fn () => view('welcome'))->name('welcome');
 
@@ -65,12 +62,19 @@ Route::get('/home', fn () => redirect()->route('login'));
 // MAHASISWA - AUTH & VERIFIKASI
 // ==============================
 
-Route::get('/mahasiswa/login', [LoginMahasiswaController::class, 'showLoginForm'])->name('login.mahasiswa');
-Route::post('/mahasiswa/login', [LoginMahasiswaController::class, 'login'])->name('mahasiswa.login');
-Route::post('/mahasiswa/logout', [LoginMahasiswaController::class, 'logout'])->name('mahasiswa.logout');
+Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+    // Auth routes (tidak perlu middleware)
+    Route::get('/login', [LoginMahasiswaController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginMahasiswaController::class, 'login'])->name('login.post');
+    Route::post('/logout', [LoginMahasiswaController::class, 'logout'])->name('logout');
+    
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register'])->name('register.post');
+});
 
+// Override untuk backward compatibility
+Route::get('/mahasiswa/login', [LoginMahasiswaController::class, 'showLoginForm'])->name('login.mahasiswa');
 Route::get('/mahasiswa/register', [RegisterController::class, 'showRegistrationForm'])->name('register.mahasiswa');
-Route::post('/mahasiswa/register', [RegisterController::class, 'register'])->name('mahasiswa.register');
 
 // Verifikasi Email (di luar auth:mahasiswa)
 Route::get('/mahasiswa/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
@@ -80,163 +84,256 @@ Route::get('/mahasiswa/email/verify/{id}/{hash}', [VerificationController::class
 // Halaman notifikasi & kirim ulang verifikasi
 Route::middleware(['auth:mahasiswa'])->prefix('mahasiswa/email')->name('mahasiswa.email-verification.')->group(function () {
     Route::get('/verify', [VerificationController::class, 'show'])->name('notice');
-    Route::post('/verification-notification', [VerificationController::class, 'resend'])->middleware('throttle:6,1')->name('resend');
+    Route::post('/verification-notification', [VerificationController::class, 'resend'])
+        ->middleware('throttle:6,1')
+        ->name('resend');
 });
 
 // ==============================
 // ADMIN ROUTES
 // ==============================
 
-Route::get('/admin', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
-Route::post('/admin', [AdminLoginController::class, 'login']);
-Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+Route::prefix('admin')->name('admin.')->group(function () {
+    // Auth routes (tidak perlu middleware)
+    Route::get('/', [AdminLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/', [AdminLoginController::class, 'login'])->name('login.post');
+    Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
+});
 
 Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/pengaturan', fn () => view('admin.admin_pengaturan.pengaturan'))->name('pengaturan');
 
+    // User Management
     Route::get('/dashboard/users', [UserController::class, 'index'])->name('dashboard.users');
-    Route::resource('/users', UserController::class)->except(['show'])->names('users');
-    Route::put('/reset-password/{user}', [UserController::class, 'resetPassword'])->name('users.reset-password');
+    Route::resource('users', UserController::class)->except(['show']);
+    Route::put('/reset-password/{user}', [UserController::class, 'resetPassword'])
+        ->where('user', '[0-9]+')
+        ->name('users.reset-password');
 
+    // Profile Management
     Route::get('/profil', [UserController::class, 'editProfile'])->name('profil.edit');
     Route::put('/profil', [UserController::class, 'updateProfile'])->name('profil.update');
     Route::get('/ganti-password', [UserController::class, 'editPassword'])->name('password.edit');
     Route::put('/ganti-password', [UserController::class, 'updatePassword'])->name('password.update');
 
+    // Content Management
     Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring');
     Route::get('/konten', [KontenController::class, 'index'])->name('konten.index');
 
-    Route::patch('/admin/konten/materi/{id}/setujui', [KontenController::class, 'setujuiMateri'])->name('admin.konten.materi.setujui');
-    Route::patch('/admin/konten/materi/{id}/tolak', [KontenController::class, 'tolakMateri'])->name('admin.konten.materi.tolak');
+    // Content Approval
+    Route::patch('/konten/materi/{id}/setujui', [KontenController::class, 'setujuiMateri'])
+        ->where('id', '[0-9]+')
+        ->name('konten.materi.setujui');
+    Route::patch('/konten/materi/{id}/tolak', [KontenController::class, 'tolakMateri'])
+        ->where('id', '[0-9]+')
+        ->name('konten.materi.tolak');
+    Route::patch('/konten/tugas/{id}/setujui', [KontenController::class, 'setujuiTugas'])
+        ->where('id', '[0-9]+')
+        ->name('konten.tugas.setujui');
+    Route::patch('/konten/tugas/{id}/tolak', [KontenController::class, 'tolakTugas'])
+        ->where('id', '[0-9]+')
+        ->name('konten.tugas.tolak');
 
-    Route::patch('/admin/konten/tugas/{id}/setujui', [KontenController::class, 'setujuiTugas'])->name('admin.konten.tugas.setujui');
-    Route::patch('/admin/konten/tugas/{id}/tolak', [KontenController::class, 'tolakTugas'])->name('admin.konten.tugas.tolak');
-
+    // System Management
     Route::get('/pengaturan/data', [PengaturanController::class, 'data'])->name('pengaturan.data');
     Route::post('/backup', [PengaturanController::class, 'backup'])->name('backup');
     Route::post('/backup-zip', [PengaturanController::class, 'backupZip'])->name('backup.zip');
     Route::post('/restore', [PengaturanController::class, 'restore'])->name('restore');
+    
+    // Testing route (hanya untuk admin dan environment local/testing)
+    Route::get('/test-flask-connection', [TugasController::class, 'testFlaskConnection'])
+        ->middleware('env:local,testing')
+        ->name('test.flask');
 });
 
 // ==============================
 // DOSEN ROUTES
 // ==============================
 
+Route::prefix('dosen')->name('dosen.')->group(function () {
+    // Auth routes (tidak perlu middleware)
+    Route::get('/login', [LoginDosenController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginDosenController::class, 'login'])->name('login.post');
+    Route::post('/logout', [LoginDosenController::class, 'logout'])->name('logout');
+});
+
+// Override untuk backward compatibility
 Route::get('/dosen/login', [LoginDosenController::class, 'showLoginForm'])->name('login.dosen');
-Route::post('/dosen/login', [LoginDosenController::class, 'login'])->name('dosen.login');
-Route::post('/dosen/logout', [LoginDosenController::class, 'logout'])->name('dosen.logout');
 
 Route::middleware(['auth:dosen', 'prevent-back-history'])->prefix('dosen')->name('dosen.')->group(function () {
-    // Search Global
-    Route::get('/search', [App\Http\Controllers\Dosen\SearchController::class, 'index'])->name('search');
+    // Dashboard & Search
+    Route::get('/dashboard', [DosenDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/search', [SearchController::class, 'index'])->name('search');
 
-    // Dashboard → views/dosen/dashboard.blade.php
-    Route::get('/dashboard', [App\Http\Controllers\Dosen\DashboardController::class, 'index'])->name('dashboard');
-
-    // Materi & Kelas → views/dosen/materi_kelas/materi_dan_kelas.blade.php
-    Route::get('/materi-kelas', [DosenKelasController::class, 'materiDanKelas'])->name('materi_kelas.index'); // Arham nambah
-    Route::get('/materi-kelas/{id}-{slug}', [DosenKelasController::class, 'detailMateri'])->name('materi_kelas.detail'); // Arham nambah
-    Route::delete('/materi-kelas/{id}', [MateriController::class, 'destroy'])->name('materi_kelas.destroy'); // Arham nambah
-    Route::put('/materi-kelas/{id}', [MateriController::class, 'update'])->name('materi_kelas.update'); // Arham nambah
+    // Materi & Kelas Global
+    Route::get('/materi-kelas', [DosenKelasController::class, 'materiDanKelas'])->name('materi_kelas.index');
+    Route::get('/materi-kelas/{id}-{slug}', [DosenKelasController::class, 'detailMateri'])
+        ->where(['id' => '[0-9]+', 'slug' => '[a-z0-9\-]+'])
+        ->name('materi_kelas.detail');
+    Route::delete('/materi-kelas/{id}', [MateriController::class, 'destroy'])
+        ->where('id', '[0-9]+')
+        ->name('materi_kelas.destroy');
+    Route::put('/materi-kelas/{id}', [MateriController::class, 'update'])
+        ->where('id', '[0-9]+')
+        ->name('materi_kelas.update');
     Route::post('/materi-kelas/upload', [DosenKelasController::class, 'uploadMateriGlobal'])->name('materi_kelas.upload');
 
-    // Kelola Kelas → views/dosen/kelola_kelas/
-    Route::get('/kelas', [App\Http\Controllers\Dosen\KelasController::class, 'index'])->name('kelola_kelas.index');
-    Route::get('/kelas/create', [App\Http\Controllers\Dosen\KelasController::class, 'create'])->name('kelola_kelas.create');
-    Route::post('/kelas', [App\Http\Controllers\Dosen\KelasController::class, 'store'])->name('kelola_kelas.store');
-    Route::get('/kelas/{id}/edit', [App\Http\Controllers\Dosen\KelasController::class, 'edit'])->name('kelola_kelas.edit');
-    Route::put('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'update'])->name('kelola_kelas.update');
-    Route::delete('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'destroy'])->name('kelola_kelas.destroy');
-    Route::get('/kelas/{id}', [App\Http\Controllers\Dosen\KelasController::class, 'show'])->name('kelola_kelas.show');
-    Route::get('/materi-kelas/{id}-{slug}', [DosenKelasController::class, 'detailMateri'])->name('materi_kelas.detail');
-
-    // Komunikasi → views/dosen/komunikasi/komunikasi.blade.php
-    Route::get('/komunikasi', [App\Http\Controllers\Dosen\KelasController::class, 'komunikasi'])->name('komunikasi');
+    // Kelola Kelas - menggunakan resource route
+    Route::resource('kelas', DosenKelasController::class)->names([
+        'index' => 'kelola_kelas.index',
+        'create' => 'kelola_kelas.create',
+        'store' => 'kelola_kelas.store',
+        'show' => 'kelola_kelas.show',
+        'edit' => 'kelola_kelas.edit',
+        'update' => 'kelola_kelas.update',
+        'destroy' => 'kelola_kelas.destroy'
+    ])->where(['kelas' => '[0-9]+']);
 
     // Kelola isi kelas (materi & tugas per kelas)
-    Route::get('/kelas/{id}/manage', [App\Http\Controllers\Dosen\KelasController::class, 'manage'])->name('kelola_kelas.manage');
-    Route::post('/kelas/{id}/materi', [App\Http\Controllers\Dosen\KelasController::class, 'uploadMateri'])->name('kelola_kelas.upload_materi');
+    Route::get('/kelas/{id}/manage', [DosenKelasController::class, 'manage'])
+        ->where('id', '[0-9]+')
+        ->name('kelola_kelas.manage');
+    Route::post('/kelas/{id}/materi', [DosenKelasController::class, 'uploadMateri'])
+        ->where('id', '[0-9]+')
+        ->name('kelola_kelas.upload_materi');
 
-    // Pilih kelas untuk tugas/ujian
+    // Komunikasi
+    Route::get('/komunikasi', [DosenKelasController::class, 'komunikasi'])->name('komunikasi');
+
+    // Tugas & Ujian
     Route::get('/tugas-ujian', [TugasController::class, 'pilihKelas'])->name('tugas_ujian.pilih_kelas');
-    Route::get('/tugas-ujian/{kelas}', [TugasController::class, 'index'])->name('tugas_ujian.index');
-    Route::post('/tugas-ujian/{kelas}', [TugasController::class, 'store'])->name('tugas_ujian.store');
-    Route::get('/tugas-ujian/{kelas}/detail', [TugasController::class, 'detail'])->name('tugas_ujian.detail');
-    Route::get('/tugas-ujian/{kelas}/{tugas}/edit', [TugasController::class, 'edit'])->name('tugas_ujian.edit');
-    Route::put('/tugas-ujian/{kelas}/{tugas}', [TugasController::class, 'update'])->name('tugas_ujian.update');
-    Route::delete('/tugas-ujian/{kelas}/{tugas}', [TugasController::class, 'destroy'])->name('tugas_ujian.destroy');
-    Route::get('/tugas-ujian/{kelas}/{tugas}/penilaian', [TugasController::class, 'penilaian'])->name('tugas_ujian.penilaian');
-    Route::post('/tugas-ujian/{kelas}/{tugas}/penilaian', [TugasController::class, 'nilaiTugas'])->name('tugas_ujian.nilai');
-    Route::get('/tugas-ujian/{kelas}/{tugas}/mahasiswa', [TugasController::class, 'penilaianPerMahasiswa'])->name('tugas_ujian.mahasiswa');
-    Route::get('/rekap-nilai', [App\Http\Controllers\Dosen\TugasController::class, 'rekapNilai'])->name('rekap_nilai.index');
-    Route::get('/rekap-nilai/{kelas}', [App\Http\Controllers\Dosen\TugasController::class, 'rekapPerKelas'])->name('rekap_nilai.detail');
-    Route::get('/rekap-nilai/export/{kelasId}', [App\Http\Controllers\Dosen\TugasController::class, 'exportRekap'])->name('rekap_nilai.export');
+    Route::get('/tugas-ujian/{kelas}', [TugasController::class, 'index'])
+        ->where('kelas', '[0-9]+')
+        ->name('tugas_ujian.index');
+    Route::post('/tugas-ujian/{kelas}', [TugasController::class, 'store'])
+        ->where('kelas', '[0-9]+')
+        ->name('tugas_ujian.store');
+    Route::get('/tugas-ujian/{kelas}/detail', [TugasController::class, 'detail'])
+        ->where('kelas', '[0-9]+')
+        ->name('tugas_ujian.detail');
+    Route::get('/tugas-ujian/{kelas}/{tugas}/edit', [TugasController::class, 'edit'])
+        ->where(['kelas' => '[0-9]+', 'tugas' => '[0-9]+'])
+        ->name('tugas_ujian.edit');
+    Route::put('/tugas-ujian/{kelas}/{tugas}', [TugasController::class, 'update'])
+        ->where(['kelas' => '[0-9]+', 'tugas' => '[0-9]+'])
+        ->name('tugas_ujian.update');
+    Route::delete('/tugas-ujian/{kelas}/{tugas}', [TugasController::class, 'destroy'])
+        ->where(['kelas' => '[0-9]+', 'tugas' => '[0-9]+'])
+        ->name('tugas_ujian.destroy');
 
-      // 🔧 Pengaturan Dosen
-    Route::get('/pengaturan', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'pengaturan'])->name('pengaturan');
+    // Penilaian - FIXED: Pisahkan GET dan POST
+    Route::get('/tugas-ujian/{kelas}/{tugas}/penilaian', [TugasController::class, 'penilaian'])
+        ->where(['kelas' => '[0-9]+', 'tugas' => '[0-9]+'])
+        ->name('tugas_ujian.penilaian');
+    Route::post('/tugas-ujian/{kelas}/{tugas}/penilaian', [TugasController::class, 'nilaiTugas'])
+        ->where(['kelas' => '[0-9]+', 'tugas' => '[0-9]+'])
+        ->name('tugas_ujian.nilai');
+    Route::post('/tugas-ujian/{kelas}/{tugas}/penilaian/batch', [TugasController::class, 'nilaiBatch'])
+        ->where(['kelas' => '[0-9]+', 'tugas' => '[0-9]+'])
+        ->name('tugas_ujian.nilai.batch');
+    Route::get('/tugas-ujian/{kelas}/{tugas}/mahasiswa', [TugasController::class, 'penilaianPerMahasiswa'])
+        ->where(['kelas' => '[0-9]+', 'tugas' => '[0-9]+'])
+        ->name('tugas_ujian.mahasiswa');
 
-    Route::get('/pengaturan/profil', [ProfilDosenController::class, 'editProfil'])->name('pengaturan.profil');
-    Route::post('/pengaturan/profil', [ProfilDosenController::class, 'updateProfile'])->name('pengaturan.profil.update');
+    // Rekap Nilai
+    Route::get('/rekap-nilai', [DosenTugasController::class, 'rekapNilai'])->name('rekap_nilai.index');
+    Route::get('/rekap-nilai/{kelas}', [DosenTugasController::class, 'rekapPerKelas'])
+        ->where('kelas', '[0-9]+')
+        ->name('rekap_nilai.detail');
+    Route::get('/rekap-nilai/export/{kelasId}', [DosenTugasController::class, 'exportRekap'])
+        ->where('kelasId', '[0-9]+')
+        ->name('rekap_nilai.export');
 
-    Route::get('/pengaturan/password', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'editPassword'])->name('pengaturan.password');
-    Route::post('/pengaturan/password', [App\Http\Controllers\Dosen\ProfilDosenController::class, 'updatePassword'])->name('pengaturan.password.update');
+    // Pengaturan Dosen
+    Route::prefix('pengaturan')->name('pengaturan.')->group(function () {
+        Route::get('/', [ProfilDosenController::class, 'pengaturan'])->name('index');
+        
+        Route::get('/profil', [ProfilDosenController::class, 'editProfil'])->name('profil');
+        Route::post('/profil', [ProfilDosenController::class, 'updateProfile'])->name('profil.update');
+        
+        Route::get('/password', [ProfilDosenController::class, 'editPassword'])->name('password');
+        Route::post('/password', [ProfilDosenController::class, 'updatePassword'])->name('password.update');
+    });
 });
 
 // ==============================
-// MAHASISWA ROUTES
+// MAHASISWA ROUTES (AUTHENTICATED)
 // ==============================
 
-    Route::middleware(['auth:mahasiswa', 'verified'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+Route::middleware(['auth:mahasiswa', 'verified'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
-    // Kelas
+    // Kelas Management
     Route::get('/kelas', [MahasiswaMateriController::class, 'daftarKelasMateri'])->name('kelas.index');
-    Route::get('/kelas/{id}', [JoinKelasController::class, 'show'])->name('kelas.show');
-    Route::delete('/kelas/{id}', [JoinKelasController::class, 'leave'])->name('kelas.leave');
+    Route::get('/kelas/{id}', [JoinKelasController::class, 'show'])
+        ->where('id', '[0-9]+')
+        ->name('kelas.show');
+    Route::delete('/kelas/{id}', [JoinKelasController::class, 'leave'])
+        ->where('id', '[0-9]+')
+        ->name('kelas.leave');
 
     // Join Kelas
     Route::get('/join', [JoinKelasController::class, 'index'])->name('join.index');
     Route::post('/join', [JoinKelasController::class, 'store'])->name('join.store');
 
     // Materi
-    Route::get('/kelas/{kelas}/materi', [MahasiswaMateriController::class, 'index'])->name('materi.index');
+    Route::get('/kelas/{kelas}/materi', [MahasiswaMateriController::class, 'index'])
+        ->where('kelas', '[0-9]+')
+        ->name('materi.index');
 
     // Tugas
-    Route::get('/kelas/{kelas}/tugas', [MahasiswaTugasController::class, 'index'])->name('kelas.tugas.index');
-    Route::get('/kelas/{kelas}/tugas/{tugas}', [MahasiswaTugasController::class, 'show'])->name('kelas.tugas.show'); 
-    Route::post('/kelas/{kelas}/tugas/{tugas}/upload', [MahasiswaTugasController::class, 'upload'])->name('kelas.tugas.upload');
-    Route::get('/kelas/{kelas}/tugas/{tugas}/preview', [MahasiswaTugasController::class, 'preview'])->name('kelas.tugas.preview');
-    Route::delete('/kelas/{kelas}/tugas/{tugas}/delete', [MahasiswaTugasController::class, 'delete'])->name('kelas.tugas.delete');
-    Route::get('{kelasId}/{tugasId}/penilaian', [PenilaianController::class, 'show'])->name('penilaian');
-    Route::post('{kelasId}/{tugasId}/penilaian', [PenilaianController::class, 'update'])->name('penilaian.update');
+    Route::get('/kelas/{kelas}/tugas', [MahasiswaTugasController::class, 'index'])
+        ->where('kelas', '[0-9]+')
+        ->name('kelas.tugas.index');
+    Route::get('/kelas/{kelas}/tugas/{tugas}', [MahasiswaTugasController::class, 'show'])
+        ->where(['kelas' => '[0-9]+', 'tugas' => '[0-9]+'])
+        ->name('kelas.tugas.show');
+    Route::post('/kelas/{kelas}/tugas/{tugas}/upload', [MahasiswaTugasController::class, 'upload'])
+        ->where(['kelas' => '[0-9]+', 'tugas' => '[0-9]+'])
+        ->name('kelas.tugas.upload');
+    Route::get('/kelas/{kelas}/tugas/{tugas}/preview', [MahasiswaTugasController::class, 'preview'])
+        ->where(['kelas' => '[0-9]+', 'tugas' => '[0-9]+'])
+        ->name('kelas.tugas.preview');
+    Route::delete('/kelas/{kelas}/tugas/{tugas}/delete', [MahasiswaTugasController::class, 'delete'])
+        ->where(['kelas' => '[0-9]+', 'tugas' => '[0-9]+'])
+        ->name('kelas.tugas.delete');
 
-    // Ujian
-    Route::prefix('/kelas/{kelas}/ujian')->name('ujian.')->group(function () {
-        Route::get('/', [UjianController::class, 'index'])->name('index');
-        Route::get('/create', [UjianController::class, 'create'])->name('create');
-        Route::post('/', [UjianController::class, 'store'])->name('store');
-        Route::get('/{id}', [UjianController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [UjianController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [UjianController::class, 'update'])->name('update');
-        Route::delete('/{id}', [UjianController::class, 'destroy'])->name('destroy');
-        Route::get('/{id}/kerjakan', [UjianController::class, 'kerjakan'])->name('kerjakan');
-    });
+    // Penilaian
+    Route::get('/{kelasId}/{tugasId}/penilaian', [PenilaianController::class, 'show'])
+        ->where(['kelasId' => '[0-9]+', 'tugasId' => '[0-9]+'])
+        ->name('penilaian');
+    Route::post('/{kelasId}/{tugasId}/penilaian', [PenilaianController::class, 'update'])
+        ->where(['kelasId' => '[0-9]+', 'tugasId' => '[0-9]+'])
+        ->name('penilaian.update');
 
-    // Komunikasi
+    // Komunikasi - FIXED: Konsisten dengan prefix
     Route::get('/komunikasi', [KomunikasiController::class, 'index'])->name('komunikasi.index');
-    Route::get('/mahasiswa/komunikasi', [KomunikasiController::class, 'index'])->name('komunikasi.index');
-    Route::post('/mahasiswa/komunikasi/post', [KomunikasiController::class, 'store'])->name('komunikasi.post');
-    Route::post('/mahasiswa/komunikasi/reply/{id}', [KomunikasiController::class, 'reply'])->name('komunikasi.reply');
-
-    
+    Route::post('/komunikasi/post', [KomunikasiController::class, 'store'])->name('komunikasi.post');
+    Route::post('/komunikasi/reply/{id}', [KomunikasiController::class, 'reply'])
+        ->where('id', '[0-9]+')
+        ->name('komunikasi.reply');
 
     // Pengaturan & Profil
-    Route::get('/pengaturan', [MahasiswaPengaturanController::class, 'index'])->name('pengaturan.index');
-    Route::get('/edit-profil', [MahasiswaPengaturanController::class, 'editProfile'])->name('profile-edit.edit');
-    Route::post('/edit-profil', [MahasiswaPengaturanController::class, 'updateProfile'])->name('profile-edit.update');
-    Route::get('/ganti-password', [MahasiswaPengaturanController::class, 'editPassword'])->name('password-edit.edit');
-    Route::post('/ganti-password', [MahasiswaPengaturanController::class, 'updatePassword'])->name('password-edit.update');
+    Route::prefix('pengaturan')->name('pengaturan.')->group(function () {
+        Route::get('/', [MahasiswaPengaturanController::class, 'index'])->name('index');
+        
+        Route::get('/edit-profil', [MahasiswaPengaturanController::class, 'editProfile'])->name('profile.edit');
+        Route::post('/edit-profil', [MahasiswaPengaturanController::class, 'updateProfile'])->name('profile.update');
+        
+        Route::get('/ganti-password', [MahasiswaPengaturanController::class, 'editPassword'])->name('password.edit');
+        Route::post('/ganti-password', [MahasiswaPengaturanController::class, 'updatePassword'])->name('password.update');
+    });
 });
+
+// ==============================
+// BACKWARD COMPATIBILITY ROUTES
+// ==============================
+
+// Redirect old routes untuk backward compatibility
+Route::get('/testFlaskConnection', function() {
+    return redirect()->route('admin.test.flask');
+})->middleware('auth:admin');

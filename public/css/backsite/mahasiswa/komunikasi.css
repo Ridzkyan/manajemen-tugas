@@ -1,0 +1,57 @@
+.pengaturan-wrapper {
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+}
+.pengaturan-title {
+    font-size: 2.3rem;
+    font-weight: 700;
+    color: var(--gray);
+    text-align: center;
+    margin-bottom: 30px;
+}
+.card-komunikasi {
+    border-radius: var(--radius-lg);
+    background-color: var(--white);
+    box-shadow: var(--shadow-md);
+    transition: 0.3s ease;
+    padding: 24px;
+}
+.card-komunikasi:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+.card-komunikasi h5 {
+    color: var(--primary);
+    font-weight: 700;
+}
+.card-komunikasi p {
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--gray-light);
+}
+.btn-wa {
+    background-color: #25D366;
+    border: none;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    color: var(--white);
+    transition: 0.3s ease;
+    text-decoration: none !important;
+}
+.btn-wa:hover {
+    background-color: #1cb255;
+    color: var(--white);
+    text-decoration: none !important;
+}
+.btn-disabled {
+    background-color: #adb5bd;
+    cursor: not-allowed;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    font-weight: 600;
+    color: var(--white);
+    border: none;
+}

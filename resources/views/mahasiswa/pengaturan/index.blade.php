@@ -4,71 +4,10 @@
 
 @section('content')
 
+{{-- Import CSS khusus halaman pengaturan mahasiswa --}}
+<link rel="stylesheet" href="{{ asset('css/backsite/mahasiswa/pengaturan.css') }}">
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<style>
-    .pengaturan-wrapper {
-        max-width: 1100px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 40px 20px 60px;
-    }
-
-    .pengaturan-title {
-        font-size: 2.3rem;
-        font-weight: 700;
-        color: #333;
-        text-align: center;
-        margin-bottom: 10px;
-    }
-
-    .pengaturan-subtitle {
-        text-align: center;
-        color: #777;
-        margin-bottom: 40px;
-    }
-
-    .pengaturan-card {
-        border-radius: 20px;
-        transition: 0.3s ease;
-        padding: 40px 25px;
-        text-align: center;
-        background-color: #ffffff;
-        border: 1px solid #e3e3e3;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        height: 100%;
-    }
-
-    .pengaturan-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.07);
-    }
-
-    .pengaturan-icon {
-        font-size: 3rem;
-        margin-bottom: 16px;
-    }
-
-    .badge-custom {
-        padding: 8px 16px;
-        font-size: 0.9rem;
-        border-radius: 12px;
-    }
-
-    @media (max-width: 768px) {
-        .pengaturan-title {
-            font-size: 1.8rem;
-        }
-
-        .pengaturan-card {
-            padding: 30px 20px;
-        }
-
-        .pengaturan-icon {
-            font-size: 2.4rem;
-        }
-    }
-</style>
 
 {{-- Flash message SweetAlert --}}
 @if(session('success'))
@@ -103,7 +42,7 @@
     <div class="row g-4 justify-content-center">
         {{-- Ubah Profil --}}
         <div class="col-md-4">
-            <a href="{{ route('mahasiswa.profile-edit.edit') }}" class="text-decoration-none">
+            <a href="{{ route('mahasiswa.pengaturan.profile.edit') }}" class="text-decoration-none">
                 <div class="pengaturan-card border border-primary-subtle">
                     <div class="pengaturan-icon text-primary">
                         <i class="fas fa-user-cog"></i>
@@ -114,9 +53,9 @@
             </a>
         </div>
 
-                {{-- Ganti Password --}}
+        {{-- Ganti Password --}}
         <div class="col-md-4">
-            <a href="{{ route('mahasiswa.password-edit.edit') }}" class="text-decoration-none">
+            <a href="{{ route('mahasiswa.pengaturan.password.edit') }}" class="text-decoration-none">
                 <div class="pengaturan-card border border-danger-subtle">
                     <div class="pengaturan-icon text-danger">
                         <i class="fas fa-key"></i>
@@ -139,7 +78,6 @@
                 </button>
             </form>
         </div>
-
     </div>
 </div>
 
@@ -162,5 +100,4 @@
         });
     }
 </script>
-
 @endsection

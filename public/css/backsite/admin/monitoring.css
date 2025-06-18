@@ -1,12 +1,12 @@
 .text-teal {
-    color: #008080;
+    color: var(--primary);
 }
 .text-orange {
-    color: #f5a04e;
+    color: var(--accent);
 }
 .card .user-name {
     font-weight: 600;
-    color: #333;
+    color: var(--gray);
 }
 .card .user-email {
     font-size: 0.875rem;

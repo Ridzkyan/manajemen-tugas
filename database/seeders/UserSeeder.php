@@ -18,24 +18,5 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'admin',
         ]);
-
-        // Dosen Pertama
-        User::create([
-            'name' => 'Dosen',
-            'username' => 'dosen',
-            'email' => 'dosen@gmail.com',
-            'password' => Hash::make('password'),
-            'role' => 'dosen',
-            'kode_unik' => 'DSN-' . rand(10000, 99999),
-        ]);
-
-        // Mahasiswa
-        User::create([
-            'name' => 'Mahasiswa',
-            'username' => 'mahasiswa',
-            'email' => 'mahasiswa@gmail.com',
-            'password' => Hash::make('password'),
-            'role' => 'mahasiswa',
-        ]);
     }
 }

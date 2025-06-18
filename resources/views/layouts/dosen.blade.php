@@ -5,17 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-     <title>@yield('title', 'Dashboard Dosen')</title>
-    
-    <link href="{{ asset('css/backsite/layouts/style.css') }}" rel="stylesheet">
+    <title>@yield('title', 'Dashboard Dosen')</title>
 
     <!-- Bootstrap & Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="{{ asset('css/backsite/layouts/style.css') }}" rel="stylesheet">
 
-    
+    <!-- Anti Flicker Sidebar Dosen -->
+    <script>
+    (function(){
+        var key = 'dosenSidebarOpen';
+        if (localStorage.getItem(key) === 'false') {
+            document.documentElement.classList.add('sidebar-collapsed');
+        }
+    })();
+    </script>
 </head>
 <body>
 <div id="app">
@@ -55,7 +62,7 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="{{ route('dosen.pengaturan') }}" class="nav-link {{ request()->is('dosen/pengaturan*') ? 'active' : '' }}">
+                <a href="{{ route('dosen.pengaturan.index') }}" class="nav-link {{ request()->is('dosen/pengaturan*') ? 'active' : '' }}">
                     <i class="fas fa-user-cog"></i> Pengaturan
                 </a>
             </li>
@@ -96,7 +103,6 @@
                     width="40" height="40" 
                     style="object-fit: cover; cursor: pointer;">
             </div>
-
         </div>
 
         {{-- Konten Halaman --}}
@@ -110,47 +116,81 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggleBtn = document.getElementById('toggleSidebar');
-        const toggleIcon = document.getElementById('toggleIcon');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent');
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const toggleIcon = document.getElementById('toggleIcon');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const SIDEBAR_KEY = 'dosenSidebarOpen';
 
-        toggleBtn?.addEventListener('click', function () {
-            sidebar.classList.toggle('hidden');
-            mainContent.classList.toggle('expanded');
-            toggleIcon.classList.toggle('rotate-90');
-        });
+    // UTAMA: Sinkronkan class pada <html> agar sidebar bisa anti-flicker + tetap toggle
+    function setSidebarStatus(status) {
+        if(status === 'false') {
+            sidebar.classList.add('hidden');
+            mainContent.classList.add('expanded');
+            toggleIcon?.classList.add('rotate-90');
+            document.documentElement.classList.add('sidebar-collapsed');
+        } else {
+            sidebar.classList.remove('hidden');
+            mainContent.classList.remove('expanded');
+            toggleIcon?.classList.remove('rotate-90');
+            document.documentElement.classList.remove('sidebar-collapsed');
+        }
+    }
+    setSidebarStatus(localStorage.getItem(SIDEBAR_KEY) ?? 'true');
 
-        // Auto close sidebar on mobile when clicking outside
-        document.addEventListener('click', function (event) {
-            const isMobile = window.innerWidth <= 768;
-            if (
-                isMobile &&
-                sidebar &&
-                !sidebar.contains(event.target) &&
-                !toggleBtn.contains(event.target) &&
-                !sidebar.classList.contains('hidden')
-            ) {
-                sidebar.classList.add('hidden');
-                mainContent.classList.add('expanded');
-                toggleIcon?.classList.add('rotate-90');
-            }
-        });
-
-        // SweetAlert2 for login success
-        @if (session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: @json(session('success')),
-            timer: 2500,
-            showConfirmButton: false
-        });
-        @endif
+    toggleBtn?.addEventListener('click', function () {
+        const isHidden = sidebar.classList.toggle('hidden');
+        mainContent.classList.toggle('expanded');
+        toggleIcon.classList.toggle('rotate-90');
+        const sidebarOpen = (!isHidden).toString();
+        localStorage.setItem(SIDEBAR_KEY, sidebarOpen);
+        if (sidebarOpen === 'false') {
+            document.documentElement.classList.add('sidebar-collapsed');
+        } else {
+            document.documentElement.classList.remove('sidebar-collapsed');
+        }
     });
-</script>
 
+    document.addEventListener('click', function (event) {
+        const isMobile = window.innerWidth <= 768;
+        if (
+            isMobile &&
+            sidebar &&
+            !sidebar.contains(event.target) &&
+            !toggleBtn.contains(event.target) &&
+            !sidebar.classList.contains('hidden')
+        ) {
+            sidebar.classList.add('hidden');
+            mainContent.classList.add('expanded');
+            toggleIcon?.classList.add('rotate-90');
+            localStorage.setItem(SIDEBAR_KEY, 'false');
+            document.documentElement.classList.add('sidebar-collapsed');
+        }
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('hidden');
+            mainContent.classList.remove('expanded');
+            toggleIcon?.classList.remove('rotate-90');
+            localStorage.setItem(SIDEBAR_KEY, 'true');
+            document.documentElement.classList.remove('sidebar-collapsed');
+        }
+    });
+
+    // SweetAlert2 
+    @if (session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: @json(session('success')),
+        timer: 2500,
+        showConfirmButton: false
+    });
+    @endif
+});
+</script>
 @yield('scripts')
 @stack('scripts')
 </body>

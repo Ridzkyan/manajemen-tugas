@@ -1,5 +1,9 @@
+/* ===========================
+   CARD & ANIMASI DASAR
+   =========================== */
 .card {
-    border-radius: 12px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lembut);
     transition: transform 0.2s ease;
 }
 
@@ -15,26 +19,32 @@ h3 i {
     vertical-align: middle;
 }
 
+/* ===========================
+   BUTTON
+   =========================== */
 .btn {
     border-radius: 50px;
     font-weight: bold;
-}
-.card.shadow-sm {
-    transition: transform 0.3s ease;
-}
-
-.card.shadow-sm:hover {
-    transform: translateY(-3px);
-}
-
-.btn {
     transition: all 0.2s ease;
 }
-
 .btn:hover {
     opacity: 0.9;
 }
 
+/* ===========================
+   CARD VARIAN SHADOW
+   =========================== */
+.card.shadow-sm {
+    transition: transform 0.3s ease;
+    box-shadow: var(--shadow-sedang);
+}
+.card.shadow-sm:hover {
+    transform: translateY(-3px);
+}
+
+/* ===========================
+   WRAPPER PENGATURAN/SETTING
+   =========================== */
 .setting-wrapper {
     padding: 1rem 2rem 2rem;
     min-height: 85vh;
@@ -45,11 +55,17 @@ h3 i {
     animation: fadeSlideUp 0.6s ease;
 }
 
+/* ===========================
+   ANIMASI MASUK
+   =========================== */
 @keyframes fadeSlideUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* ===========================
+   JUDUL SETTING
+   =========================== */
 .setting-title {
     display: flex;
     align-items: center;
@@ -59,18 +75,23 @@ h3 i {
     margin-bottom: 0.3rem;
     margin-top: 0.8rem;
 }
-
 .setting-title i {
-    color: #f5a04e;
+    color: var(--accent);
     margin-right: 0.6rem;
 }
 
+/* ===========================
+   SUBTEKS SETTING
+   =========================== */
 .setting-subtext {
     text-align: center;
-    color: #666;
+    color: var(--gray-light);
     margin-bottom: 1.5rem;
 }
 
+/* ===========================
+   GRID SETTING CARD
+   =========================== */
 .setting-grid-row {
     display: flex;
     justify-content: center;
@@ -79,10 +100,13 @@ h3 i {
     flex-wrap: wrap;
 }
 
+/* ===========================
+    SETTING CARD
+   =========================== */
 .setting-card {
-    background: white;
+    background: var(--white);
     border-radius: 20px;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-sedang);
     padding: 3.5rem 2.5rem;
     text-align: center;
     position: relative;
@@ -93,21 +117,17 @@ h3 i {
     flex-direction: column;
     justify-content: center;
 }
-
 .setting-card:hover {
     transform: translateY(-6px);
 }
-
 .setting-card i {
     font-size: 3rem;
     margin-bottom: 1rem;
     transition: transform 0.2s ease;
 }
-
 .setting-card:hover i {
     transform: scale(1.1);
 }
-
 .setting-card .badge {
     position: absolute;
     top: 12px;
@@ -116,6 +136,9 @@ h3 i {
     padding: 0.3em 0.6em;
 }
 
+/* ===========================
+   RESPONSIVE
+   =========================== */
 @media (max-width: 768px) {
     .setting-grid-row {
         flex-direction: column;

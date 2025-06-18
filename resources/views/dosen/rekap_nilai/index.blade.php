@@ -16,20 +16,28 @@
         <option value="">-- Pilih Kelas --</option>
         @foreach($kelasList as $kelas)
             <option value="{{ $kelas->id }}" {{ $selectedKelasId == $kelas->id ? 'selected' : '' }}>
-                {{ $kelas->nama_kelas }} ({{ $kelas->nama_matakuliah }})
+                {{ $kelas->nama_matakuliah }} ({{ $kelas->nama_kelas }})
             </option>
         @endforeach
     </select>
 </form>
 
-{{-- Tabel Nilai --}}
-@if($tugas->isNotEmpty())
-    @if($selectedKelasId)
-        <a href="{{ route('dosen.rekap_nilai.export', $selectedKelasId) }}" class="btn-export mb-3">
-            <i class="bi bi-file-earmark-excel-fill"></i> Export Excel
-        </a>
-    @endif
+{{-- Alert jika belum memilih kelas --}}
+@if(!$selectedKelasId)
+    <div class="alert-custom">
+        <i class="bi bi-info-circle-fill"></i> 
+        Silakan pilih kelas terlebih dahulu untuk melihat rekap nilai mahasiswa.
+    </div>
+@endif
 
+{{-- Tombol Export dan Tabel Nilai --}}
+@if($selectedKelasId && isset($tugas) && $tugas->isNotEmpty())
+    {{-- Tombol Export Excel --}}
+    <a href="{{ route('dosen.rekap_nilai.export', $selectedKelasId) }}" class="btn-export mb-3">
+        <i class="bi bi-file-earmark-excel-fill"></i> Export Excel
+    </a>
+
+    {{-- Tabel Nilai --}}
     <div class="table-responsive">
         <table class="table custom-table">
             <thead>
@@ -62,9 +70,12 @@
             </tbody>
         </table>
     </div>
-@else
+@elseif($selectedKelasId && (!isset($tugas) || $tugas->isEmpty()))
+    {{-- Alert jika kelas dipilih tapi tidak ada data tugas --}}
     <div class="alert-custom">
-        <i class="bi bi-info-circle-fill"></i> Silakan pilih kelas untuk melihat rekap nilai.
+        <i class="bi bi-info-circle-fill"></i> 
+        Belum ada data tugas untuk kelas yang dipilih.
     </div>
 @endif
+
 @endsection

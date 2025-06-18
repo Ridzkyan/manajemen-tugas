@@ -13,13 +13,12 @@ class Mahasiswa extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, Notifiable;
 
-    // Gunakan guard mahasiswa
+    
     protected $guard = 'mahasiswa';
 
-    // Tabel yang digunakan
     protected $table = 'users';
 
-    // Field yang dapat diisi
+
     protected $fillable = [
         'name',
         'email',
@@ -32,19 +31,19 @@ class Mahasiswa extends Authenticatable implements MustVerifyEmail
         'email_verified_at',
     ];
 
-    // Field yang disembunyikan saat serialisasi
+  
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    // Casting
+    
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
     /**
-     * Relasi ke Kelas (many-to-many).
+     * .
      */
     public function kelasMahasiswa()
     {
@@ -57,7 +56,7 @@ class Mahasiswa extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Cek apakah email sudah diverifikasi.
+     * Cek email sudah diverifikasi.
      */
     public function hasVerifiedEmail()
     {
@@ -73,15 +72,14 @@ class Mahasiswa extends Authenticatable implements MustVerifyEmail
             $this->email_verified_at = now();
             $this->save();
 
-            event(new Verified($this)); // Penting untuk trigger event
-            return true; // Wajib dikembalikan agar EmailVerificationRequest->fulfill() tahu sukses
+            event(new Verified($this));
+            return true;
         }
 
         return false;
     }
 
-    /**
-     * Diperlukan oleh sistem verifikasi Laravel.
+    /**  sistem verifikasi
      */
     public function getEmailForVerification()
     {

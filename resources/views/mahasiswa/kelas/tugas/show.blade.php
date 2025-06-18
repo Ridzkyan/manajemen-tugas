@@ -2,77 +2,9 @@
 @section('title', 'Detail Tugas')
 
 @section('content')
-<style>
-    .detail-wrapper {
-        max-width: 900px;
-        margin: 0 auto;
-    }
 
-    .card-detail {
-        background-color: #fff;
-        border-radius: 16px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        overflow: hidden;
-        border: none;
-    }
-
-    .card-detail-header {
-        background-color: #008080;
-        color: white;
-        font-weight: 600;
-        font-size: 1.2rem;
-        padding: 16px 24px;
-    }
-
-    .card-detail-body {
-        padding: 24px;
-        color: #333;
-    }
-
-    .card-detail-body p {
-        margin-bottom: 12px;
-    }
-
-    .upload-label {
-        font-weight: 600;
-        margin-bottom: 8px;
-        display: block;
-    }
-
-    .btn-kumpul {
-        background-color: #f5a04e;
-        color: white;
-        font-weight: 600;
-        padding: 10px 24px;
-        border: none;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-kumpul:hover {
-        background-color: #d88c2f;
-        transform: translateY(-1px);
-    }
-
-    .status-sukses {
-        font-weight: bold;
-        color: #28a745;
-        margin-top: 10px;
-    }
-
-    .status-terlambat {
-        font-weight: bold;
-        color: #dc3545;
-        margin-top: 10px;
-    }
-
-    iframe {
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        margin-top: 10px;
-        height: 650px;
-    }
-</style>
+{{-- Import CSS khusus halaman detail tugas --}}
+<link rel="stylesheet" href="{{ asset('css/backsite/mahasiswa/tugas_show.css') }}">
 
 <div class="detail-wrapper">
     <div class="card card-detail mb-4">
@@ -90,9 +22,33 @@
                 $isDeadlineOver = $now->gt($deadline);
             @endphp
 
+            {{-- Tampilkan pesan error atau success --}}
+            @if(session('tugas_error'))
+                <div class="alert alert-danger">
+                    {{ session('tugas_error') }}
+                </div>
+            @endif
+
+            @if(session('tugas_success'))
+                <div class="alert alert-success">
+                    {{ session('tugas_success') }}
+                </div>
+            @endif
+
+            {{-- Tampilkan validation errors --}}
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             @if($tugas->file_soal)
                 <p><strong>File Soal:</strong></p>
-                <iframe src="{{ asset('storage/' . $tugas->file_soal) }}" width="100%"></iframe>
+                <p>{{ basename($tugas->file_soal) }}</p>
                 <a href="{{ asset('storage/' . $tugas->file_soal) }}" class="btn btn-sm btn-primary mt-2" target="_blank">
                     <i class="fas fa-download"></i> Download Soal
                 </a>
@@ -103,30 +59,105 @@
             <hr>
 
             @if($sudahDikumpulkan)
-                <p class="status-sukses">✅ Tugas sudah dikumpulkan</p>
+                <div class="alert alert-success">
+                    <p class="mb-2"><strong>Status:</strong> Tugas sudah dikumpulkan</p>
+                    <p class="mb-0"><strong>Waktu pengumpulan:</strong> {{ $pengumpulan->created_at ? $pengumpulan->created_at->format('d M Y H:i') : 'Tidak diketahui' }}</p>
+                </div>
 
-                @if($pengumpulan && $pengumpulan->file)
+                @if($pengumpulan && $pengumpulan->file_jawaban)
                     <p><strong>File Jawaban:</strong></p>
-                    <iframe src="{{ asset('storage/' . $pengumpulan->file) }}" width="100%"></iframe>
-                    <a href="{{ asset('storage/' . $pengumpulan->file) }}" class="btn btn-sm btn-success mt-2" target="_blank">
-                        <i class="fas fa-download"></i> Download Jawaban
-                    </a>
+                    <p>{{ basename($pengumpulan->file_jawaban) }}</p>
+                    <div class="mt-2">
+                        <a href="{{ asset('storage/' . $pengumpulan->file_jawaban) }}" class="btn btn-sm btn-success me-2" target="_blank">
+                            <i class="fas fa-download"></i> Download Jawaban
+                        </a>
+                        
+                        {{-- Tombol hapus jika deadline belum lewat --}}
+                        @if(!$isDeadlineOver)
+                            <form action="{{ route('mahasiswa.kelas.tugas.delete', ['kelas' => $kelas->id, 'tugas' => $tugas->id]) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus file tugas ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </form>
+                        @endif
+                    </div>
                 @else
                     <p class="text-danger">File jawaban tidak ditemukan.</p>
                 @endif
             @elseif($isDeadlineOver)
-                <p class="status-terlambat">❌ Deadline sudah lewat. Anda tidak bisa mengumpulkan tugas ini.</p>
+                <div class="alert alert-warning">
+                    <p class="mb-0"><strong>Deadline sudah lewat.</strong> Anda tidak bisa mengumpulkan tugas ini.</p>
+                </div>
             @else
-                <form action="{{ route('mahasiswa.kelas.tugas.upload', ['kelas' => $kelas->id, 'tugas' => $tugas->id]) }}" method="POST" enctype="multipart/form-data">
+                <div class="alert alert-info">
+                    <p class="mb-0">Silakan upload file jawaban Anda sebelum deadline.</p>
+                </div>
+
+                <form action="{{ route('mahasiswa.kelas.tugas.upload', ['kelas' => $kelas->id, 'tugas' => $tugas->id]) }}" 
+                      method="POST" 
+                      enctype="multipart/form-data" 
+                      id="uploadForm">
                     @csrf
                     <div class="mb-3">
-                        <label for="file_tugas" class="upload-label">Upload File Jawaban</label>
-                        <input type="file" name="file_tugas" id="file_tugas" class="form-control" required>
+                        <label for="file_tugas" class="form-label">
+                            <strong>Upload File Jawaban</strong>
+                        </label>
+                        <input type="file" 
+                               name="file_tugas" 
+                               id="file_tugas" 
+                               class="form-control @error('file_tugas') is-invalid @enderror" 
+                               accept=".pdf,.doc,.docx,.txt" 
+                               required>
+                        <div class="form-text">
+                            Format yang diperbolehkan: PDF, DOC, DOCX, TXT. Maksimal 10MB.
+                        </div>
+                        @error('file_tugas')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
-                    <button type="submit" class="btn btn-kumpul">
-                        <i class="fas fa-upload"></i> Kumpulkan
+                    
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-upload"></i> Kumpulkan Tugas
                     </button>
                 </form>
+
+                {{-- JavaScript untuk loading state --}}
+                <script>
+                document.getElementById('uploadForm').addEventListener('submit', function(e) {
+                    const submitBtn = document.getElementById('submitBtn');
+                    const fileInput = document.getElementById('file_tugas');
+                    
+                    // Validasi file dipilih
+                    if (!fileInput.files.length) {
+                        e.preventDefault();
+                        alert('Pilih file terlebih dahulu!');
+                        return;
+                    }
+                    
+                    // Validasi ukuran file (10MB = 10485760 bytes)
+                    if (fileInput.files[0].size > 10485760) {
+                        e.preventDefault();
+                        alert('Ukuran file terlalu besar! Maksimal 10MB.');
+                        return;
+                    }
+                    
+                    // Tampilkan loading state
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengupload...';
+                    submitBtn.disabled = true;
+                });
+
+                // Preview file yang dipilih
+                document.getElementById('file_tugas').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        console.log('File dipilih:', file.name, 'Ukuran:', file.size, 'bytes');
+                    }
+                });
+                </script>
             @endif
         </div>
     </div>

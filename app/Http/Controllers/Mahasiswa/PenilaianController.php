@@ -34,10 +34,13 @@ class PenilaianController extends Controller
         ]);
 
         $tugas = Tugas::where('id', $tugasId)
-                      ->where('kelas_id', $kelasId)
-                      ->firstOrFail();
+                    ->where('kelas_id', $kelasId)
+                    ->firstOrFail();
 
-        $tugas->nilai = $request->nilai;
+        // Membatasi nilai menjadi 2 angka di belakang koma
+        // Membatasi nilai menjadi 2 angka di belakang koma
+        $tugas->nilai = number_format($tugas->nilai / 100, 2, ',', '.');  // Memformat nilai menjadi 2 angka di belakang koma
+
         $tugas->feedback = $request->feedback;
         $tugas->save();
 
@@ -46,6 +49,6 @@ class PenilaianController extends Controller
         }
 
         return redirect()->route('mahasiswa.kelas.tugas.index', [$kelasId])
-                         ->with('success', 'Penilaian berhasil disimpan dan notifikasi telah dikirim.');
+                        ->with('success', 'Penilaian berhasil disimpan dan notifikasi telah dikirim.');
     }
 }

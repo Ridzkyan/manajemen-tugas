@@ -1,9 +1,9 @@
-/* show_mahasiswa.css */
+
 body {
-    background-color: #FFF9F3;
+    background-color: var(--bg-alt);
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
+    font-family: var(--font-default);
 }
 
 .container-wrapper {
@@ -15,7 +15,7 @@ body {
 .title-header {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #333;
+    color: var(--gray);
     margin-bottom: 24px;
     display: flex;
     justify-content: center;
@@ -24,16 +24,16 @@ body {
 }
 
 .title-header i {
-    color: #f4c430;
+    color: var(--gold); 
     font-size: 1.6rem;
 }
 
 .empty-message {
-    background: #fff;
-    border-radius: 12px;
+    background: var(--white);
+    border-radius: var(--radius);
     padding: 32px;
     text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: var(--shadow-md, 0 2px 10px rgba(0,0,0,0.05));
     color: #666;
     font-size: 1rem;
     display: flex;
@@ -45,7 +45,7 @@ body {
 
 .empty-message i {
     font-size: 2rem;
-    color: #999;
+    color: var(--gray-light);
 }
 
 .table-modern {
@@ -62,16 +62,16 @@ body {
 }
 
 .table-modern td {
-    background: #fff;
+    background: var(--white);
     padding: 16px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     font-size: 15px;
-    color: #333;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    color: var(--gray);
+    box-shadow: var(--shadow, 0 2px 8px rgba(0, 0, 0, 0.05));
     vertical-align: middle;
 }
 
 .table-modern td.name {
     font-weight: 600;
-    color: #008080;
+    color: var(--primary);
 }

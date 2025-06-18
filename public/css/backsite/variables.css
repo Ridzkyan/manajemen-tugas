@@ -1,0 +1,36 @@
+:root {
+  /* === WARNA UTAMA === */
+  --primary:      #008080;  
+  --accent:       #f5a04e;   
+  --secondary:    #17a2b8;   
+  --success:      #28a745;   
+  --danger:       #dc3545;   
+  --info:         #17a2b8;  
+  --white:        #fff;     
+  --black:        #000;      
+  --gray:         #333;      
+  --gray-light:   #999;      
+  --bg:           #f9f9f9; 
+  --border:       #eee;     
+  --bg-alt:       #fef9f4;  
+  --warning:      #ffc107;   
+  --success-bg:   #d4edda;   
+  --success-text: #155724;   
+  --gold: #f4c430;     
+  --warning: #ffc107;  
+  --primary-dark: #006666;
+  --accent-dark: #d88c2f;
+
+
+  /* === TIPOGRAFI === */
+  --font-main:    'Nunito', Arial, sans-serif;
+  --font-default: Arial, sans-serif;
+
+  /* === RADIUS & SHADOW === */
+  --radius:       12px;      
+  --radius-sm:    8px;       
+  --radius-lg:    20px;      
+  --shadow:       0 2px 8px rgba(0,0,0,0.04);   
+  --shadow-md:    0 3px 10px rgba(0,0,0,0.08); 
+  --shadow-lg:    0 8px 16px rgba(0,0,0,0.12); 
+}

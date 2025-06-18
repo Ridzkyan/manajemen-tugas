@@ -10,7 +10,7 @@ class PengumpulanTugas extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['tugas_id', 'mahasiswa_id', 'file', 'nilai', 'feedback'];
+    protected $fillable = ['tugas_id', 'mahasiswa_id', 'file_jawaban', 'nilai' => 'float', 'feedback'];
 
     public function tugas()
     {

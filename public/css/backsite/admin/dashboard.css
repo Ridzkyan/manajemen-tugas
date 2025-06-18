@@ -1,9 +1,12 @@
+@import url('../variables.css');
+
+
 .card-info {
-    background-color: #f5a04e;
-    color: white;
-    border-radius: 12px;
+    background-color: var(--accent);
+    color: var(--white);
+    border-radius: var(--radius);
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     height: 130px;
     display: flex;
     align-items: center;
@@ -44,9 +47,9 @@
 }
 
 .dashboard-card {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background-color: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -64,9 +67,9 @@
 
 .dashboard-card .btn {
     font-size: 0.75rem;
-    background-color: #f5a04e;
+    background-color: var(--accent);
     border-radius: 50px;
-    color: white;
+    color: var(--white);
     padding: 3px 12px;
 }
 
